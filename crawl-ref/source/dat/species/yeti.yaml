@@ -1,0 +1,63 @@
+enum: SP_YETI
+monster: MONS_OGRE
+name: Yeti
+short_name: Ye
+difficulty: Intermediate
+aptitudes:
+  xp: 0
+  hp: 2
+  mp_mod: 0
+  mr: 3
+  fighting: 0
+  short_blades: -1
+  long_blades: -1
+  axes: -1
+  maces_and_flails: -3
+  polearms: -1
+  staves: -1
+  slings: -3
+  bows: -3
+  crossbows: -3
+  throwing: -3
+  armour: -2
+  dodging: -2
+  stealth: 3
+  shields: -2
+  unarmed_combat: -1
+  spellcasting: 0
+  conjurations: -1
+  hexes: 0
+  charms: 0
+  summoning: 0
+  necromancy: 0
+  translocations: 0
+  transmutations: 0
+  fire_magic: -1
+  ice_magic: 2
+  air_magic: 0
+  earth_magic: 0
+  poison_magic: 0
+  invocations: 0
+  evocations: -1
+size: large
+str: 8
+int: 9
+dex: 11
+levelup_stat_frequency: 5
+levelup_stats:
+  - str
+  - dex
+mutations:
+  1:
+    MUT_COLD_RESISTANCE: 1
+  7:
+    MUT_PASSIVE_FREEZE: 1
+recommended_jobs:
+  - JOB_ICE_ELEMENTALIST
+  - JOB_NECROMANCER
+  - JOB_ENCHANTER
+  - JOB_CONJURER
+recommended_weapons:
+  - SK_LONG_BLADES
+  - SK_POLEARMS
+  - SK_STAVES

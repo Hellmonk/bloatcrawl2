@@ -265,3 +265,8 @@ Irit
 
 Irits are magical, brutish one-eyed humanoids. They are adept at casting spells
 in heavy armour, although it costs them life force to do so.
+%%%%
+Yeti
+
+Yeti are large, seldom-seen creatures that live on frozen mountain peaks.
+Sufficiently mature Yeti passively freeze adjacent foes.
