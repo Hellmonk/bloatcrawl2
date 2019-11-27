@@ -8,6 +8,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
       - run: >
           apt-get install build-essential libncursesw5-dev bison flex liblua5.1-0-dev
           libsqlite3-dev libz-dev pkg-config python-yaml libsdl2-image-dev
