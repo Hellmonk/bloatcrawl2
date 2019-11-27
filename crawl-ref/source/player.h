@@ -40,6 +40,7 @@
 #define ICY_ARMOUR_KEY "ozocubu's_armour_pow"
 #define TRANSFORM_POW_KEY "transform_pow"
 #define BARBS_MOVE_KEY "moved_with_barbs_status"
+#define MANAFEET_MOVE_KEY "moved_with_manafeet_status"
 #define HORROR_PENALTY_KEY "horror_penalty"
 #define POWERED_BY_DEATH_KEY "powered_by_death_strength"
 #define SONG_OF_SLAYING_KEY "song_of_slaying_bonus"
@@ -995,6 +996,7 @@ int calc_hunger(int food_cost);
 int player_icemail_armour_class();
 int sanguine_armour_bonus();
 int protean_hp_bonus();
+int chitinous_shield_bonus();
 
 int player_wizardry(spell_type spell);
 

@@ -286,3 +286,8 @@ Turtle
 Turtles are hard-shelled warriors trained in the arts of ninjutsu. They fight
 evil wherever it can be found and follow a strict honour code.
 %%%%
+Xeno Elf
+
+Strange insectoid creatures from a distant land. Their magical efficiency is
+far better than most species, but drains when moving near enemies.
+%%%%

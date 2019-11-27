@@ -2998,8 +2998,7 @@ static void tag_read_you(reader &th)
         if (you.species == SP_FORMICID)
         {
             you.mutation[MUT_ANTENNAE] = you.innate_mutation[MUT_ANTENNAE] = 3;
-            you.mutation[MUT_EXOSKELETON] =
-            you.innate_mutation[MUT_EXOSKELETON] = 0;
+            you.mutation[MUT_EXOSKELETON_OLD] = you.innate_mutation[MUT_EXOSKELETON_OLD] = 0;
         }
     }
 

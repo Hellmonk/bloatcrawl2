@@ -2265,6 +2265,8 @@ static int _player_evasion_bonuses()
         evbonus += you.get_mutation_level(MUT_DISTORTION_FIELD) + 1;
 
     if (evbonus += you.get_mutation_level(MUT_VAPOROUS_BODY))
+
+    if (you.has_mutation(MUT_EXOSKELETON))
         evbonus += 2;
 
     // transformation penalties/bonuses not covered by size alone:
@@ -2457,8 +2459,11 @@ int player_shield_class()
     shield += (you.get_mutation_level(MUT_LARGE_BONE_PLATES) > 0
                ? you.get_mutation_level(MUT_LARGE_BONE_PLATES) * 400 + 400
                : 0);
+
     if (you.has_mutation(MUT_FAERIE_SCALES))
         shield += 600;
+
+    shield += chitinous_shield_bonus();
 
     shield += qazlal_sh_boost() * 100;
     shield += tso_sh_boost() * 100;
@@ -3332,6 +3337,11 @@ void level_change(bool skip_attribute_increase)
         {
 			mprf(MSGCH_INTRINSIC_GAIN, "You feel more shielded.");
             you.redraw_armour_class = true;
+        }
+        else if (you.has_mutation(MUT_CHITINOUS_PLATING) && !(you.experience_level % 3))
+        {
+            mprf(MSGCH_INTRINSIC_GAIN, "Your chitinous plates grow further.");
+            you.redraw_armour_class = true; // also redraws SH
         }
         if (!updated_maxhp)
             _gain_and_note_hp_mp();
@@ -6239,6 +6249,20 @@ int sanguine_armour_bonus()
     const int mut_lev = you.get_mutation_level(MUT_SANGUINE_ARMOUR);
     // like iridescent, but somewhat moreso (when active)
     return 300 + mut_lev * 300;
+}
+
+/**
+ * @return      The SH bonus * 200. (For scaling.)
+ */
+int chitinous_shield_bonus()
+{
+    if (you.has_mutation(MUT_CHITINOUS_PLATING))
+    {
+        const int hands = you.has_mutation(MUT_MISSING_HAND) ? 1 : 2;
+        return 1200 + 200 * (hands * (you.experience_level / 3));
+    }
+    else
+        return 0;
 }
 
 int protean_hp_bonus()

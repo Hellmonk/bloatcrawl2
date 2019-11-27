@@ -884,6 +884,22 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
+    if (you.has_mutation(MUT_EXOSKELETON)
+        && (slot == EQ_BODY_ARMOUR || slot == EQ_CLOAK))
+    {
+        if (verbose)
+            mprf("Your exoskeleton prevents wearing that!");
+        return false;
+    }
+
+    if (you.has_mutation(MUT_CHITINOUS_PLATING)
+        && (slot == EQ_GLOVES || slot == EQ_SHIELD))
+    {
+        if (verbose)
+            mprf("Your chitinous plates are too bulky to wear that!");
+        return false;
+    }
+
     if (sub_type == ARM_NAGA_BARDING || sub_type == ARM_CENTAUR_BARDING)
     {
         if ((you.species == SP_NAGA || you.species == SP_SLITHERIER_NAGA)

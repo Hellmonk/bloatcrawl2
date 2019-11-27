@@ -834,6 +834,21 @@ static void _decrement_durations()
                 you.berserk() ? "rip and tear" : "carefully extract").c_str());
     }
 
+    if (you.props.exists(MANAFEET_MOVE_KEY))
+    {
+        bool enemy_visible = false;
+        for (monster_iterator mi; mi; ++mi)
+        {
+            if (you.can_see(**mi) && !mi->wont_attack())
+            {
+                enemy_visible = true;
+                break;
+            }
+        }
+        if (!enemy_visible)
+            you.props.erase(MANAFEET_MOVE_KEY);
+    }
+
     if (!you.duration[DUR_ANCESTOR_DELAY]
         && in_good_standing(GOD_HEPLIAKLQANA)
         && hepliaklqana_ancestor() == MID_NOBODY)

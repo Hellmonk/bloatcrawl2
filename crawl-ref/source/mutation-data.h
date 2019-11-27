@@ -1547,7 +1547,7 @@ static const mutation_def mut_data[] =
   {"You feel slippery.", "", ""},
 },
 
-{ MUT_EXOSKELETON, 0, 2, mutflag::good, true,
+{ MUT_EXOSKELETON_OLD, 0, 2, mutflag::good, true,
   "exoskeleton",
 
   {"Your body is surrounded by an exoskeleton. (buggy)",
@@ -2103,6 +2103,40 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+{ MUT_EXOSKELETON, 0, 1, mutflag::good, true,
+   "exoskeleton",
+
+   {"You have a chitinous exoskeleton and cannot wear body armour or cloaks. (+2 EV)", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_CHITINOUS_PLATING, 0, 1, mutflag::good, true,
+   "chitinous plating",
+
+   // Bonus details added in mutation.cc's mutation_desc
+   {"Large plates of chitin grow along your hands and arms. (+", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_MANAFEET, 0, 1, mutflag::good, true,
+   "mana feet",
+
+   {"You lose magic when moving in sight of enemies.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_EFFICIENT_MAGIC, 0, 1, mutflag::good, true,
+   "efficient magic",
+
+   {"Your spell casting costs are reduced by half (rounded up).", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
 };
 
 static const mutation_category_def category_mut_data[] =

@@ -468,6 +468,9 @@ int spell_mana(spell_type which_spell)
     int spell_cost = _seekspell(which_spell)->level;
     if (you.species == SP_FAERIE_DRAGON)
         spell_cost--;
+    else if (you.has_mutation(MUT_EFFICIENT_MAGIC))
+        // Half cost (rounded up)
+        spell_cost = (spell_cost + 1) / 2;
     return spell_cost;
 }
 
