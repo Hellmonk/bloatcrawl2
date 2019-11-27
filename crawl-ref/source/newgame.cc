@@ -396,7 +396,7 @@ static bool _reroll_random(newgame_def& ng)
 #endif
 #endif
     title_hbox->add_child(make_shared<Text>(prompt));
-    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_cross_alignment(Widget::CENTER);
     title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     title_hbox->set_margin_for_crt(0, 0, 1, 0);
 
@@ -407,10 +407,8 @@ static bool _reroll_random(newgame_def& ng)
 
     bool done = false;
     char c;
-    popup->on(Widget::slots.event, [&](wm_event ev)  {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        c = ev.key.keysym.sym;
+    popup->on_keydown_event([&](const KeyEvent& ev) {
+        c = ev.key();
         return done = true;
     });
 
@@ -624,7 +622,7 @@ static void _choose_name(newgame_def& ng, newgame_def& choice)
 #endif
 #endif
     title_hbox->add_child(make_shared<Text>(title));
-    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_cross_alignment(Widget::CENTER);
     title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     title_hbox->set_margin_for_crt(0, 0, 1, 0);
 
@@ -648,6 +646,21 @@ static void _choose_name(newgame_def& ng, newgame_def& choice)
         tmp->set_text(formatted_string("Enter - Begin!", BROWN));
 
         auto btn = make_shared<MenuButton>();
+        btn->on_activate_event([&](const ActivateEvent&) {
+            choice.name = buf;
+            trim_string(choice.name);
+            if (choice.name.empty())
+                choice.name = newgame_random_name();
+            if (good_name)
+            {
+                ng.name = choice.name;
+                ng.filename = get_save_filename(choice.name);
+                overwrite_prompt = save_exists(ng.filename);
+                if (!overwrite_prompt)
+                    done = true;
+            }
+            return true;
+        });
         tmp->set_margin_for_sdl(4,8);
         tmp->set_margin_for_crt(0, 2, 0, 0);
         btn->set_child(move(tmp));
@@ -660,7 +673,7 @@ static void _choose_name(newgame_def& ng, newgame_def& choice)
                 formatted_string("That's a silly name!", LIGHTRED));
         err->set_margin_for_sdl(0, 0, 0, 10);
         auto box = make_shared<Box>(Box::HORZ);
-        box->align_cross = Widget::CENTER;
+        box->set_cross_alignment(Widget::CENTER);
         box->add_child(err);
 
         ok_switcher->add_child(btn);
@@ -670,7 +683,9 @@ static void _choose_name(newgame_def& ng, newgame_def& choice)
 
     auto popup = make_shared<ui::Popup>(move(vbox));
 
-    sub_items->on_button_activated = [&](int id) {
+    sub_items->on_activate_event([&](const ActivateEvent& event) {
+        const auto button = static_pointer_cast<MenuButton>(event.target());
+        const auto id = button->id;
         switch (id)
         {
             case '*':
@@ -678,32 +693,16 @@ static void _choose_name(newgame_def& ng, newgame_def& choice)
                 reader.putkey(CONTROL('U'));
                 for (char ch : newgame_random_name())
                     reader.putkey(ch);
-                return;
-            case CK_ENTER:
-                choice.name = buf;
-                trim_string(choice.name);
-                if (choice.name.empty())
-                    choice.name = newgame_random_name();
-                if (good_name)
-                {
-                    ng.name = choice.name;
-                    ng.filename = get_save_filename(choice.name);
-                    overwrite_prompt = save_exists(ng.filename);
-                    if (!overwrite_prompt)
-                        done = true;
-                }
-                return;
+                break;
             case CK_ESCAPE:
                 done = cancel = true;
-                return;
+                break;
         }
+        return true;
+    });
 
-    };
-
-    popup->on(Widget::slots.event, [&](wm_event ev)  {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int key = ev.key.keysym.sym;
+    popup->on_keydown_event([&](const KeyEvent& ev) {
+        auto key = ev.key();
 
         if (!overwrite_prompt)
         {
@@ -721,7 +720,6 @@ static void _choose_name(newgame_def& ng, newgame_def& choice)
     });
 
     ui::push_layout(move(popup));
-    ui::set_focused_widget(sub_items.get());
     while (!done && !crawl_state.seen_hups)
     {
         formatted_string prompt;
@@ -758,7 +756,7 @@ static keyfun_action _keyfun_seed_input(int &ch)
 }
 
 static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
-    const newgame_def& defaults)
+    const newgame_def& /* defaults */)
 {
     bool done = false;
     bool cancel = false;
@@ -778,10 +776,8 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
         choice.undead_type = species_undead_type(ng.species);
 
     auto prompt_ui = make_shared<Text>();
-    prompt_ui->on(Widget::slots.event, [&](wm_event ev)  {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int key = ev.key.keysym.sym;
+    prompt_ui->on_keydown_event([&](ui::KeyEvent ev) {
+        int key = ev.key();
 
         if (can_choose_undead && (key == 'u' || key == 'U'))
         {
@@ -1033,16 +1029,11 @@ static void _choose_seed(newgame_def& ng, newgame_def& choice,
 {
     UNUSED(ng, defaults);
 
-    char buf[21]; // max unsigned 64 bit integer is 20 chars in decimal,
-                  // specifically 18446744073709551615
-    buf[0] = '\0';
-    resumable_line_reader reader(buf, sizeof(buf));
     if (Options.seed)
         choice.seed = Options.seed;
     else if (Options.seed_from_rc)
         choice.seed = Options.seed_from_rc;
-    reader.set_text(make_stringf("%" PRIu64, choice.seed));
-    reader.set_keyproc(_keyfun_seed_input);
+
     const bool show_pregen_toggle =
 #ifdef DEBUG
                         true;
@@ -1052,55 +1043,104 @@ static void _choose_seed(newgame_def& ng, newgame_def& choice,
 
     bool done = false;
     bool cancel = false;
-    choice.pregenerate = Options.pregen_dungeon;
 
     auto prompt_ui = make_shared<Text>();
-    prompt_ui->on(Widget::slots.event, [&](wm_event ev)  {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int key = ev.key.keysym.sym;
+    auto box = make_shared<ui::Box>(ui::Widget::VERT);
+    box->set_cross_alignment(Widget::Align::STRETCH);
+    auto popup = make_shared<ui::Popup>(box);
 
-        if (show_pregen_toggle && key == CONTROL('I'))
-        {
-            choice.pregenerate = !choice.pregenerate;
-            return done = false;
-        }
-        else if (key == 'd' || key == 'D')
-        {
-            time_t now;
-            struct tm * timeinfo;
+    const string title_text = make_stringf(
+        "Play a game with a custom seed for version %s.\n",
+        Version::Long);
+    box->add_child(make_shared<ui::Text>(formatted_string(title_text, CYAN)));
 
-            time(&now);
-            timeinfo = localtime(&now);
-            char timebuf[9];
-            strftime(timebuf, sizeof(timebuf), "%Y%m%d", timeinfo);
-            reader.set_text(timebuf);
-#ifdef USE_TILE_WEB
-            // TODO: can this be done more automatically somehow?
-            tiles.json_open_object();
-            tiles.json_write_string("msg", "update_input");
-            tiles.json_write_string("input_text", string(timebuf));
-            tiles.json_write_bool("select", true);
-            tiles.json_close_object();
-            tiles.finish_message();
+    const string body_text = "Choose 0 for a random seed. "
+            "[Tab]/[Shift-Tab] to cycle input focus.\n";
+    box->add_child(make_shared<ui::Text>(body_text));
+
+    auto seed_hbox = make_shared<ui::Box>(ui::Box::HORZ);
+    box->add_child(seed_hbox);
+
+    const string prompt_text = "Seed ([-] to clear): ";
+    seed_hbox->add_child(make_shared<ui::Text>(prompt_text));
+    auto seed_input = make_shared<ui::TextEntry>();
+    seed_input->set_sync_id("seed");
+    seed_input->set_text(make_stringf("%" PRIu64, choice.seed));
+    seed_input->set_keyproc(_keyfun_seed_input);
+#ifndef USE_TILE_LOCAL
+    seed_input->max_size().width = 20;
 #endif
-            return done = false;
-        }
-        else if (key == '?')
+    seed_hbox->add_child(seed_input);
+    seed_hbox->set_cross_alignment(Widget::CENTER);
+
+    auto btn_label = make_shared<ui::Text>();
+    btn_label->set_text(formatted_string("d - Today's daily seed", BROWN));
+    btn_label->set_margin_for_sdl(4,8);
+    btn_label->set_margin_for_crt(0, 2, 0, 0);
+
+    auto daily_seed_btn = make_shared<MenuButton>();
+    daily_seed_btn->set_child(move(btn_label));
+    daily_seed_btn->set_sync_id("btn-daily");
+    daily_seed_btn->hotkey = 'd';
+    daily_seed_btn->set_margin_for_sdl(0,0,0,10);
+    daily_seed_btn->set_margin_for_crt(0, 0, 0, 1);
+    daily_seed_btn->on_activate_event([&seed_input](const ActivateEvent&) {
+        time_t now;
+        time(&now);
+        struct tm * timeinfo = localtime(&now);
+        char timebuf[9];
+        strftime(timebuf, sizeof(timebuf), "%Y%m%d", timeinfo);
+        seed_input->set_text(timebuf);
+        return true;
+    });
+    seed_hbox->add_child(move(daily_seed_btn));
+
+    const string footer_text =
+        "\n"
+        "The seed will determine the dungeon layout, monsters, and items\n"
+        "that you discover, relative to this version of crawl. (See the \n"
+        "manual for more details.)"
+#ifdef SEEDING_UNRELIABLE
+        "Warning: your build of crawl does not support stable seeding!\n"
+        "Levels may differ from 'official' seeded games."
+#endif
+        "\n"
+        ;
+    box->add_child(make_shared<ui::Text>(footer_text));
+
+    auto pregen_check = make_shared<ui::Checkbox>();
+    pregen_check->set_sync_id("pregenerate");
+    pregen_check->set_checked(choice.pregenerate = Options.pregen_dungeon);
+    pregen_check->set_visible(show_pregen_toggle);
+    pregen_check->set_child(make_shared<ui::Text>("Pregenerate the dungeon"));
+    box->add_child(pregen_check);
+
+    auto button_hbox = make_shared<ui::Box>(ui::Box::HORZ);
+    button_hbox->set_main_alignment(Widget::Align::END);
+    box->add_child(button_hbox);
+
+    btn_label = make_shared<ui::Text>();
+    btn_label->set_text(formatted_string("Enter - Begin!", BROWN));
+    btn_label->set_margin_for_sdl(4,8);
+    btn_label->set_margin_for_crt(0, 2, 0, 0);
+
+    auto begin_btn = make_shared<MenuButton>();
+    begin_btn->set_child(move(btn_label));
+    begin_btn->set_sync_id("btn-begin");
+    begin_btn->hotkey = CK_ENTER;
+    begin_btn->on_activate_event([&done](const ActivateEvent&) {
+        return done = true;
+    });
+    button_hbox->add_child(move(begin_btn));
+
+    popup->on_keydown_event([&](const KeyEvent& ev) {
+        const auto key = ev.key();
+        if (key == '?')
             show_help('D', "Seeded play"); // TODO: scroll to section
         else if (key == '-')
         {
-            reader.set_text("");
-#ifdef USE_TILE_WEB
-            // TODO: can this be done more automatically somehow?
-            tiles.json_open_object();
-            tiles.json_write_string("msg", "update_input");
-            tiles.json_write_string("input_text", string(""));
-            tiles.json_write_bool("select", true);
-            tiles.json_close_object();
-            tiles.finish_message();
-#endif
-            return done = false;
+            seed_input->set_text("");
+            return false;
         }
 #ifdef USE_TILE_LOCAL
         else if ((key == 'p' || key == 'P') && wm->has_clipboard())
@@ -1111,116 +1151,29 @@ static void _choose_seed(newgame_def& ng, newgame_def& choice,
             uint64_t clip_seed;
             int clip_found = sscanf(clip.c_str(), "%" SCNu64, &clip_seed);
             if (clip_found)
-                reader.set_text(make_stringf("%" PRIu64, clip_seed));
-            return done = false;
+                seed_input->set_text(make_stringf("%" PRIu64, clip_seed));
+            return false;
         }
 #endif
-        // TODO: digits only
-        key = reader.putkey(key);
-
-        if (key != -1)
-        {
-            if (key_is_escape(key))
-                return done = cancel = true;
-            if (reader.get_text().size() > 0)
-                return done = true;
-        }
-        return true;
+        else if (key_is_escape(key))
+            return done = cancel = true;
+        return false;
     });
 
-    auto box = make_shared<ui::Box>(ui::Widget::VERT);
-    box->add_child(prompt_ui);
-    auto pregen_choice = make_shared<ui::Text>("");
-    box->add_child(pregen_choice);
-    if (show_pregen_toggle)
-    {
-        pregen_choice->set_text(
-            "Pregenerate the dungeon ([tab] to switch)? Yes | No");
-    }
-    const string title_text = make_stringf(
-        "Play a game with a custom seed for version %s.",
-        Version::Long);
-    const string body_text =
-        "Choose 0 for a random seed. Press [d] for today's daily seed.\n"
-#ifdef USE_TILE_LOCAL
-        "Press [p] to paste a seed from the clipboard (overwriting the\n"
-        "current value).\n"
-#endif
-        ;
-    const string prompt_text = "Seed ([-] to clear):";
-    const string footer_text =
-        "The seed will determine the dungeon layout, monsters, and items\n"
-        "that you discover, relative to this version of crawl. (See the \n"
-        "manual for more details.)"
-#ifdef SEEDING_UNRELIABLE
-        "Warning: your build of crawl does not support stable seeding!\n"
-        "Levels may differ from 'official' seeded games."
-#endif
-        ;
-
-    auto popup = make_shared<ui::Popup>(box);
-    ui::push_layout(move(popup));
-    ui::set_focused_widget(prompt_ui.get());
 #ifdef USE_TILE_WEB
-    // activate seed selection popup
     tiles.json_open_object();
     tiles.json_write_string("body", body_text);
     tiles.json_write_string("title", title_text);
     tiles.json_write_string("footer", footer_text);
-    tiles.push_ui_layout("seed-selection", 1);
-    // activate input box. TODO: have this happen automatically on the js side
-    // when the popup is in place?
-    tiles.json_open_object();
-    tiles.json_write_string("msg", "init_input");
-    tiles.json_write_string("type", "seed-selection");
-    tiles.json_write_string("prefill", string(buf));
-    tiles.json_write_string("prompt", prompt_text);
-    tiles.json_write_int("maxlen", sizeof(buf) - 1);
-    tiles.json_write_bool("select_prefill", true);
-    tiles.json_close_object();
-    tiles.finish_message();
+    tiles.json_write_bool("show_pregen_toggle", show_pregen_toggle);
+    tiles.push_ui_layout("seed-selection", 0);
 #endif
-    while (!done && !crawl_state.seen_hups)
-    {
-        // TODO: rewrite with widgets
-        formatted_string prompt;
-        prompt.textcolour(CYAN);
-        prompt.cprintf(title_text + "\n\n");
-        prompt.textcolour(LIGHTGREY);
-        prompt.cprintf(body_text + "\n");
 
-        prompt.cprintf(prompt_text);
-        string seed_text = make_stringf("%-20s", buf);
-        prompt.cprintf("\n%s\n\n", seed_text.c_str());
-
-        prompt.cprintf(footer_text + "\n\n");
-        prompt_ui->set_text(prompt);
-        // yes this appalling, some day we will have real buttons and text
-        // input. The seed highlight doesn't do much on console, but makes
-        // tiles look a lot better. N.b. the newline before the seed above
-        // is really so that an empty seed string won't get multiple highlights.
-        // TODO: not implemented on the webtiles side.
-        prompt_ui->set_highlight_pattern(seed_text, false);
-        if (show_pregen_toggle)
-        {
-            if (choice.pregenerate)
-                pregen_choice->set_highlight_pattern("Yes", false);
-            else
-                pregen_choice->set_highlight_pattern("No", false);
-        }
-        ui::pump_events();
-    }
-    ui::pop_layout();
+    ui::run_layout(move(popup), done);
 #ifdef USE_TILE_WEB
-    // decomission input box, if it's still around
-    tiles.json_open_object();
-    tiles.json_write_string("msg", "close_input");
-    tiles.json_close_object();
-    tiles.finish_message();
-
     tiles.pop_ui_layout();
 #endif
-    string result = reader.get_text();
+    string result = seed_input->get_text();
     uint64_t tmp_seed = 0;
     // TODO: if the user types in a number that exceeds the max value, sscanf
     // will give back the max value. Probably better to print an error?
@@ -1230,7 +1183,7 @@ static void _choose_seed(newgame_def& ng, newgame_def& choice,
         game_ended(game_exit::abort);
 
     Options.seed = choice.seed = tmp_seed;
-    Options.pregen_dungeon = choice.pregenerate;
+    Options.pregen_dungeon = choice.pregenerate = pregen_check->checked();
 }
 
 // Read a choice of game into ng.
@@ -1430,8 +1383,8 @@ public:
     UINewGameMenu(int _choice_type, newgame_def& _ng, newgame_def& _ng_choice, const newgame_def& _defaults) : m_choice_type(_choice_type), m_ng(_ng), m_ng_choice(_ng_choice), m_defaults(_defaults)
     {
         m_vbox = make_shared<Box>(Box::VERT);
-        m_vbox->_set_parent(this);
-        m_vbox->align_cross = Widget::Align::STRETCH;
+        add_internal_child(m_vbox);
+        m_vbox->set_cross_alignment(Widget::Align::STRETCH);
 
         welcome.textcolour(BROWN);
         welcome.cprintf("%s", _welcome(m_ng).c_str());
@@ -1476,21 +1429,34 @@ public:
         m_main_items->linked_menus[2] = m_sub_items;
         m_sub_items->linked_menus[0] = m_main_items;
 
-        m_main_items->on_button_activated = m_sub_items->on_button_activated =
-            [this](int id) { this->menu_item_activated(id); };
+        m_vbox->on_activate_event([this](const ActivateEvent& event) {
+            const auto button = static_pointer_cast<MenuButton>(event.target());
+            this->menu_item_activated(button->id);
+            return true;
+        });
 
-        for (auto &w : m_main_items->get_buttons())
-        {
-            w->on(Widget::slots.event, [w, this](wm_event ev) {
-                return this->button_event_hook(ev, w);
-            });
-        }
-        for (auto &w : m_sub_items->get_buttons())
-        {
-            w->on(Widget::slots.event, [w, this](wm_event ev) {
-                return this->button_event_hook(ev, w);
-            });
-        }
+        m_vbox->on_hotkey_event([this](const KeyEvent& event) {
+            switch (event.key())
+            {
+            case 'X':
+            case CONTROL('Q'):
+#ifdef USE_TILE_WEB
+                tiles.send_exit_reason("cancel");
+#endif
+                return done = end_game = true;
+            CASE_ESCAPE
+            case CK_MOUSE_CMD:
+                return done = cancel = true;
+            case CK_BKSP:
+                if (m_choice_type == C_JOB)
+                    m_ng_choice.job = JOB_UNKNOWN;
+                else
+                    m_ng_choice.species = SP_UNKNOWN;
+                return done = true;
+            default:
+                return false;
+            }
+        });
     };
 
     virtual shared_ptr<Widget> get_child_at_offset(int, int) override {
@@ -1500,7 +1466,6 @@ public:
     virtual void _render() override;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
-    virtual bool on_event(const wm_event& event) override;
 
 #ifdef USE_TILE_WEB
     void serialize();
@@ -1530,8 +1495,8 @@ protected:
 
 #ifdef USE_TILE
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_cross = Widget::Align::CENTER;
-        hbox->align_main = Widget::Align::STRETCH;
+        hbox->set_cross_alignment(Widget::Align::CENTER);
+        hbox->set_main_alignment(Widget::Align::STRETCH);
         auto tile = make_shared<Image>();
         tile->set_tile(item_tile);
         tile->set_margin_for_sdl(0, 6, 0, 0);
@@ -1673,13 +1638,6 @@ protected:
     }
 
 private:
-    bool button_event_hook(const wm_event& ev, MenuButton* /*btn*/)
-    {
-        if (ev.type == WME_KEYDOWN)
-            return on_event(ev);
-        return false;
-    }
-
     formatted_string welcome;
     int m_choice_type;
     newgame_def& m_ng;
@@ -1707,42 +1665,6 @@ void UINewGameMenu::_allocate_region()
 {
     m_vbox->allocate_region(m_region);
 }
-
-bool UINewGameMenu::on_event(const wm_event& ev)
-{
-    if (ev.type != WME_KEYDOWN)
-        return false;
-    int keyn = ev.key.keysym.sym;
-
-    // First process all the menu entries available
-    if (keyn != CK_ENTER)
-    {
-        // Process all the other keys that are not assigned to the menu
-        switch (keyn)
-        {
-        case 'X':
-        case CONTROL('Q'):
-#ifdef USE_TILE_WEB
-            tiles.send_exit_reason("cancel");
-#endif
-            return done = end_game = true;
-        CASE_ESCAPE
-        case CK_MOUSE_CMD:
-            return done = cancel = true;
-        case CK_BKSP:
-            if (m_choice_type == C_JOB)
-                m_ng_choice.job = JOB_UNKNOWN;
-            else
-                m_ng_choice.species = SP_UNKNOWN;
-            return done = true;
-        default:
-            break;
-        }
-    }
-
-    return false;
-}
-
 
 #ifdef USE_TILE_WEB
 void UINewGameMenu::serialize()
@@ -1941,11 +1863,7 @@ static void _prompt_choice(int choice_type, newgame_def& ng, newgame_def& ng_cho
     tiles.push_ui_layout("newgame-choice", 1);
 #endif
 
-    ui::push_layout(move(popup));
-    ui::set_focused_widget(newgame_ui.get());
-    while (!newgame_ui->done && !crawl_state.seen_hups)
-        ui::pump_events();
-    ui::pop_layout();
+    ui::run_layout(move(popup), newgame_ui->done);
 
 #ifdef USE_TILE_WEB
     tiles.pop_ui_layout();
@@ -2057,7 +1975,7 @@ static void _construct_weapon_menu(const newgame_def& ng,
         const auto& choice = choices[i];
 
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_cross = Widget::Align::CENTER;
+        hbox->set_cross_alignment(Widget::Align::CENTER);
         hbox->set_margin_for_sdl(2, 10, 2, 2);
 
 #ifdef USE_TILE
@@ -2073,14 +1991,8 @@ static void _construct_weapon_menu(const newgame_def& ng,
         }
         if (choice.skill == SK_UNARMED_COMBAT)
         {
-            tile_stack->min_size() =
-#ifdef USE_TILE_WEB
-                            // these dimensions are apparently unused for
-                            // webtiles, we do this so they're not interpreted
-                            // as characters for webtiles console.
-                            0;
-#else
-                            TILE_Y;
+#ifndef USE_TILE_WEB
+            tile_stack->min_size() = Size{TILE_Y};
 #endif
         }
         else
@@ -2108,7 +2020,7 @@ static void _construct_weapon_menu(const newgame_def& ng,
 
         label->set_text(formatted_string(text, fg));
 
-        hbox->align_main = Widget::Align::STRETCH;
+        hbox->set_main_alignment(Widget::Align::STRETCH);
         string apt_text = make_stringf("(%+d apt)",
                 species_apt(choice.skill, ng.species));
         auto suffix = make_shared<Text>(formatted_string(apt_text, fg));
@@ -2175,12 +2087,12 @@ static bool _prompt_weapon(const newgame_def& ng, newgame_def& ng_choice,
 #endif
     auto title = make_shared<Text>(formatted_string(_welcome(ng), BROWN));
     title_hbox->add_child(title);
-    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_cross_alignment(Widget::CENTER);
     title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     title_hbox->set_margin_for_crt(0, 0, 1, 0);
 
     auto vbox = make_shared<Box>(Box::VERT);
-    vbox->align_cross = Widget::Align::STRETCH;
+    vbox->set_cross_alignment(Widget::Align::STRETCH);
     vbox->add_child(title_hbox);
     auto prompt = make_shared<Text>(formatted_string("You have a choice of weapons.", CYAN));
     vbox->add_child(prompt);
@@ -2202,28 +2114,26 @@ static bool _prompt_weapon(const newgame_def& ng, newgame_def& ng_choice,
 
     bool done = false, ret = false;
 
-    auto menu_item_activated = [&](int id) {
+    vbox->on_activate_event([&](const ActivateEvent& event) {
+        const auto button = static_pointer_cast<MenuButton>(event.target());
+        const auto id = button->id;
         switch (id)
         {
             case M_ABORT:
                 ret = false;
-                done = true;
-                return;
+                return done = true;
             case M_APTITUDES:
                 show_help('%', _highlight_pattern(ng));
-                return;
+                return true;
             case M_HELP:
                 show_help('?');
-                return;
+                return true;
             case M_DEFAULT_CHOICE:
                 if (defweapon != WPN_UNKNOWN)
-                {
                     ng_choice.weapon = defweapon;
-                    break;
-                }
                 // No default weapon defined.
                 // This case should never happen in those cases but just in case
-                return;
+                return true;
             case M_VIABLE:
                 ng_choice.weapon = WPN_VIABLE;
                 break;
@@ -2234,18 +2144,12 @@ static bool _prompt_weapon(const newgame_def& ng, newgame_def& ng_choice,
                 ng_choice.weapon = static_cast<weapon_type> (id);
                 break;
         }
-        ret = done = true;
-    };
-    main_items->on_button_activated = menu_item_activated;
-    sub_items->on_button_activated = menu_item_activated;
+        return ret = done = true;
+    });
 
     auto popup = make_shared<ui::Popup>(vbox);
-    popup->add_event_filter([&](wm_event ev)  {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int key = ev.key.keysym.sym;
-
-        switch (key)
+    popup->on_hotkey_event([&](const KeyEvent& ev) {
+        switch (ev.key())
         {
             case 'X':
             case CONTROL('Q'):
@@ -2488,7 +2392,7 @@ static void _construct_gamemode_map_menu(const mapref_vector& maps,
 
 #ifdef USE_TILE
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_cross = Widget::Align::CENTER;
+        hbox->set_cross_alignment(Widget::Align::CENTER);
         auto tile = make_shared<Image>();
         tile->set_tile(tile_for_map_name(map_name));
         tile->set_margin_for_sdl(0, 6, 0, 0);
@@ -2582,7 +2486,7 @@ static void _prompt_gamemode_map(newgame_def& ng, newgame_def& ng_choice,
             ng_choice.type == GAME_TYPE_TUTORIAL ? "lessons" : "maps");
 
     auto vbox = make_shared<Box>(Box::VERT);
-    vbox->align_cross = Widget::Align::STRETCH;
+    vbox->set_cross_alignment(Widget::Align::STRETCH);
     vbox->add_child(make_shared<Text>(welcome));
 
     auto main_items = make_shared<OuterMenu>(true, 1, maps.size());
@@ -2603,7 +2507,9 @@ static void _prompt_gamemode_map(newgame_def& ng, newgame_def& ng_choice,
 
     bool done = false, cancel = false;
 
-    auto menu_item_activated = [&](int id) {
+    vbox->on_activate_event([&](const ActivateEvent& event) {
+        const auto button = static_pointer_cast<MenuButton>(event.target());
+        const auto id = button->id;
         switch (id)
         {
             case M_ABORT:
@@ -2611,10 +2517,11 @@ static void _prompt_gamemode_map(newgame_def& ng, newgame_def& ng_choice,
                 break;
             case M_APTITUDES:
                 show_help('%', _highlight_pattern(ng));
-                return;
+                return true;
             case M_HELP:
-                show_help('?');
-                return;
+                ASSERT(ng_choice.type == GAME_TYPE_SPRINT);
+                show_help('6');
+                return true;
             case M_DEFAULT_CHOICE:
                 _set_default_choice(ng, ng_choice, defaults);
                 break;
@@ -2627,18 +2534,12 @@ static void _prompt_gamemode_map(newgame_def& ng, newgame_def& ng_choice,
                 ng_choice.map = maps.at(id)->name;
                 break;
         }
-        done = true;
-    };
-    main_items->on_button_activated = menu_item_activated;
-    sub_items->on_button_activated = menu_item_activated;
+        return done = true;
+    });
 
     auto popup = make_shared<ui::Popup>(vbox);
-    popup->add_event_filter([&](wm_event ev)  {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int keyn = ev.key.keysym.sym;
-
-        switch (keyn)
+    popup->on_hotkey_event([&](const KeyEvent& ev) {
+        switch (ev.key())
         {
             case 'X':
             case CONTROL('Q'):

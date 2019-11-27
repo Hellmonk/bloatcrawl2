@@ -387,7 +387,6 @@ public:
     virtual void _render() override;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
-    virtual bool on_event(const wm_event& event) override;
 
     void on_show();
 
@@ -410,8 +409,8 @@ static int nhsr;
 UIHiscoresMenu::UIHiscoresMenu()
 {
     m_root = make_shared<Box>(Widget::VERT);
-    m_root->_set_parent(this);
-    m_root->align_cross = Widget::STRETCH;
+    add_internal_child(m_root);
+    m_root->set_cross_alignment(Widget::STRETCH);
 
     auto title_hbox = make_shared<Box>(Widget::HORZ);
     title_hbox->set_margin_for_sdl(0, 0, 20, 0);
@@ -428,8 +427,8 @@ UIHiscoresMenu::UIHiscoresMenu()
     title->set_margin_for_sdl(0, 0, 0, 16);
     title_hbox->add_child(move(title));
 
-    title_hbox->align_main = Widget::CENTER;
-    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_main_alignment(Widget::CENTER);
+    title_hbox->set_cross_alignment(Widget::CENTER);
 
     m_description = make_shared<Text>(string(9, '\n'));
 
@@ -449,6 +448,10 @@ UIHiscoresMenu::UIHiscoresMenu()
         m_root->add_child(make_shared<Text>(placeholder));
         initial_focus = this;
     }
+
+    on_hotkey_event([this](const KeyEvent& ev) {
+        return done = (key_is_escape(ev.key()) || ev.key() == CK_MOUSE_CMD);
+    });
 }
 
 void UIHiscoresMenu::_construct_hiscore_table()
@@ -481,19 +484,14 @@ void UIHiscoresMenu::_add_hiscore_row(scorefile_entry& se, int id)
     auto btn = make_shared<MenuButton>();
     tmp->set_margin_for_sdl(2);
     btn->set_child(move(tmp));
-    btn->on(Widget::slots.event, [this, id, se](wm_event ev) {
-        if (ev.type == WME_MOUSEBUTTONUP && ev.mouse_event.button == MouseEvent::LEFT
-                || ev.type == WME_KEYDOWN && ev.key.keysym.sym == CK_ENTER)
-        {
-            _show_morgue(*hs_list[id]);
-            return true;
-        }
-        if (ev.type == WME_FOCUSIN)
-        {
-            formatted_string desc(hiscores_format_single_long(se, true));
-            desc.cprintf(string(max(0, 9-count_linebreaks(desc)), '\n'));
-            m_description->set_text(move(desc));
-        }
+    btn->on_activate_event([id](const ActivateEvent&) {
+        _show_morgue(*hs_list[id]);
+        return true;
+    });
+    btn->on_focusin_event([this, se](const FocusEvent&) {
+        formatted_string desc(hiscores_format_single_long(se, true));
+        desc.cprintf(string(max(0, 9-count_linebreaks(desc)), '\n'));
+        m_description->set_text(move(desc));
         return false;
     });
 
@@ -525,16 +523,6 @@ void UIHiscoresMenu::_allocate_region()
         on_show();
     }
     m_root->allocate_region(m_region);
-}
-
-bool UIHiscoresMenu::on_event(const wm_event& ev)
-{
-    if (ev.type != WME_KEYDOWN)
-        return false;
-    int key = ev.key.keysym.sym;
-    if (key_is_escape(key) || key == CK_MOUSE_CMD)
-        return done = true;
-    return true;
 }
 
 void show_hiscore_table()

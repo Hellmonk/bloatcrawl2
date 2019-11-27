@@ -1090,7 +1090,7 @@ static void build_partial_god_ui(god_type which_god, shared_ptr<ui::Popup>& popu
     topline += formatted_string(uppercase_first(god_name(which_god, true)));
 
     auto vbox = make_shared<Box>(Widget::VERT);
-    vbox->align_cross = Widget::STRETCH;
+    vbox->set_cross_alignment(Widget::STRETCH);
     auto title_hbox = make_shared<Box>(Widget::HORZ);
 
 #ifdef USE_TILE
@@ -1104,8 +1104,8 @@ static void build_partial_god_ui(god_type which_god, shared_ptr<ui::Popup>& popu
     title->set_margin_for_sdl(0, 0, 0, 16);
     title_hbox->add_child(move(title));
 
-    title_hbox->align_main = Widget::CENTER;
-    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_main_alignment(Widget::CENTER);
+    title_hbox->set_cross_alignment(Widget::CENTER);
     vbox->add_child(move(title_hbox));
 
     desc_sw = make_shared<Switcher>();
@@ -1224,10 +1224,8 @@ void describe_god(god_type which_god)
     build_partial_god_ui(which_god, popup, desc_sw, more_sw);
 
     bool done = false;
-    popup->on(Widget::slots.event, [&](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int key = ev.key.keysym.sym;
+    popup->on_keydown_event([&](const KeyEvent& ev) {
+        const auto key = ev.key();
         if (key == '!' || key == CK_MOUSE_CMD || key == '^')
         {
             int n = (desc_sw->current() + 1) % desc_sw->num_children();
@@ -1322,10 +1320,8 @@ bool describe_god_with_join(god_type which_god)
     bool done = false, join = false;
 
     // The join-god UI state machine transition function
-    popup->on(Widget::slots.event, [&](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int keyin = ev.key.keysym.sym;
+    popup->on_keydown_event([&](const KeyEvent& ev) {
+        const auto keyin = ev.key();
 
         // Always handle escape and pane-switching keys the same way
         if (keyin == CK_ESCAPE)

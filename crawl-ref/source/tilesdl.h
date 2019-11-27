@@ -162,14 +162,12 @@ protected:
     void reconfigure_fonts();
     FontWrapper* load_font(const char *font_file, int font_size,
                   bool default_on_fail);
-    int handle_mouse(MouseEvent &event);
+    int handle_mouse(wm_mouse_event &event);
 
     bool m_map_mode_enabled;
 
     // screen pixel dimensions
     coord_def m_windowsz;
-    // screen pixels per view cell
-    coord_def m_viewsc;
 
     bool m_fullscreen;
     bool m_need_redraw;

@@ -1155,7 +1155,7 @@ int main(int argc, char* argv[])
         mons_check_flag(mon.is_fighter(), monsterflags, "fighter");
         if (mon.is_archer())
         {
-            if (me->bitfields & M_DONT_MELEE)
+            if (me->bitfields & M_PREFER_RANGED)
                 mons_flag(monsterflags, "master archer");
             else
                 mons_flag(monsterflags, "archer");
@@ -1175,7 +1175,6 @@ int main(int argc, char* argv[])
         mons_check_flag(bool(me->bitfields & M_FLIES), monsterflags, "fly");
         mons_check_flag(bool(me->bitfields & M_FAST_REGEN), monsterflags,
                         "regen");
-        mons_check_flag(mon.can_cling_to_walls(), monsterflags, "cling");
         mons_check_flag(bool(me->bitfields & M_WEB_SENSE), monsterflags,
                         "web sense");
         mons_check_flag(mon.is_unbreathing(), monsterflags, "unbreathing");

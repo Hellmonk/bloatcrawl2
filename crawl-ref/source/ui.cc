@@ -14,11 +14,13 @@
 #include "macro.h"
 #include "state.h"
 #include "tileweb.h"
+#include "unicode.h"
+#include "libutil.h"
+#include "windowmanager.h"
 
 #ifdef USE_TILE_LOCAL
 # include "glwrapper.h"
 # include "tilebuf.h"
-# include "tilepick.h"
 # include "tilepick-p.h"
 # include "tile-player-flag-cut.h"
 #else
@@ -26,6 +28,10 @@
 # include "output.h"
 # include "stringutil.h"
 # include "view.h"
+#endif
+
+#ifdef USE_TILE_WEB
+# include <unordered_map>
 #endif
 
 namespace ui {
@@ -48,19 +54,22 @@ static Region aabb_union(Region a, Region b)
 static void clear_text_region(Region region, COLOURS bg);
 #endif
 
-// must be before ui_root declaration for correct destruction order
-vector<Widget*> prev_hover_path;
-
 static struct UIRoot
 {
 public:
     void push_child(shared_ptr<Widget> child, KeymapContext km);
     void pop_child();
-    shared_ptr<Widget> top_child() {
-        size_t sz = m_root.num_children();
+
+    shared_ptr<Widget> top_child()
+    {
+        const auto sz = m_root.num_children();
         return sz > 0 ? m_root.get_child(sz-1) : nullptr;
+    }
+
+    size_t num_children() const
+    {
+        return m_root.num_children();
     };
-    size_t num_children() const { return m_root.num_children(); };
 
     bool widget_is_in_layout(const Widget* w)
     {
@@ -74,9 +83,16 @@ public:
     void layout();
     void render();
 
-    bool on_event(const wm_event& event);
-    void queue_layout() { m_needs_layout = true; };
-    void expose_region(Region r) {
+    bool on_event(wm_event& event);
+    bool deliver_event(Event& event);
+
+    void queue_layout()
+    {
+        m_needs_layout = true;
+    }
+
+    void expose_region(Region r)
+    {
         if (r.empty())
             return;
         if (m_dirty_region.empty())
@@ -84,18 +100,56 @@ public:
         else
             m_dirty_region = aabb_union(m_dirty_region, r);
         needs_paint = true;
-    };
-    void send_mouse_enter_leave_events(int mx, int my);
+    }
 
     bool needs_paint;
+
 #ifdef DEBUG
     bool debug_draw = false;
+    bool debug_on_event(const wm_event& event);
+    void debug_render();
 #endif
-    vector<KeymapContext> keymap_stack;
+
+    struct LayoutInfo
+    {
+        KeymapContext keymap = KMC_NONE;
+        Widget* current_focus = nullptr;
+        Widget* default_focus = nullptr;
+        int generation_id = 0;
+    };
+
+    LayoutInfo state;  // current keymap and focus info
+    int next_generation_id = 1;
+
     vector<int> cutoff_stack;
-    vector<Widget*> focus_stack;
+    vector<Widget*> default_focus_stack;
+    vector<Widget*> focus_order;
+
+    void update_focus_order();
+    void focus_next();
+    void focus_prev();
 
     struct RestartAllocation {};
+
+#ifdef USE_TILE_LOCAL
+    vector<Widget*> hover_path;
+
+    void update_hover_path();
+    void update_hover_path_for_widget(Widget* widget);
+    void send_mouse_enter_leave_events(
+            const vector<Widget*>& old_hover_path,
+            const vector<Widget*>& new_hover_path);
+#endif
+
+#ifdef USE_TILE_WEB
+    void update_synced_widgets();
+    unordered_map<string, Widget*> synced_widgets;
+    bool receiving_ui_state = false;
+    void sync_state();
+    void recv_ui_state_change(const JsonNode *state);
+#endif
+
+    coord_def cursor_pos;
 
 protected:
     int m_w, m_h;
@@ -104,21 +158,56 @@ protected:
     Stack m_root;
     bool m_needs_layout{false};
     bool m_changed_layout_since_click = false;
+    vector<LayoutInfo> saved_layout_info;
 } ui_root;
 
 static stack<Region> scissor_stack;
 
 struct Widget::slots Widget::slots = {};
 
+Event::Event(Event::Type type) : m_type(type)
+{
+}
+
+KeyEvent::KeyEvent(Event::Type type, const wm_keyboard_event& wm_ev) : Event(type)
+{
+    m_key = wm_ev.keysym.sym;
+}
+
+#ifdef USE_TILE_LOCAL
+MouseEvent::MouseEvent(Event::Type type, const wm_mouse_event& wm_ev) : Event(type)
+{
+    m_button = static_cast<MouseEvent::Button>(wm_ev.button);
+    // XXX: is it possible that the cursor has moved since the SDL event fired?
+    wm->get_mouse_state(&m_x, &m_y);
+    m_wheel_dx = type == MouseWheel ? wm_ev.px : 0;
+    m_wheel_dy = type == MouseWheel ? wm_ev.py : 0;
+}
+#endif
+
+FocusEvent::FocusEvent(Event::Type type) : Event(type)
+{
+}
+
+ActivateEvent::ActivateEvent() : Event(Event::Type::Activate)
+{
+}
+
 Widget::~Widget()
 {
     Widget::slots.event.remove_by_target(this);
+    Widget::slots.hotkey.remove_by_target(this);
     if (m_parent && get_focused_widget() == this)
         set_focused_widget(nullptr);
     _set_parent(nullptr);
+    erase_val(ui_root.focus_order, this);
+#ifdef USE_TILE_WEB
+    if (!m_sync_id.empty())
+        ui_root.synced_widgets.erase(m_sync_id);
+#endif
 }
 
-bool Widget::on_event(const wm_event& event)
+bool Widget::on_event(const Event& event)
 {
     return Widget::slots.event.emit(this, event);
 }
@@ -248,16 +337,10 @@ bool Widget::is_ancestor_of(const shared_ptr<Widget>& other)
 
 void Widget::_set_parent(Widget* p)
 {
-    if (!p)
-    {
-        for (size_t i = 0; i < prev_hover_path.size(); i++)
-            if (prev_hover_path[i] == this)
-            {
-                prev_hover_path.resize(i);
-                break;
-            }
-    }
     m_parent = p;
+#ifdef USE_TILE_LOCAL
+    ui_root.update_hover_path_for_widget(this);
+#endif
 }
 
 /**
@@ -302,6 +385,45 @@ void Widget::set_visible(bool visible)
     m_visible = visible;
     _invalidate_sizereq();
 }
+
+void Widget::add_internal_child(shared_ptr<Widget> child)
+{
+    child->_set_parent(this);
+    m_internal_children.emplace_back(move(child));
+}
+
+void Widget::set_sync_id(string id)
+{
+    ASSERT(!_get_parent()); // synced widgets are collected on layout push/pop
+    m_sync_id = id;
+}
+
+#ifdef USE_TILE_WEB
+void Widget::sync_save_state()
+{
+}
+
+void Widget::sync_load_state(const JsonNode *)
+{
+}
+
+void Widget::sync_state_changed()
+{
+    if (m_sync_id.empty())
+        return;
+    const auto& top = ui_root.top_child();
+    if (!top || !top->is_ancestor_of(get_shared()))
+        return;
+    tiles.json_open_object();
+    sync_save_state();
+    tiles.json_write_string("msg", "ui-state-sync");
+    tiles.json_write_string("widget_id", m_sync_id);
+    tiles.json_write_bool("from_webtiles", ui_root.receiving_ui_state);
+    tiles.json_write_int("generation_id", ui_root.state.generation_id);
+    tiles.json_close_object();
+    tiles.finish_message();
+}
+#endif
 
 void Box::add_child(shared_ptr<Widget> child)
 {
@@ -1161,7 +1283,7 @@ void Grid::_render()
 void Grid::compute_track_sizereqs(Direction dim)
 {
     auto& track = dim ? m_row_info : m_col_info;
-#define DIV_ROUND_UP(n,d) (((n)+(d)-1)/(d))
+#define DIV_ROUND_UP(n, d) (((n)+(d)-1)/(d))
 
     for (auto& t : track)
         t.sr = {0, 0};
@@ -1348,7 +1470,7 @@ void Scroller::_allocate_region()
     int shade_height = 12, ds = 4;
     int shade_top = min({m_scroll/ds, shade_height, m_region.height/2});
     int shade_bot = min({(sr.nat-m_region.height-m_scroll)/ds, shade_height, m_region.height/2});
-    VColour col_a(4,2,4,0), col_b(4,2,4,200);
+    const VColour col_a(4, 2, 4, 0), col_b(4, 2, 4, 200);
 
     m_shade_buf.clear();
     m_scrollbar_buf.clear();
@@ -1371,7 +1493,7 @@ void Scroller::_allocate_region()
         const float scroll_percent = m_scroll/(float)(ch_reg.height-m_region.height);
         const int y = m_region.y + (m_region.height-h)*scroll_percent;
         GLWPrim bg_rect(x+10, m_region.y, x+12, m_region.y+m_region.height);
-        bg_rect.set_col(VColour(41,41,41));
+        bg_rect.set_col(VColour(41, 41, 41));
         m_scrollbar_buf.add_primitive(bg_rect);
         GLWPrim fg_rect(x+10, y, x+12, y+h);
         fg_rect.set_col(VColour(125, 98, 60));
@@ -1380,7 +1502,7 @@ void Scroller::_allocate_region()
 #endif
 }
 
-bool Scroller::on_event(const wm_event& event)
+bool Scroller::on_event(const Event& event)
 {
     if (Bin::on_event(event))
         return true;
@@ -1390,9 +1512,10 @@ bool Scroller::on_event(const wm_event& event)
     const int line_delta = 1;
 #endif
     int delta = 0;
-    if (event.type == WME_KEYDOWN)
+    if (event.type() == Event::Type::KeyDown)
     {
-        switch (event.key.keysym.sym)
+        const auto key = static_cast<const KeyEvent&>(event).key();
+        switch (key)
         {
             case ' ': case '+': case CK_PGDN: case '>': case '\'':
                 delta = m_region.height;
@@ -1420,9 +1543,13 @@ bool Scroller::on_event(const wm_event& event)
                 return true;
         }
     }
-    else if (event.type == WME_MOUSEWHEEL)
-        delta = -1 * event.mouse_event.py * line_delta;
-    else if (event.type == WME_MOUSEBUTTONDOWN && event.mouse_event.button == MouseEvent::LEFT)
+    else if (event.type() == Event::Type::MouseWheel)
+    {
+        auto mouse_event = static_cast<const MouseEvent&>(event);
+        delta = -1 * mouse_event.wheel_dy() * line_delta;
+    }
+    else if (event.type() == Event::Type::MouseDown
+             && static_cast<const MouseEvent&>(event).button() == MouseEvent::Button::Left)
         delta = line_delta;
     if (delta != 0)
     {
@@ -1549,15 +1676,624 @@ int Popup::base_margin()
     return margin_small + (clipped-screen_small)
             *(margin_large-margin_small)/(screen_large-screen_small);
 }
+#endif
 
-void Dungeon::_render()
+void Checkbox::_render()
+{
+    if (m_child)
+        m_child->render();
+
+    const bool has_focus = ui::get_focused_widget() == this;
+
+#ifdef USE_TILE_LOCAL
+    tileidx_t tile = TILEG_CHECKBOX;
+    if (m_checked)
+        tile += 1;
+    if (m_hovered || has_focus)
+        tile += 2;
+
+    const int x = m_region.x, y = m_region.y;
+    TileBuffer tb;
+    tb.set_tex(&tiles.get_image_manager()->m_textures[TEX_GUI]);
+    tb.add(tile, x, y, 0, 0, false, check_h, 1.0, 1.0);
+    tb.draw();
+#else
+    cgotoxy(m_region.x+1, m_region.y+1, GOTO_CRT);
+    textbackground(has_focus ? LIGHTGREY : BLACK);
+    cprintf("[ ]");
+    if (m_checked)
+    {
+        cgotoxy(m_region.x+2, m_region.y+1, GOTO_CRT);
+        textcolour(has_focus ? BLACK : WHITE);
+        cprintf("X");
+    }
+#endif
+}
+
+const int Checkbox::check_w;
+const int Checkbox::check_h;
+
+SizeReq Checkbox::_get_preferred_size(Direction dim, int prosp_width)
+{
+    SizeReq child_sr = { 0, 0 };
+    if (m_child)
+        child_sr = m_child->get_preferred_size(dim, prosp_width);
+
+    if (dim == HORZ)
+        return { child_sr.min + check_w, child_sr.nat + check_w };
+    else
+        return { max(child_sr.min, check_h), max(child_sr.nat, check_h) };
+}
+
+void Checkbox::_allocate_region()
+{
+    if (m_child)
+    {
+        auto child_region = m_region;
+        child_region.x += check_w;
+        child_region.width -= check_w;
+        auto child_sr = m_child->get_preferred_size(VERT, child_region.width);
+        child_region.height = min(max(child_sr.min, m_region.height), child_sr.nat);
+        child_region.y += (m_region.height - child_region.height)/2;
+        m_child->allocate_region(child_region);
+    }
+}
+
+bool Checkbox::on_event(const Event& event)
 {
 #ifdef USE_TILE_LOCAL
+    if (event.type() == Event::Type::MouseEnter || event.type() == Event::Type::MouseLeave)
+    {
+        bool new_hovered = event.type() == Event::Type::MouseEnter;
+        if (new_hovered != m_hovered)
+            _expose();
+        m_hovered = new_hovered;
+    }
+    if (event.type() == Event::Type::MouseDown)
+    {
+        set_checked(!checked());
+        set_focused_widget(this);
+        _expose();
+        return true;
+    }
+#endif
+    if (event.type() == Event::Type::FocusIn || event.type() == Event::Type::FocusOut)
+    {
+        _expose();
+        return true;
+    }
+    if (event.type() == Event::Type::KeyDown)
+    {
+        const auto key = static_cast<const KeyEvent&>(event).key();
+        if (key == CK_ENTER || key == ' ')
+        {
+            set_checked(!checked());
+            _expose();
+            return true;
+        }
+    }
+    return false;
+}
+
+#ifdef USE_TILE_WEB
+void Checkbox::sync_save_state()
+{
+    tiles.json_write_bool("checked", m_checked);
+}
+
+void Checkbox::sync_load_state(const JsonNode *json)
+{
+    if (auto checked = json_find_member(json, "checked"))
+        if (checked->tag == JSON_BOOL)
+            set_checked(checked->bool_);
+}
+#endif
+
+TextEntry::TextEntry() : m_line_reader(m_buffer, sizeof(m_buffer))
+{
+#ifdef USE_TILE_LOCAL
+    set_font(tiles.get_crt_font());
+#endif
+}
+
+void TextEntry::_render()
+{
+    const bool has_focus = ui::get_focused_widget() == this;
+
+#ifdef USE_TILE_LOCAL
+    const int line_height = m_font->char_height();
+    const int text_y = m_region.y + (m_region.height - line_height)/2;
+
+    const auto bg = has_focus ? VColour(30, 30, 30, 255)
+                              : VColour(29, 27, 21, 255);
+
+    m_buf.clear();
+    m_buf.add(m_region.x, m_region.y, m_region.ex(), m_region.ey(), bg);
+    m_buf.draw();
+
+    const auto border_bg = has_focus ? VColour(184, 141, 25)
+                                     : VColour(125, 98, 60);
+
+    LineBuffer bbuf;
+    bbuf.add_square(m_region.x+1, m_region.y+1,
+                    m_region.ex(), m_region.ey(), border_bg);
+    bbuf.draw();
+
+    const int content_width = m_font->string_width(m_text.c_str());
+    const int cursor_x = m_font->string_width(
+            m_text.substr(0, m_cursor).c_str());
+    constexpr int x_pad = 3;
+#else
+    const int content_width = strwidth(m_text);
+    const int cursor_x = strwidth(m_text.substr(0, m_cursor));
+    constexpr int x_pad = 0;
+#endif
+
+    const int viewport_width = m_region.width - 2*x_pad;
+
+    // Scroll to keep the cursor in view
+    if (cursor_x < m_hscroll)
+        m_hscroll = cursor_x;
+    else if (cursor_x >= m_hscroll + viewport_width)
+        m_hscroll = cursor_x - viewport_width + 1;
+
+    // scroll to keep the textbox full of text, if possible
+    m_hscroll = min(m_hscroll, max(0, content_width - viewport_width + 1));
+
+#ifdef USE_TILE_LOCAL
+    // XXX: we need to transform the scissor because the skill menu is rendered
+    // using the CRT, with an appropriate transform that positions it into the
+    // centre of the screen
+    GLW_3VF translate;
+    glmanager->get_transform(&translate, nullptr);
+    const Region scissor_region = {
+        m_region.x - static_cast<int>(translate.x),
+        m_region.y - static_cast<int>(translate.y),
+        m_region.width, m_region.height,
+    };
+    push_scissor(scissor_region);
+
+    const int text_x = m_region.x - m_hscroll + x_pad;
+
+    FontBuffer m_font_buf(m_font);
+    m_font_buf.add(formatted_string(m_text), text_x, text_y);
+    m_font_buf.draw();
+
+    pop_scissor();
+
+    if (has_focus)
+    {
+        m_buf.clear();
+        m_buf.add(text_x + cursor_x, text_y,
+                  text_x + cursor_x + 1, text_y + line_height,
+                  VColour(255, 255, 255, 255));
+        m_buf.draw();
+    }
+#else
+    auto prefix_size = chop_string(m_text, m_hscroll, false).size();
+    auto remain = chop_string(m_text.substr(prefix_size), m_region.width, true);
+
+    const auto fg_colour = has_focus ? BLACK : WHITE;
+    const auto bg_colour = has_focus ? LIGHTGREY : DARKGREY;
+
+    draw_colour draw(fg_colour, bg_colour);
+    cgotoxy(m_region.x+1, m_region.y+1, GOTO_CRT);
+    cprintf("%s", remain.c_str());
+
+    if (has_focus)
+    {
+        cgotoxy(m_region.x+cursor_x-m_hscroll+1, m_region.y+1, GOTO_CRT);
+        textcolour(DARKGREY);
+        cprintf(" ");
+        show_cursor_at(m_region.x+cursor_x-m_hscroll+1, m_region.y+1);
+    }
+#endif
+}
+
+SizeReq TextEntry::_get_preferred_size(Direction dim, int /*prosp_width*/)
+{
+    if (!dim)
+        return { 0, 300 };
+    else
+    {
+#ifdef USE_TILE_LOCAL
+        const int line_height = m_font->char_height(false);
+        const int height = line_height + 2*padding_size();
+        return { height, height };
+#else
+        return { 1, 1 };
+#endif
+    }
+}
+
+#ifdef USE_TILE_LOCAL
+int TextEntry::padding_size()
+{
+    const int line_height = m_font->char_height(false);
+    const float pad_amount = 0.2;
+    return (static_cast<int>(line_height*pad_amount) + 1)/2;
+}
+#endif
+
+void TextEntry::_allocate_region()
+{
+}
+
+bool TextEntry::on_event(const Event& event)
+{
+    switch (event.type())
+    {
+    case Event::Type::FocusIn:
+    case Event::Type::FocusOut:
+        set_cursor_enabled(event.type() == Event::Type::FocusIn);
+        _expose();
+        return true;
+    case Event::Type::MouseDown:
+        // TODO: unfocus if the mouse is clicked outside
+        // TODO: move the cursor to the clicked position
+        if (static_cast<const MouseEvent&>(event).button() == MouseEvent::Button::Left)
+            ui::set_focused_widget(this);
+        return true;
+    case Event::Type::KeyDown:
+        {
+            const auto key = static_cast<const KeyEvent&>(event).key();
+            int ret = m_line_reader.process_key_core(key);
+            if (ret == CK_ESCAPE || ret == 0)
+                ui::set_focused_widget(nullptr);
+            m_text = m_line_reader.get_text();
+            m_cursor = m_line_reader.get_cursor_position();
+            _expose();
+            return key != '\t' && key != CK_SHIFT_TAB;
+        }
+    default:
+        return false;
+    }
+}
+
+#ifdef USE_TILE_LOCAL
+void TextEntry::set_font(FontWrapper *font)
+{
+    ASSERT(font);
+    m_font = font;
+    _invalidate_sizereq();
+}
+#endif
+
+TextEntry::LineReader::LineReader(char *buf, size_t sz)
+    : buffer(buf), bufsz(sz), history(nullptr), keyfn(nullptr),
+      mode(EDIT_MODE_INSERT),
+      cur(nullptr), length(0)
+{
+    *buffer = 0;
+    length = 0;
+    cur = buffer;
+
+    if (history)
+        history->go_end();
+}
+
+TextEntry::LineReader::~LineReader()
+{
+}
+
+string TextEntry::LineReader::get_text() const
+{
+    return buffer;
+}
+
+void TextEntry::LineReader::set_text(string text)
+{
+    snprintf(buffer, bufsz, "%s", text.c_str());
+    length = min(text.size(), bufsz - 1);
+    buffer[length] = 0;
+    cur = buffer + length;
+}
+
+void TextEntry::LineReader::set_input_history(input_history *i)
+{
+    history = i;
+}
+
+void TextEntry::LineReader::set_keyproc(keyproc fn)
+{
+    keyfn = fn;
+}
+
+void TextEntry::LineReader::set_edit_mode(edit_mode m)
+{
+    mode = m;
+}
+
+void TextEntry::LineReader::set_prompt(string p)
+{
+    prompt = p;
+}
+
+edit_mode TextEntry::LineReader::get_edit_mode()
+{
+    return mode;
+}
+
+#ifdef USE_TILE_WEB
+void TextEntry::LineReader::set_tag(const string &id)
+{
+    tag = id;
+}
+#endif
+
+int TextEntry::LineReader::process_key_core(int ch)
+{
+    if (keyfn)
+    {
+        // if you intercept esc, don't forget to provide another way to
+        // exit. Processing esc will safely cancel.
+        keyfun_action whattodo = (*keyfn)(ch);
+        if (whattodo == KEYFUN_CLEAR)
+        {
+            buffer[length] = 0;
+            if (history && length)
+                history->new_input(buffer);
+            return 0;
+        }
+        else if (whattodo == KEYFUN_BREAK)
+        {
+            buffer[length] = 0;
+            return ch;
+        }
+        else if (whattodo == KEYFUN_IGNORE)
+            return -1;
+        // else case: KEYFUN_PROCESS
+    }
+
+    return process_key(ch);
+}
+
+void TextEntry::LineReader::backspace()
+{
+    char *np = prev_glyph(cur, buffer);
+    if (!np)
+        return;
+    char32_t ch;
+    utf8towc(&ch, np);
+    buffer[length] = 0;
+    length -= cur - np;
+    char *c = cur;
+    cur = np;
+    while (*c)
+        *np++ = *c++;
+    buffer[length] = 0;
+}
+
+void TextEntry::LineReader::delete_char()
+{
+    // TODO: unify with backspace
+    if (*cur)
+    {
+        const char *np = next_glyph(cur);
+        ASSERT(np);
+        char32_t ch_at_point;
+        utf8towc(&ch_at_point, cur);
+        const size_t del_bytes = np - cur;
+        const size_t follow_bytes = (buffer + length) - np;
+        // Copy the NUL too.
+        memmove(cur, np, follow_bytes + 1);
+        length -= del_bytes;
+    }
+}
+
+bool TextEntry::LineReader::is_wordchar(char32_t c)
+{
+    return iswalnum(c) || c == '_' || c == '-';
+}
+
+void TextEntry::LineReader::kill_to_begin()
+{
+    if (cur == buffer)
+        return;
+
+    const int rest = length - (cur - buffer);
+    memmove(buffer, cur, rest);
+    length = rest;
+    buffer[length] = 0;
+    cur = buffer;
+}
+
+void TextEntry::LineReader::kill_to_end()
+{
+    if (*cur)
+    {
+        length = cur - buffer;
+        *cur = 0;
+    }
+}
+
+void TextEntry::LineReader::killword()
+{
+    if (cur == buffer)
+        return;
+
+    bool foundwc = false;
+    char *word = cur;
+    int ew = 0;
+    while (1)
+    {
+        char *np = prev_glyph(word, buffer);
+        if (!np)
+            break;
+
+        char32_t c;
+        utf8towc(&c, np);
+        if (is_wordchar(c))
+            foundwc = true;
+        else if (foundwc)
+            break;
+
+        word = np;
+        ew += wcwidth(c);
+    }
+    memmove(word, cur, strlen(cur) + 1);
+    length -= cur - word;
+    cur = word;
+}
+
+void TextEntry::LineReader::overwrite_char_at_cursor(int ch)
+{
+    int len = wclen(ch);
+    int w = wcwidth(ch);
+
+    if (w >= 0 && cur - buffer + len < static_cast<int>(bufsz))
+    {
+        bool empty = !*cur;
+
+        wctoutf8(cur, ch);
+        cur += len;
+        if (empty)
+            length += len;
+        buffer[length] = 0;
+    }
+}
+
+void TextEntry::LineReader::insert_char_at_cursor(int ch)
+{
+    if (wcwidth(ch) >= 0 && length + wclen(ch) < static_cast<int>(bufsz))
+    {
+        int len = wclen(ch);
+        if (*cur)
+        {
+            char *c = buffer + length - 1;
+            while (c >= cur)
+            {
+                c[len] = *c;
+                c--;
+            }
+        }
+        wctoutf8(cur, ch);
+        cur += len;
+        length += len;
+        buffer[length] = 0;
+    }
+}
+
+#ifdef USE_TILE_LOCAL
+void TextEntry::LineReader::clipboard_paste()
+{
+    if (wm->has_clipboard())
+        for (char ch : wm->get_clipboard())
+            process_key(ch);
+}
+#endif
+
+int TextEntry::LineReader::process_key(int ch)
+{
+    switch (ch)
+    {
+    CASE_ESCAPE
+        return CK_ESCAPE;
+    case CK_UP:
+    case CONTROL('P'):
+    case CK_DOWN:
+    case CONTROL('N'):
+    {
+        if (!history)
+            break;
+
+        const string *text = (ch == CK_UP || ch == CONTROL('P'))
+                             ? history->prev()
+                             : history->next();
+
+        if (text)
+            set_text(*text);
+        break;
+    }
+    case CK_ENTER:
+        buffer[length] = 0;
+        if (history && length)
+            history->new_input(buffer);
+        return 0;
+
+    case CONTROL('K'):
+        kill_to_end();
+        break;
+
+    case CK_DELETE:
+    case CONTROL('D'):
+        delete_char();
+        break;
+
+    case CK_BKSP:
+        backspace();
+        break;
+
+    case CONTROL('W'):
+        killword();
+        break;
+
+    case CONTROL('U'):
+        kill_to_begin();
+        break;
+
+    case CK_LEFT:
+    case CONTROL('B'):
+        if (char *np = prev_glyph(cur, buffer))
+            cur = np;
+        break;
+    case CK_RIGHT:
+    case CONTROL('F'):
+        if (char *np = next_glyph(cur))
+            cur = np;
+        break;
+    case CK_HOME:
+    case CONTROL('A'):
+        cur = buffer;
+        break;
+    case CK_END:
+    case CONTROL('E'):
+        cur = buffer + length;
+        break;
+    case CONTROL('V'):
+#ifdef USE_TILE_LOCAL
+        clipboard_paste();
+#endif
+        break;
+    case CK_REDRAW:
+        //redraw_screen();
+        return -1;
+    default:
+        if (mode == EDIT_MODE_OVERWRITE)
+            overwrite_char_at_cursor(ch);
+        else // mode == EDIT_MODE_INSERT
+            insert_char_at_cursor(ch);
+
+        break;
+    }
+
+    return -1;
+}
+
+#ifdef USE_TILE_WEB
+void TextEntry::sync_save_state()
+{
+    tiles.json_write_string("text", m_text);
+    tiles.json_write_int("cursor", m_cursor);
+}
+
+void TextEntry::sync_load_state(const JsonNode *json)
+{
+    if (auto text = json_find_member(json, "text"))
+        if (text->tag == JSON_STRING)
+            set_text(text->string_);
+
+    // TODO: sync cursor state
+}
+#endif
+
+#ifdef USE_TILE_LOCAL
+void Dungeon::_render()
+{
     GLW_3VF t = {(float)m_region.x, (float)m_region.y, 0}, s = {32, 32, 1};
     glmanager->set_transform(t, s);
     m_buf.draw();
     glmanager->reset_transform();
-#endif
 }
 
 SizeReq Dungeon::_get_preferred_size(Direction dim, int /*prosp_width*/)
@@ -1678,14 +2414,24 @@ void PlayerDoll::_allocate_region()
 
 void UIRoot::push_child(shared_ptr<Widget> ch, KeymapContext km)
 {
+    Widget* focus;
     if (auto popup = dynamic_cast<Popup*>(ch.get()))
-        focus_stack.push_back(popup->get_child().get());
+        focus = popup->get_child().get();
     else
-        focus_stack.push_back(ch.get());
+        focus = ch.get();
+
+    saved_layout_info.push_back(state);
+    state.keymap = km;
+    state.default_focus = state.current_focus = focus;
+    state.generation_id = next_generation_id++;
+
     m_root.add_child(move(ch));
     m_needs_layout = true;
-    keymap_stack.push_back(km);
     m_changed_layout_since_click = true;
+    update_focus_order();
+#ifdef USE_TILE_WEB
+    update_synced_widgets();
+#endif
 #ifndef USE_TILE_LOCAL
     if (m_root.num_children() == 1)
     {
@@ -1699,9 +2445,13 @@ void UIRoot::pop_child()
 {
     m_root.pop_child();
     m_needs_layout = true;
-    keymap_stack.pop_back();
-    focus_stack.pop_back();
+    state = saved_layout_info.back();
+    saved_layout_info.pop_back();
     m_changed_layout_since_click = true;
+    update_focus_order();
+#ifdef USE_TILE_WEB
+    update_synced_widgets();
+#endif
 #ifndef USE_TILE_LOCAL
     if (m_root.num_children() == 0)
         clrscr();
@@ -1754,9 +2504,7 @@ void UIRoot::layout()
         }
 
 #ifdef USE_TILE_LOCAL
-        int x, y;
-        wm->get_mouse_state(&x, &y);
-        ui_root.send_mouse_enter_leave_events(x, y);
+        update_hover_path();
 #endif
     }
 }
@@ -1767,7 +2515,7 @@ void UIRoot::render()
         return;
 
 #ifdef USE_TILE_LOCAL
-    glmanager->reset_view_for_redraw(0, 0);
+    glmanager->reset_view_for_redraw();
     tiles.render_current_regions();
     glmanager->reset_transform();
 #else
@@ -1785,39 +2533,7 @@ void UIRoot::render()
     for (int i = cutoff; i < static_cast<int>(m_root.num_children()); i++)
         m_root.get_child(i)->render();
 #ifdef DEBUG
-    if (debug_draw)
-    {
-        LineBuffer lb;
-        ShapeBuffer sb;
-        size_t i = 0;
-        for (const auto& w : prev_hover_path)
-        {
-            const auto r = w->get_region();
-            i++;
-            VColour lc;
-            lc = i == prev_hover_path.size() ?
-                VColour(255, 100, 0, 100) : VColour(0, 50 + i*40, 0, 100);
-            lb.add_square(r.x+1, r.y+1, r.ex(), r.ey(), lc);
-        }
-        if (!prev_hover_path.empty())
-        {
-            const auto& hovered_widget = prev_hover_path.back();
-            Region r = hovered_widget->get_region();
-            const Margin m = hovered_widget->get_margin();
-
-            VColour lc = VColour(0, 0, 100, 100);
-            sb.add(r.x, r.y-m.top, r.ex(), r.y, lc);
-            sb.add(r.ex(), r.y, r.ex()+m.right, r.ey(), lc);
-            sb.add(r.x, r.ey(), r.ex(), r.ey()+m.bottom, lc);
-            sb.add(r.x-m.left, r.y, r.x, r.ey(), lc);
-        }
-        if (auto w = get_focused_widget()) {
-            Region r = w->get_region();
-            lb.add_square(r.x+1, r.y+1, r.ex(), r.ey(), VColour(128,31,239,255));
-        }
-        lb.draw();
-        sb.draw();
-    }
+    debug_render();
 #endif
 #else
     // Render only the top of the UI stack on console
@@ -1825,6 +2541,12 @@ void UIRoot::render()
         m_root.get_child(m_root.num_children()-1)->render();
     else
         redraw_screen(false);
+
+    if (is_cursor_enabled() && !cursor_pos.origin())
+    {
+        cgotoxy(cursor_pos.x, cursor_pos.y, GOTO_CRT);
+        cursor_pos.reset();
+    }
 #endif
     pop_scissor();
 
@@ -1838,76 +2560,235 @@ void UIRoot::render()
     m_dirty_region = {0, 0, 0, 0};
 }
 
+#ifdef DEBUG
+void UIRoot::debug_render()
+{
+#ifdef USE_TILE_LOCAL
+    if (debug_draw)
+    {
+        LineBuffer lb;
+        ShapeBuffer sb;
+        size_t i = 0;
+        for (const auto& w : hover_path)
+        {
+            const auto r = w->get_region();
+            i++;
+            VColour lc;
+            lc = i == hover_path.size() ?
+                VColour(255, 100, 0, 100) : VColour(0, 50 + i*40, 0, 100);
+            lb.add_square(r.x+1, r.y+1, r.ex(), r.ey(), lc);
+        }
+        if (!hover_path.empty())
+        {
+            const auto& hovered_widget = hover_path.back();
+            Region r = hovered_widget->get_region();
+            const Margin m = hovered_widget->get_margin();
+
+            VColour lc = VColour(0, 0, 100, 100);
+            sb.add(r.x, r.y-m.top, r.ex(), r.y, lc);
+            sb.add(r.ex(), r.y, r.ex()+m.right, r.ey(), lc);
+            sb.add(r.x, r.ey(), r.ex(), r.ey()+m.bottom, lc);
+            sb.add(r.x-m.left, r.y, r.x, r.ey(), lc);
+        }
+        if (auto w = get_focused_widget()) {
+            Region r = w->get_region();
+            lb.add_square(r.x+1, r.y+1, r.ex(), r.ey(), VColour(128, 31, 239));
+        }
+        lb.draw();
+        sb.draw();
+    }
+#endif
+}
+#endif
+
+void UIRoot::update_focus_order()
+{
+    focus_order.clear();
+
+    function<void(Widget*)> recurse = [&](Widget* widget) {
+        if (widget->can_take_focus())
+            focus_order.emplace_back(widget);
+        widget->for_each_child_including_internal([&](shared_ptr<Widget>& ch) {
+            recurse(ch.get());
+        });
+    };
+
+    int layer_idx = m_root.num_children()-1;
+    if (layer_idx >= 0)
+    {
+        auto layer_root = m_root.get_child(layer_idx).get();
+        recurse(layer_root);
+    }
+}
+
+void UIRoot::focus_next()
+{
+    if (focus_order.empty())
+        return;
+
+    const auto default_focus = state.default_focus;
+    const auto current_focus = state.current_focus;
+
+    if (!current_focus || current_focus == default_focus)
+    {
+        set_focused_widget(focus_order.front());
+        return;
+    }
+
+    auto it = find(focus_order.begin(), focus_order.end(), current_focus);
+    ASSERT(it != focus_order.end());
+
+    do {
+        if (*it == focus_order.back())
+            it = focus_order.begin();
+        else
+            ++it;
+    } while (*it != current_focus && !(*it)->focusable());
+
+    set_focused_widget(*it);
+}
+
+void UIRoot::focus_prev()
+{
+    if (focus_order.empty())
+        return;
+
+    const auto default_focus = state.default_focus;
+    const auto current_focus = state.current_focus;
+
+    if (!current_focus || current_focus == default_focus)
+    {
+        set_focused_widget(focus_order.back());
+        return;
+    }
+
+    auto it = find(focus_order.begin(), focus_order.end(), current_focus);
+    ASSERT(it != focus_order.end());
+
+    do {
+        if (*it == focus_order.front())
+            it = focus_order.end()-1;
+        else
+            --it;
+    } while (*it != current_focus && !(*it)->focusable());
+
+    set_focused_widget(*it);
+}
+
 static function<bool(const wm_event&)> event_filter;
 
-void UIRoot::send_mouse_enter_leave_events(int mx, int my)
+#ifdef USE_TILE_LOCAL
+void UIRoot::update_hover_path()
 {
+    int mx, my;
+    wm->get_mouse_state(&mx, &my);
+
     /* Find current hover path */
-    vector<Widget*> hover_path;
+    vector<Widget*> new_hover_path;
     shared_ptr<Widget> current = m_root.get_child_at_offset(mx, my);
     while (current)
     {
-        hover_path.emplace_back(current.get());
+        new_hover_path.emplace_back(current.get());
         current = current->get_child_at_offset(mx, my);
     }
 
-    size_t new_hover_path_size = hover_path.size();
-    size_t sz = max(prev_hover_path.size(), hover_path.size());
-    prev_hover_path.resize(sz, nullptr);
+    size_t new_hover_path_size = new_hover_path.size();
+    size_t sz = max(hover_path.size(), new_hover_path.size());
     hover_path.resize(sz, nullptr);
+    new_hover_path.resize(sz, nullptr);
 
-    size_t diff;
-    for (diff = 0; diff < sz; diff++)
-        if (hover_path[diff] != prev_hover_path[diff])
-            break;
+    send_mouse_enter_leave_events(hover_path, new_hover_path);
 
-    /* send events */
-    if (diff < sz)
-    {
-        wm_event ev = {0};
-        ev.mouse_event.px = mx;
-        ev.mouse_event.py = my;
-        if (prev_hover_path[diff])
-        {
-            ev.type = WME_MOUSELEAVE;
-            if (!event_filter || !event_filter(ev))
-                for (size_t i = sz; i > diff; --i)
-                {
-                    if (!prev_hover_path[i-1])
-                        continue;
-                    prev_hover_path[i-1]->on_event(ev);
-                }
-        }
-        if (hover_path[diff])
-        {
-            ev.type = WME_MOUSEENTER;
-            if (!event_filter || !event_filter(ev))
-                for (size_t i = diff; i < sz; ++i)
-                {
-                    if (!hover_path[i])
-                        break;
-                    hover_path[i]->on_event(ev);
-                }
-        }
-    }
-
-    prev_hover_path = move(hover_path);
-    prev_hover_path.resize(new_hover_path_size);
+    hover_path = move(new_hover_path);
+    hover_path.resize(new_hover_path_size);
 }
 
-bool UIRoot::on_event(const wm_event& event)
+void UIRoot::send_mouse_enter_leave_events(
+        const vector<Widget*>& old_hover_path,
+        const vector<Widget*>& new_hover_path)
+{
+    ASSERT(old_hover_path.size() == new_hover_path.size());
+
+    // event_filter takes a wm_event, and we don't have one, so don't bother to
+    // call it; this is fine, since this is a private API and it only checks for
+    // keydown events.
+    if (event_filter)
+        return;
+
+    const size_t size = old_hover_path.size();
+
+    size_t diff;
+    for (diff = 0; diff < size; diff++)
+        if (new_hover_path[diff] != old_hover_path[diff])
+            break;
+
+    if (diff == size)
+        return;
+
+    if (old_hover_path[diff])
+    {
+        const wm_mouse_event dummy = {};
+        MouseEvent ev(Event::Type::MouseLeave, dummy);
+        for (size_t i = size; i > diff; --i)
+            if (old_hover_path[i-1])
+                old_hover_path[i-1]->on_event(ev);
+    }
+
+    if (new_hover_path[diff])
+    {
+        const wm_mouse_event dummy = {};
+        MouseEvent ev(Event::Type::MouseEnter, dummy);
+        for (size_t i = diff; i < size; ++i)
+            if (new_hover_path[i])
+                new_hover_path[i]->on_event(ev);
+    }
+}
+
+void UIRoot::update_hover_path_for_widget(Widget *widget)
+{
+    // truncate the hover path if the widget was previously hovered,
+    // but don't deliver any mouseleave events.
+    if (!widget->_get_parent())
+    {
+        for (size_t i = 0; i < hover_path.size(); i++)
+            if (hover_path[i] == widget)
+            {
+                hover_path.resize(i);
+                break;
+            }
+        return;
+    }
+
+    auto top = top_layout();
+    if (top && top->is_ancestor_of(widget->get_shared()))
+        update_hover_path();
+}
+#endif
+
+static Event::Type convert_event_type(const wm_event& event)
+{
+    switch (event.type)
+    {
+        case WME_MOUSEBUTTONDOWN: return Event::Type::MouseDown;
+        case WME_MOUSEBUTTONUP: return Event::Type::MouseUp;
+        case WME_MOUSEMOTION: return Event::Type::MouseMove;
+        case WME_MOUSEWHEEL: return Event::Type::MouseWheel;
+        case WME_MOUSEENTER: return Event::Type::MouseEnter;
+        case WME_MOUSELEAVE: return Event::Type::MouseLeave;
+        case WME_KEYDOWN: return Event::Type::KeyDown;
+        case WME_KEYUP: return Event::Type::KeyUp;
+        default: abort();
+    }
+}
+
+bool UIRoot::on_event(wm_event& event)
 {
     if (event_filter && event_filter(event))
         return true;
 
 #ifdef DEBUG
-    if (event.type == WME_KEYDOWN && event.key.keysym.sym == CK_INSERT)
-    {
-        ui_root.debug_draw = !ui_root.debug_draw;
-        ui_root.queue_layout();
-        ui_root.expose_region({0,0,INT_MAX,INT_MAX});
+    if (debug_on_event(event))
         return true;
-    }
 #endif
 
     switch (event.type)
@@ -1915,45 +2796,225 @@ bool UIRoot::on_event(const wm_event& event)
         case WME_MOUSEBUTTONDOWN:
         case WME_MOUSEBUTTONUP:
         case WME_MOUSEMOTION:
+        case WME_MOUSEWHEEL:
+        {
+#ifdef USE_TILE_LOCAL
+            auto mouse_event = MouseEvent(convert_event_type(event),
+                    event.mouse_event);
+            return deliver_event(mouse_event);
+#endif
+            break;
+        }
+        case WME_KEYDOWN:
+        case WME_KEYUP:
+        {
+            auto key_event = KeyEvent(convert_event_type(event), event.key);
+            return deliver_event(key_event);
+        }
+        // TODO: maybe stop windowmanager-sdl from returning these?
+        case WME_CUSTOMEVENT:
+        case WME_NOEVENT:
+            break;
+        default:
+            die("unreachable, type %d", event.type);
+    }
+
+    return false;
+}
+
+bool UIRoot::deliver_event(Event& event)
+{
+    switch (event.type())
+    {
+    case Event::Type::MouseDown:
+    case Event::Type::MouseUp:
+#ifdef USE_TILE_LOCAL
+        if (event.type() == Event::Type::MouseDown)
+            m_changed_layout_since_click = false;
+        else if (event.type() == Event::Type::MouseUp)
+            if (m_changed_layout_since_click)
+                break;
+#endif
+        // fall through
+    case Event::Type::MouseMove:
+    case Event::Type::MouseWheel:
+    {
+#ifdef USE_TILE_LOCAL
+        if (!hover_path.empty())
+        {
+            event.set_target(hover_path.back()->get_shared());
+            for (auto w = hover_path.back(); w; w = w->_get_parent())
+                if (w->on_event(event))
+                    return true;
+        }
+#endif
+        return false;
+    }
+
+    case Event::Type::KeyDown:
+    case Event::Type::KeyUp:
+    {
+        const auto top = top_child();
+        if (!top)
+            return false;
+
+        const auto key = static_cast<const KeyEvent&>(event).key();
+        event.set_target(get_focused_widget()->get_shared());
+
+        // give hotkey handlers a chance to intercept this key; they are only
+        // called if on a widget within the layout.
+        if (event.type() == Event::Type::KeyDown)
+        {
+            // TODO: only emit if widget is visible
+            bool hotkey_handled = Widget::slots.hotkey.emit_if([&](Widget* w){
+                return top->is_ancestor_of(w->get_shared());
+            }, event);
+            if (hotkey_handled)
+                return true;
+            // TODO: eat the corresponding KeyUp event
+        }
+
+        if (auto w = get_focused_widget())
+        {
+            if (w->on_event(event))
+                return true;
+
+            if (w != state.default_focus && event.type() == Event::Type::KeyDown)
+            {
+                if (key_is_escape(key))
+                {
+                    set_focused_widget(nullptr);
+                    return true;
+                }
+                if (key == '\t')
+                {
+                    focus_next();
+                    return true;
+                }
+                if (key == CK_SHIFT_TAB)
+                {
+                    focus_prev();
+                    return true;
+                }
+            }
+
+            for (w = w->_get_parent(); w; w = w->_get_parent())
+                if (w->on_event(event))
+                    return true;
+        }
+
+        if (event.type() == Event::Type::KeyDown)
+        {
+            if (key == '\t')
+            {
+                focus_next();
+                return true;
+            }
+            if (key == CK_SHIFT_TAB)
+            {
+                focus_prev();
+                return true;
+            }
+        }
+    }
+
+    case Event::Type::FocusIn:
+    case Event::Type::FocusOut:
+        return event.target()->on_event(event);
+
+    default:
+        for (auto w = event.target().get(); w; w = w->_get_parent())
+            if (w->on_event(event))
+                return true;
+        return false;
+    }
+    return false;
+}
+
 #ifdef DEBUG
+bool UIRoot::debug_on_event(const wm_event& event)
+{
+    if (event.type == WME_KEYDOWN && event.key.keysym.sym == CK_INSERT)
+    {
+        ui_root.debug_draw = !ui_root.debug_draw;
+        ui_root.queue_layout();
+        ui_root.expose_region({0, 0, INT_MAX, INT_MAX});
+        return true;
+    }
+
+    switch (event.type)
+    {
+        case WME_MOUSEBUTTONDOWN:
+        case WME_MOUSEBUTTONUP:
+        case WME_MOUSEMOTION:
             if (ui_root.debug_draw)
             {
                 ui_root.queue_layout();
-                ui_root.expose_region({0,0,INT_MAX,INT_MAX});
+                ui_root.expose_region({0, 0, INT_MAX, INT_MAX});
             }
-#endif
-        case WME_MOUSEWHEEL:
-            if (event.type == WME_MOUSEBUTTONDOWN)
-                m_changed_layout_since_click = false;
-            else if (event.type == WME_MOUSEBUTTONUP)
-                if (m_changed_layout_since_click)
-                    break;
-            if (!prev_hover_path.empty()) {
-                for (auto w = prev_hover_path.back(); w; w = w->_get_parent())
-                    if (w->on_event(event))
-                        return true;
-            }
-            break;
-        case WME_MOUSEENTER:
-        case WME_MOUSELEAVE:
-            die("unreachable");
-            break;
         default:
-            size_t layer_idx = m_root.num_children();
-            if (!layer_idx)
-                return false;
-            Widget* layer_root = m_root.get_child(layer_idx-1).get();
-            Layout* layout_root = dynamic_cast<Layout*>(layer_root);
-            if (layout_root && layout_root->event_filters.emit(layout_root, event))
-                return true;
-            for (Widget* w = focus_stack.back(); w; w = w->_get_parent())
-                if (w->on_event(event))
-                    return true;
             break;
     }
 
     return false;
 }
+#endif
+
+#ifdef USE_TILE_WEB
+void UIRoot::update_synced_widgets()
+{
+    synced_widgets.clear();
+
+    function<void(Widget*)> recurse = [&](Widget* widget) {
+        const auto id = widget->sync_id();
+        if (!id.empty())
+        {
+            ASSERT(synced_widgets.count(id) == 0);
+            synced_widgets[id] = widget;
+        }
+        widget->for_each_child_including_internal([&](shared_ptr<Widget>& ch) {
+            recurse(ch.get());
+        });
+    };
+
+    if (const auto top = top_child())
+        recurse(top.get());
+}
+
+void UIRoot::sync_state()
+{
+    for (const auto& it : synced_widgets)
+        it.second->sync_state_changed();
+}
+
+void UIRoot::recv_ui_state_change(const JsonNode *json)
+{
+    const auto generation_id = json_find_member(json, "generation_id");
+    if (!generation_id || generation_id->tag != JSON_NUMBER
+        || generation_id->number_ != state.generation_id)
+    {
+        return;
+    }
+
+    const auto has_focus = json_find_member(json, "has_focus");
+    if (has_focus && (has_focus->tag != JSON_BOOL || !has_focus->bool_))
+        return;
+
+    const auto widget_id = json_find_member(json, "widget_id");
+    if (!widget_id)
+        return;
+    if (!(widget_id->tag == JSON_STRING || widget_id->tag == JSON_NULL))
+        return;
+    const auto widget = widget_id->tag == JSON_STRING ?
+        synced_widgets.at(widget_id->string_) : nullptr;
+
+    unwind_bool recv(receiving_ui_state, true);
+    if (has_focus)
+        ui::set_focused_widget(widget);
+    else if (widget)
+        widget->sync_load_state(json);
+}
+#endif
 
 void push_scissor(Region scissor)
 {
@@ -2026,15 +3087,16 @@ void pop_cutoff()
 void push_layout(shared_ptr<Widget> root, KeymapContext km)
 {
     ui_root.push_child(move(root), km);
+#ifdef USE_TILE_WEB
+    ui_root.sync_state();
+#endif
 }
 
 void pop_layout()
 {
     ui_root.pop_child();
 #ifdef USE_TILE_LOCAL
-    int x, y;
-    wm->get_mouse_state(&x, &y);
-    ui_root.send_mouse_enter_leave_events(x, y);
+    ui_root.update_hover_path();
 #else
     if (!has_layout())
         redraw_screen(false);
@@ -2054,8 +3116,7 @@ void resize(int w, int h)
 static void remap_key(wm_event &event)
 {
     keyseq keys = {event.key.keysym.sym};
-    KeymapContext km = ui_root.keymap_stack.size() > 0 ? ui_root.keymap_stack[0] : KMC_NONE;
-    macro_buf_add_with_keymap(keys, km);
+    macro_buf_add_with_keymap(keys, ui_root.state.keymap);
     event.key.keysym.sym = macro_buf_get();
     ASSERT(event.key.keysym.sym != -1);
 }
@@ -2107,10 +3168,13 @@ void pump_events(int wait_event_timeout)
         }
 
         if (!wm->wait_event(&event, wait_event_timeout))
+        {
             if (wait_event_timeout == INT_MAX)
                 continue;
             else
                 return;
+        }
+
         if (event.type == WME_MOUSEMOTION)
         {
             // For consecutive mouse events, ignore all but the last,
@@ -2164,8 +3228,8 @@ void pump_events(int wait_event_timeout)
             break;
 
         case WME_MOUSEMOTION:
-            ui_root.send_mouse_enter_leave_events(event.mouse_event.px,
-                    event.mouse_event.py);
+            // FIXME: move update_hover_path() into event delivery
+            ui_root.update_hover_path();
             ui_root.on_event(event);
 
         default:
@@ -2174,9 +3238,9 @@ void pump_events(int wait_event_timeout)
                 // If a mouse event wasn't handled, send it through again as a
                 // fake key event, for compatibility
                 int key;
-                if (event.mouse_event.button == MouseEvent::LEFT)
+                if (event.mouse_event.button == wm_mouse_event::LEFT)
                     key = CK_MOUSE_CLICK;
-                else if (event.mouse_event.button == MouseEvent::RIGHT)
+                else if (event.mouse_event.button == wm_mouse_event::RIGHT)
                     key = CK_MOUSE_CMD;
                 else break;
 
@@ -2219,8 +3283,7 @@ void run_layout(shared_ptr<Widget> root, const bool& done,
         shared_ptr<Widget> initial_focus)
 {
     push_layout(root);
-    if (initial_focus)
-        set_focused_widget(initial_focus.get());
+    set_focused_widget(initial_focus.get());
     while (!done && !crawl_state.seen_hups)
         pump_events();
     pop_layout();
@@ -2257,10 +3320,9 @@ int getch(KeymapContext km)
         done = true;
         return true;
     };
-    ui_root.keymap_stack.emplace_back(km);
+    unwind_var<KeymapContext> temp_keymap(ui_root.state.keymap, km);
     while (!done && !crawl_state.seen_hups)
         pump_events();
-    ui_root.keymap_stack.pop_back();
     event_filter = nullptr;
     return key;
 }
@@ -2275,7 +3337,7 @@ void delay(unsigned int ms)
     int wait_event_timeout = ms;
     do
     {
-        ui_root.expose_region({0,0,INT_MAX,INT_MAX});
+        ui_root.expose_region({0, 0, INT_MAX, INT_MAX});
         pump_events(wait_event_timeout);
         auto now = std::chrono::high_resolution_clock::now();
         wait_event_timeout =
@@ -2284,16 +3346,16 @@ void delay(unsigned int ms)
     }
     while ((unsigned)wait_event_timeout < ms && !crawl_state.seen_hups);
 #else
-    constexpr long poll_interval = 10;
+    constexpr int poll_interval = 10;
     while (!crawl_state.seen_hups)
     {
         auto now = std::chrono::high_resolution_clock::now();
-        long remaining = ms -
+        const int remaining = ms -
             std::chrono::duration_cast<std::chrono::milliseconds>(now - start)
             .count();
         if (remaining < 0)
             break;
-        usleep(max(0l, min(poll_interval, remaining)));
+        usleep(max(0, min(poll_interval, remaining)));
         if (kbhit())
             pump_events();
     }
@@ -2318,6 +3380,20 @@ bool is_available()
 }
 
 /**
+ * Show the terminal cursor at the given position on the next redraw.
+ * The cursor is only shown if the cursor is enabled. 1-indexed.
+ */
+void show_cursor_at(coord_def pos)
+{
+    ui_root.cursor_pos = pos;
+}
+
+void show_cursor_at(int x, int y)
+{
+    show_cursor_at(coord_def(x, y));
+}
+
+/**
  * A basic progress bar popup. This is meant to be invoked in an RAII style;
  * the caller is responsible for regularly calling `advance_progress` in order
  * to actually trigger UI redraws.
@@ -2326,7 +3402,7 @@ progress_popup::progress_popup(string title, int width)
     : position(0), bar_width(width), no_more(crawl_state.show_more_prompt, false)
 {
     auto container = make_shared<Box>(Widget::VERT);
-    container->align_cross = Widget::CENTER;
+    container->set_cross_alignment(Widget::CENTER);
 #ifndef USE_TILE_LOCAL
     // Center the popup in console.
     // if webtiles browser ever uses this property, then this will probably
@@ -2423,39 +3499,75 @@ void set_focused_widget(Widget* w)
     if (w && !top->is_ancestor_of(w->get_shared()))
         return;
 
-    auto current_focus = ui_root.focus_stack.back();
+    if (!w)
+        w = ui_root.state.default_focus;
+
+    auto current_focus = ui_root.state.current_focus;
 
     if (w == current_focus)
         return;
+
+#ifdef USE_TILE_WEB
+    tiles.json_open_object();
+    tiles.json_write_string("msg", "ui-state-sync");
+    tiles.json_write_bool("has_focus", true);
+    tiles.json_write_string("widget_id", w->sync_id());  // "" means default
+    tiles.json_write_bool("from_webtiles", ui_root.receiving_ui_state);
+    tiles.json_write_int("generation_id", ui_root.state.generation_id);
+    tiles.json_close_object();
+    tiles.finish_message();
+#endif
 
     new_focus = w;
 
     if (current_focus && !sent_focusout)
     {
         sent_focusout = true;
-        wm_event ev = {0};
-        ev.type = WME_FOCUSOUT;
-        current_focus->on_event(ev);
+        auto ev = FocusEvent(Event::Type::FocusOut);
+        ev.set_target(current_focus->get_shared());
+        ui_root.deliver_event(ev);
     }
 
     if (new_focus != w)
         return;
 
-    ui_root.focus_stack.back() = new_focus;
+    ui_root.state.current_focus = new_focus;
 
     sent_focusout = false;
 
     if (new_focus)
     {
-        wm_event ev = {0};
-        ev.type = WME_FOCUSIN;
-        new_focus->on_event(ev);
+        auto ev = FocusEvent(Event::Type::FocusIn);
+        ev.set_target(new_focus->get_shared());
+        ui_root.deliver_event(ev);
     }
 }
 
 Widget* get_focused_widget()
 {
-    return ui_root.focus_stack.empty() ? nullptr : ui_root.focus_stack.back();
+    return ui_root.state.current_focus;
+}
+
+#ifdef USE_TILE_WEB
+void recv_ui_state_change(const JsonNode *state)
+{
+    ui_root.recv_ui_state_change(state);
+}
+
+void sync_ui_state()
+{
+    ui_root.sync_state();
+}
+
+int layout_generation_id()
+{
+    return ui_root.next_generation_id;
+}
+#endif
+
+bool raise_event(Event& event)
+{
+    return ui_root.deliver_event(event);
 }
 
 }

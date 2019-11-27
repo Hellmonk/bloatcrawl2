@@ -103,22 +103,19 @@ int find_okay_unrandart(uint8_t aclass, uint8_t atype = OBJ_RANDOM,
 typedef FixedVector< int, ART_PROPERTIES >  artefact_properties_t;
 typedef FixedVector< bool, ART_PROPERTIES > artefact_known_props_t;
 
-void artefact_desc_properties(const item_def        &item,
-                              artefact_properties_t &proprt,
+void artefact_desc_properties(const item_def         &item,
+                              artefact_properties_t  &proprt,
                               artefact_known_props_t &known);
 
-void artefact_properties(const item_def       &item,
-                         artefact_properties_t &proprt,
-                         artefact_known_props_t &known);
+void artefact_known_properties(const item_def        &item,
+                              artefact_known_props_t &known);
 
 void artefact_properties(const item_def &item,
-                         artefact_properties_t &proprt);
-
-int artefact_property(const item_def &item, artefact_prop_type prop,
-                      bool &known);
+                              artefact_properties_t  &proprt);
 
 int artefact_property(const item_def &item, artefact_prop_type prop);
 
+bool artefact_property_known(const item_def &item, artefact_prop_type prop);
 int artefact_known_property(const item_def &item, artefact_prop_type prop);
 
 void artefact_learn_prop(item_def &item, artefact_prop_type prop);

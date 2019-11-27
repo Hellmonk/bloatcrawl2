@@ -97,14 +97,6 @@ int show_description(const string &body, const tile_def *tile)
     return show_description(inf, tile);
 }
 
-/// A message explaining how the player can toggle between quote &
-static const formatted_string _toggle_message = formatted_string::parse_string(
-    "Press '<w>!</w>'"
-#ifdef USE_TILE_LOCAL
-    " or <w>Right-click</w>"
-#endif
-    " to toggle between the description and quote.");
-
 int show_description(const describe_info &inf, const tile_def *tile)
 {
     auto vbox = make_shared<Box>(Widget::VERT);
@@ -128,17 +120,31 @@ int show_description(const describe_info &inf, const tile_def *tile)
         auto title = make_shared<Text>(inf.title);
         title_hbox->add_child(move(title));
 
-        title_hbox->align_cross = Widget::CENTER;
+        title_hbox->set_cross_alignment(Widget::CENTER);
         title_hbox->set_margin_for_sdl(0, 0, 20, 0);
         title_hbox->set_margin_for_crt(0, 0, 1, 0);
         vbox->add_child(move(title_hbox));
     }
 
-    auto switcher = make_shared<Switcher>();
+    auto desc_sw = make_shared<Switcher>();
+    auto more_sw = make_shared<Switcher>();
+    desc_sw->current() = 0;
+    more_sw->current() = 0;
 
     const string descs[2] =  {
         trimmed_string(process_description(inf, false)),
         trimmed_string(inf.quote),
+    };
+
+#ifdef USE_TILE_LOCAL
+# define MORE_PREFIX "[<w>!</w>" "|<w>Right-click</w>" "]: "
+#else
+# define MORE_PREFIX "[<w>!</w>" "]: "
+#endif
+
+    const char* mores[2] = {
+        MORE_PREFIX "<w>Description</w>|Quote",
+        MORE_PREFIX "Description|<w>Quote</w>",
     };
 
     for (int i = 0; i < (inf.quote.empty() ? 1 : 2); i++)
@@ -149,36 +155,33 @@ int show_description(const describe_info &inf, const tile_def *tile)
         auto text = make_shared<Text>(fs);
         text->set_wrap_text(true);
         scroller->set_child(text);
-        switcher->add_child(move(scroller));
+        desc_sw->add_child(move(scroller));
+        more_sw->add_child(make_shared<Text>(
+                formatted_string::parse_string(mores[i])));
     }
 
-    switcher->current() = 0;
-    switcher->expand_h = false;
-#ifdef USE_TILE_LOCAL
-    switcher->max_size().width = tiles.get_crt_font()->char_width()*80;
-#endif
-    vbox->add_child(switcher);
-
+    more_sw->set_margin_for_sdl(20, 0, 0, 0);
+    more_sw->set_margin_for_crt(1, 0, 0, 0);
+    desc_sw->expand_h = false;
+    desc_sw->align_x = Widget::STRETCH;
+    vbox->add_child(desc_sw);
     if (!inf.quote.empty())
-    {
-        auto footer = make_shared<Text>(_toggle_message);
-        footer->set_margin_for_sdl(20, 0, 0, 0);
-        footer->set_margin_for_crt(1, 0, 0, 0);
-        vbox->add_child(move(footer));
-    }
+        vbox->add_child(more_sw);
+
+#ifdef USE_TILE_LOCAL
+    vbox->max_size().width = tiles.get_crt_font()->char_width()*80;
+#endif
 
     auto popup = make_shared<ui::Popup>(vbox);
 
     bool done = false;
     int lastch;
-    popup->on(Widget::slots.event, [&](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        lastch = ev.key.keysym.sym;
+    popup->on_keydown_event([&](const KeyEvent& ev) {
+        lastch = ev.key();
         if (!inf.quote.empty() && (lastch == '!' || lastch == CK_MOUSE_CMD || lastch == '^'))
-            switcher->current() = 1 - switcher->current();
+            desc_sw->current() = more_sw->current() = 1 - desc_sw->current();
         else
-            done = !switcher->current_widget()->on_event(ev);
+            done = !desc_sw->current_widget()->on_event(ev);
         return true;
     });
 
@@ -2329,7 +2332,7 @@ void describe_feature_wide(const coord_def& pos)
         auto title = make_shared<Text>(feat.title);
         title->set_margin_for_sdl(0, 0, 0, 10);
         title_hbox->add_child(move(title));
-        title_hbox->align_cross = Widget::CENTER;
+        title_hbox->set_cross_alignment(Widget::CENTER);
 
         const bool has_desc = feat.body != feat.title && feat.body != "";
 
@@ -2366,10 +2369,9 @@ void describe_feature_wide(const coord_def& pos)
     auto popup = make_shared<ui::Popup>(scroller);
 
     bool done = false;
-    popup->on(Widget::slots.event, [&](wm_event ev) {
-        if (scroller->on_event(ev))
-            return true;
-        return done = ev.type == WME_KEYDOWN;
+    popup->on_keydown_event([&](const KeyEvent& ev) {
+        done = !scroller->on_event(ev);
+        return true;
     });
 
 #ifdef USE_TILE_WEB
@@ -2704,7 +2706,7 @@ bool describe_item(item_def &item, function<void (string&)> fixup_desc)
     title->set_margin_for_sdl(0, 0, 0, 10);
     title_hbox->add_child(move(title));
 
-    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_cross_alignment(Widget::CENTER);
     title_hbox->set_margin_for_crt(0, 0, 1, 0);
     title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     vbox->add_child(move(title_hbox));
@@ -2737,11 +2739,8 @@ bool describe_item(item_def &item, function<void (string&)> fixup_desc)
     bool done = false;
     command_type action;
     int lastch;
-    popup->on(Widget::slots.event, [&](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int key = ev.key.keysym.sym;
-        key = key == '{' ? 'i' : key;
+    popup->on_keydown_event([&](const KeyEvent& ev) {
+        const auto key = ev.key() == '{' ? 'i' : ev.key();
         lastch = key;
         action = _get_action(key, actions);
         if (action != CMD_NO_CMD)
@@ -3194,7 +3193,7 @@ void describe_spell(spell_type spell, const monster_info *mon_owner,
     title->set_margin_for_sdl(0, 0, 0, 10);
     title_hbox->add_child(move(title));
 
-    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_cross_alignment(Widget::CENTER);
     title_hbox->set_margin_for_crt(0, 0, 1, 0);
     title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     vbox->add_child(move(title_hbox));
@@ -3219,10 +3218,8 @@ void describe_spell(spell_type spell, const monster_info *mon_owner,
 
     bool done = false;
     int lastch;
-    popup->on(Widget::slots.event, [&](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        lastch = ev.key.keysym.sym;
+    popup->on_keydown_event([&](const KeyEvent& ev) {
+        lastch = ev.key();
         done = (toupper_safe(lastch) == 'M' && can_mem || lastch == CK_ESCAPE
             || lastch == CK_ENTER || lastch == ' ');
         if (scroller->on_event(ev))
@@ -4561,7 +4558,7 @@ int describe_monsters(const monster_info &mi, const string& /*footer*/)
     title->set_margin_for_sdl(0, 0, 0, 10);
     title_hbox->add_child(move(title));
 
-    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_cross_alignment(Widget::CENTER);
     title_hbox->set_margin_for_crt(0, 0, 1, 0);
     title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     vbox->add_child(move(title_hbox));
@@ -4606,6 +4603,7 @@ int describe_monsters(const monster_info &mi, const string& /*footer*/)
     more_sw->set_margin_for_sdl(20, 0, 0, 0);
     more_sw->set_margin_for_crt(1, 0, 0, 0);
     desc_sw->expand_h = false;
+    desc_sw->align_x = Widget::STRETCH;
     vbox->add_child(desc_sw);
     if (!inf.quote.empty())
         vbox->add_child(more_sw);
@@ -4618,10 +4616,8 @@ int describe_monsters(const monster_info &mi, const string& /*footer*/)
 
     bool done = false;
     int lastch;
-    popup->on(Widget::slots.event, [&](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int key = ev.key.keysym.sym;
+    popup->on_keydown_event([&](const KeyEvent& ev) {
+        const auto key = ev.key();
         lastch = key;
         done = key == CK_ESCAPE;
         if (!inf.quote.empty() && (key == '!' || key == CK_MOUSE_CMD))

@@ -48,7 +48,6 @@
 /// Simple 1:1 mappings between monster enchantments & info flags.
 static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_BERSERK,         MB_BERSERK },
-    { ENCH_POISON,          MB_POISONED },
     { ENCH_CORONA,          MB_GLOWING },
     { ENCH_SILVER_CORONA,   MB_GLOWING },
     { ENCH_SLOW,            MB_SLOWED },
@@ -160,6 +159,13 @@ static monster_info_flags ench_to_mb(const monster& mons, enchant_type ench)
         if (mons.get_ench(ench).degree < max_mons_charge(mons.type))
             return MB_PARTIALLY_CHARGED;
         return MB_FULLY_CHARGED;
+    case ENCH_POISON:
+        if (mons.get_ench(ench).degree == 1)
+            return MB_POISONED;
+        else if (mons.get_ench(ench).degree < MAX_ENCH_DEGREE_DEFAULT)
+            return MB_MORE_POISONED;
+        else
+            return MB_MAX_POISONED;
     default:
         return NUM_MB_FLAGS;
     }
@@ -572,8 +578,6 @@ monster_info::monster_info(const monster* m, int milev)
         mb.set(MB_DISTRACTED);
     if (m->liquefied_ground())
         mb.set(MB_SLOW_MOVEMENT);
-    if (m->is_wall_clinging())
-        mb.set(MB_CLINGING);
 
     dam = mons_get_damage_level(*m);
 
@@ -1399,6 +1403,11 @@ vector<string> monster_info::attributes() const
 
     if (is(MB_POISONED))
         v.emplace_back("poisoned");
+    else if (is(MB_MORE_POISONED))
+        v.emplace_back("very poisoned");
+    else if (is(MB_MAX_POISONED))
+        v.emplace_back("extremely poisoned");
+
     if (is(MB_SICK))
         v.emplace_back("sick");
     if (is(MB_GLOWING))
@@ -1715,7 +1724,7 @@ bool monster_info::airborne() const
 
 bool monster_info::ground_level() const
 {
-    return !airborne() && !is(MB_CLINGING);
+    return !airborne();
 }
 
 // Only checks for spells from preset monster spellbooks.

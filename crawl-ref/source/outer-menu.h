@@ -12,12 +12,12 @@ class MenuButton : public ui::Bin
 {
     friend class OuterMenu;
 public:
-    MenuButton() {};
+    MenuButton();
 
     virtual void _render() override;
     virtual ui::SizeReq _get_preferred_size(ui::Widget::Direction, int) override;
     virtual void _allocate_region() override;
-    virtual bool on_event(const wm_event& event) override;
+    virtual bool on_event(const ui::Event& event) override;
 
     int id = 0;
     int hotkey = 0;
@@ -27,18 +27,22 @@ public:
 #endif
     string description;
 
+    bool activate();
+
 #ifdef USE_TILE_WEB
     void serialize();
 #endif
 
 protected:
+    bool can_take_focus() override { return true; };
+
     bool focused = false;
+    bool hovered = false;
     bool active = false;
 #ifdef USE_TILE_LOCAL
     ShapeBuffer m_buf;
     LineBuffer m_line_buf;
 #endif
-    static bool focus_on_mouse;
 
 #ifndef USE_TILE_LOCAL
     void recolour_descendants(const shared_ptr<Widget>& node);
@@ -60,7 +64,7 @@ public:
     virtual void _render() override;
     virtual ui::SizeReq _get_preferred_size(ui::Widget::Direction, int) override;
     virtual void _allocate_region() override;
-    virtual bool on_event(const wm_event& event) override;
+    virtual bool on_event(const ui::Event& event) override;
 
     virtual shared_ptr<Widget> get_child_at_offset(int, int) override {
         return m_root;
@@ -78,14 +82,12 @@ public:
 
     void scroll_button_into_view(MenuButton *btn);
 
-    function<void(int)> on_button_activated;
-
     weak_ptr<OuterMenu> linked_menus[4];
     shared_ptr<ui::Switcher> descriptions;
     const char *menu_id {nullptr};
 
 protected:
-    bool scroller_event_hook(const wm_event& ev);
+    bool scroller_event_hook(const ui::Event& ev);
     bool move_button_focus(int fx, int fy, int dx, int dy, int limit);
 
     shared_ptr<ui::Grid> m_grid;
@@ -98,4 +100,6 @@ protected:
     MenuButton* m_initial_focus {nullptr};
 
     bool have_allocated {false};
+
+    static bool focus_button_on_mouseenter;
 };
