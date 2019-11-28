@@ -3175,6 +3175,9 @@ bool is_good_item(const item_def &item)
 #if TAG_MAJOR_VERSION == 34
         case POT_BENEFICIAL_MUTATION:
             return you.undead_state() != US_HUNGRY_DEAD; // Mummies are already handled
+        case POT_MUTATION:
+            return species_is_turtle(you.species)
+                   && you.undead_state() != US_HUNGRY_DEAD;
 #endif
         default:
             return false;
@@ -3309,8 +3312,12 @@ bool is_dangerous_item(const item_def &item, bool temp)
         switch (item.sub_type)
         {
         case POT_MUTATION:
-            if (have_passive(passive_t::cleanse_mut_potions))
+            if (have_passive(passive_t::cleanse_mut_potions)
+                || (species_is_turtle(you.species)
+                    && you.undead_state() != US_HUNGRY_DEAD))
+            {
                 return false;
+            }
             // intentional fallthrough
         case POT_LIGNIFY:
             return true;

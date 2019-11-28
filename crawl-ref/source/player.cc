@@ -2418,7 +2418,7 @@ int player_shield_class()
 {
     if (you.species == SP_EXTINGUISHER)
         return 0;
-    
+
     int shield = 0;
 
     if (you.incapacitated())
@@ -2995,6 +2995,58 @@ int xp_to_level_diff(int xp, int scale)
         return adjusted_level - projected_level;
 }
 
+static void _turtle_evolve()
+{
+    you.species = random_turtle_colour();
+
+    uint8_t saved_skills[NUM_SKILLS];
+    for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
+    {
+        saved_skills[sk] = you.skills[sk];
+        check_skill_level_change(sk, false);
+    }
+
+    // The player symbol depends on species.
+    update_player_symbol();
+#ifdef USE_TILE
+    init_player_doll();
+#endif
+
+    mprf(MSGCH_INTRINSIC_GAIN,
+        "You find a %s bandana in your pocket and put it on.",
+        turtle_bandana_colour(you.species).c_str());
+
+    // Produce messages about skill increases/decreases. We
+    // restore one skill level at a time so that at most the
+    // skill being checked is at the wrong level.
+    for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
+    {
+        const int oldapt = species_apt(sk, SP_TURTLE);
+        const int newapt = species_apt(sk, you.species);
+        if (oldapt != newapt)
+        {
+            mprf(MSGCH_INTRINSIC_GAIN, "You learn %s %s%s.",
+                    skill_name(sk),
+                    abs(oldapt - newapt) > 1 ? "much " : "",
+                    oldapt > newapt ? "slower" : "quicker");
+        }
+
+        you.skills[sk] = saved_skills[sk];
+        check_skill_level_change(sk);
+    }
+
+    // It's possible we passed a training target due to
+    // skills being rescaled to new aptitudes. Thus, we must
+    // check the training targets.
+    check_training_targets();
+
+    // needs to be done early here, so HP doesn't look rotted
+    // when we redraw the screen
+    _gain_and_note_hp_mp();
+
+    redraw_screen();
+}
+
 /**
  * Handle the effects from a player's change in XL.
  * @param aux                     A string describing the cause of the level
@@ -3216,7 +3268,7 @@ void level_change(bool skip_attribute_increase)
             case SP_FELID:
                 _felid_extra_life();
                 break;
-                
+
             case SP_JANUVIAN:
             case SP_JATWOVIAN:
                 _januvian_aspect_change();
@@ -3226,6 +3278,16 @@ void level_change(bool skip_attribute_increase)
                 mpr("You gain enough energy for another flash.");
                 you.argon_flashes_available++;
                 break;
+
+            case SP_TURTLE:
+            {
+                if (you.experience_level >= 6)
+                {
+                    _turtle_evolve();
+                    updated_maxhp = true;
+                }
+                break;
+            }
 
             default:
                 break;
@@ -3257,9 +3319,13 @@ void level_change(bool skip_attribute_increase)
 
         }
 
-        if (species_is_draconian(you.species) && !(you.experience_level % 3))
+        const bool draconian = species_is_draconian(you.species);
+        const bool turtle = species_is_turtle(you.species);
+        if ((draconian || turtle) && !(you.experience_level % 3))
         {
-            mprf(MSGCH_INTRINSIC_GAIN, "Your scales feel tougher.");
+            const auto msg = draconian ? "Your scales feel tougher."
+                                       : "Your shell feels tougher.";
+            mprf(MSGCH_INTRINSIC_GAIN, msg);
             you.redraw_armour_class = true;
         }
         else if(you.species == SP_CRYSTAL_DWARF)
@@ -3910,7 +3976,7 @@ int slaying_bonus(bool ranged)
         ret -= you.props[HORROR_PENALTY_KEY].get_int();
 
     ret += you.attribute[ATTR_HEAVENLY_STORM];
-    
+
     ret += extinguisher_slaying_bonus();
 
     return ret;
@@ -6234,6 +6300,9 @@ int player::racial_ac(bool temp) const
         return AC;
     }
 
+    if (species_is_turtle(species) && (!player_is_shapechanged() || !temp))
+        return 100 * (experience_level / 3); // max 9
+
     if (!(player_is_shapechanged() && temp))
     {
         if (species == SP_NAGA || species == SP_SLITHERIER_NAGA)
@@ -6412,7 +6481,7 @@ int player::evasion(ev_ignore_type evit, const actor* act) const
     const bool attacker_invis = act && !act->visible_to(this);
     const int invis_penalty
         = attacker_invis && !testbits(evit, ev_ignore::helpless) ? 10 : 0;
-        
+
     if (you.species == SP_EXTINGUISHER)
         return 0;
 

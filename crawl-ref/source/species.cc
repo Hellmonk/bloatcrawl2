@@ -152,6 +152,16 @@ bool species_has_hair(species_type species)
     return !bool(get_species_def(species).flags & (SPF_NO_HAIR | SPF_DRACONIAN));
 }
 
+bool species_is_turtle(species_type species)
+{
+    return bool(get_species_def(species).flags & SPF_TURTLE);
+}
+
+bool species_is_coloured_turtle(species_type species)
+{
+    return species_is_turtle(species) && species != SP_TURTLE;
+}
+
 size_type species_size(species_type species, size_part_type psize)
 {
     size_type size = get_species_def(species).size;
@@ -595,6 +605,29 @@ species_type random_draconian_colour()
   return species;
 }
 
+species_type random_turtle_colour()
+{
+    return random_choose(SP_RED_TURTLE, SP_BLUE_TURTLE, SP_ORANGE_TURTLE,
+                         SP_PURPLE_TURTLE);
+}
+
+string turtle_bandana_colour(species_type sp)
+{
+    switch (sp)
+    {
+        case SP_RED_TURTLE:
+            return "red";
+        case SP_BLUE_TURTLE:
+            return "blue";
+        case SP_ORANGE_TURTLE:
+            return "orange";
+        case SP_PURPLE_TURTLE:
+            return "purple";
+        default:
+            return "buggy";
+    }
+}
+
 void update_shapeshifter_species()
 {
     if (!you.shapeshifter_species)
@@ -608,7 +641,7 @@ void update_shapeshifter_species()
              // This should give enough time to level up again.
              || (sp == SP_MAYFLYTAUR && you.elapsed_time > 15000)
             );
-    
+
     if (sp == SP_BASE_DRACONIAN && you.experience_level >= 7)
         sp = random_draconian_colour();
 

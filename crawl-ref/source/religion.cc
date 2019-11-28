@@ -3138,8 +3138,12 @@ bool player_can_join_god(god_type which_god)
     if (you.get_mutation_level(MUT_NO_LOVE) && _god_rejects_loveless(which_god))
         return false;
 
-    if (is_evil_god(which_god) && you.char_class == JOB_CAVEPERSON)
+    if (is_evil_god(which_god)
+        && (you.char_class == JOB_CAVEPERSON || species_is_turtle(you.species)))
+    {
         return false;
+    }
+
 
 #if TAG_MAJOR_VERSION == 34
     if (you.get_mutation_level(MUT_NO_ARTIFICE)
@@ -3781,18 +3785,23 @@ void god_pitch(god_type which_god)
             simple_god_message(" does not accept worship from the unstoppably "
                                "hasty!", which_god);
         }
-        else if (is_evil_god(which_god) && you.char_class == JOB_CAVEPERSON)
+        else if (is_evil_god(which_god))
         {
-            if (x_chance_in_y(99, 100))
-                mprf("Caveperson not understand what \"evil\" mean.");
-            else
+            if (you.char_class == JOB_CAVEPERSON)
             {
-                mprf("Your (thus far) simple existence has not exposed you to the "
-                    "Abrahamic concept of \"evil\", and you find yourself "
-                    "incapable of understanding (and therefore "
-                    "worshipping) %s.",
-                    god_name(which_god).c_str());
+                if (x_chance_in_y(99, 100))
+                    mprf("Caveperson not understand what \"evil\" mean.");
+                else
+                {
+                    mprf("Your (thus far) simple existence has not exposed you to the "
+                        "Abrahamic concept of \"evil\", and you find yourself "
+                        "incapable of understanding (and therefore "
+                        "worshipping) %s.",
+                        god_name(which_god).c_str());
+                }
             }
+            else if (species_is_turtle(you.species))
+                mprf("Your honour code forbids you from worshipping evil gods.");
         }
         else
         {

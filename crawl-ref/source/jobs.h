@@ -23,3 +23,4 @@ job_type random_starting_job();
 bool is_starting_job(job_type job);
 bool job_is_zealot(job_type job);
 bool job_is_good_god_zealot(job_type job);
+bool job_is_evil_god_zealot(job_type job);
