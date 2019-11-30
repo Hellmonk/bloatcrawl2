@@ -486,6 +486,16 @@ static const map<job_type, job_def> job_data =
       { SK_WEAPON, 3 }, },
 } },
 
+{ JOB_SNIPER, {
+    "Sn", "Sniper",
+    5, 2, 5,
+    { SP_HILL_ORC, SP_HALFLING, SP_KOBOLD, SP_OGRE, SP_TROLL, SP_CENTAUR, },
+    { "robe", "amulet of harm" },
+    WCHOICE_RANGED,
+    { { SK_FIGHTING, 2 }, { SK_DODGING, 2 }, { SK_STEALTH, 3 },
+      { SK_WEAPON, 3 }, },
+} },
+
 { JOB_STORM_CLERIC, {
     "SC", "Storm Cleric",
     4, 4, 4,

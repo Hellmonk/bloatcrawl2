@@ -217,6 +217,11 @@ Skald
 Skalds are melee fighters who can boost themselves in battle with spells from
 the Charms school.
 %%%%
+Sniper
+
+Highly accurate users of ranged weaponry, snipers wear amulets of harm to boost
+their damage capabilities.
+%%%%
 Soothslayer
 
 Soothslayers are battlemages who begin with a variety of simple magic in addition

@@ -74,6 +74,7 @@ enum job_type
     JOB_ARCHAEOLOGIST,
     JOB_SOOTHSLAYER,
     JOB_ASPIRANT,
+    JOB_SNIPER,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,
