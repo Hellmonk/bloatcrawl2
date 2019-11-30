@@ -212,6 +212,11 @@ Skald
 Skalds are melee fighters who can boost themselves in battle with spells from
 the Charms school.
 %%%%
+Soothslayer
+
+Soothslayers are battlemages who begin with a variety of simple magic in addition
+to their weapon.
+%%%%
 Storm Cleric
 
 Storm clerics spread destruction in the name of Qazlal.

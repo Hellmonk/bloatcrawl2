@@ -487,6 +487,18 @@ static const map<job_type, job_def> job_data =
       { SK_WEAPON, 3 }, { SK_INVOCATIONS, 3 }, },
 } },
 
+{ JOB_SOOTHSLAYER, {
+    "So", "Soothslayer",
+    4, 4, 4,
+    { SP_HILL_ORC, SP_CENTAUR, SP_MERFOLK, SP_BASE_DRACONIAN, },
+    { "ring mail" },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 2 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 },
+      { SK_SPELLCASTING, 2 }, { SK_CHARMS, 1 }, { SK_HEXES, 1 }, 
+      { SK_TRANSLOCATIONS, 1 }, { SK_TRANSMUTATIONS, 1 }, 
+      { SK_NECROMANCY, 1 }, { SK_SUMMONINGS, 1 }, { SK_WEAPON, 2 }, },
+} },
+
 { JOB_SUMMONER, {
     "Su", "Summoner",
     0, 7, 5,

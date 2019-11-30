@@ -624,6 +624,15 @@ void give_items_skills(const newgame_def& ng)
     case JOB_NECKBEARD:
         add_spell_to_memory(SPELL_BLINK);
         break;
+        
+    case JOB_SOOTHSLAYER:
+        you.spell_library.set(SPELL_CORONA, true);
+        you.spell_library.set(SPELL_APPORTATION, true);
+        you.spell_library.set(SPELL_BEASTLY_APPENDAGE, true);
+        you.spell_library.set(SPELL_INFUSION, true);
+        you.spell_library.set(SPELL_SUMMON_SMALL_MAMMAL, true);
+        you.spell_library.set(SPELL_PAIN, true);
+        break;
 
     default:
         break;
