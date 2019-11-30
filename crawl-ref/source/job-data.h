@@ -100,6 +100,15 @@ static const map<job_type, job_def> job_data =
       { SK_WEAPON, 1 }, { SK_STEALTH, 1 }, },
 } },
 
+{ JOB_ASPIRANT, {
+    "Ap", "Aspirant",
+    0, 8, 4,
+    { SP_EMBER_ELF, SP_DEEP_ELF, SP_NAGA, SP_TENGU, SP_SPRIGGAN, SP_OCTOPODE },
+    { "robe", "quarterstaff" },
+    WCHOICE_NONE,
+    { { SK_DODGING, 2 }, { SK_STEALTH, 2 }, { SK_SPELLCASTING, 2 } },
+} },
+
 { JOB_ASSASSIN, {
     "As", "Assassin",
     3, 3, 6,

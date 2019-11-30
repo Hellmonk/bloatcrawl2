@@ -34,6 +34,11 @@ Artificer
 Artificers start with a few magical devices and are competent at using such
 tools.
 %%%%
+Aspirant
+
+Aspirants are novices at magic who have acquired books of powerful magic. They
+hope to one day master the spells within.
+%%%%
 Assassin
 
 Assassins carry poisoned darts and a small number of nasty curare darts.

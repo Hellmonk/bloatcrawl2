@@ -24,6 +24,7 @@
 #include "ng-wanderer.h"
 #include "options.h"
 #include "prompt.h"
+#include "randbook.h"
 #include "religion.h"
 #include "shopping.h"
 #include "skills.h"
@@ -261,6 +262,107 @@ static void _give_ammo(weapon_type weapon, int plus)
     default:
         break;
     }
+}
+
+static void _give_aspirant_book()
+{
+    skill_type skill = SK_SPELLCASTING;
+
+    while (skill == SK_SPELLCASTING || skill == SK_POISON_MAGIC)
+    {
+        int value = SK_LAST_MAGIC - SK_FIRST_MAGIC_SCHOOL + 1;
+        skill = skill_type(SK_FIRST_MAGIC_SCHOOL + random2(value));
+    }
+
+    spschool school = skill2spell_type(skill);
+
+    item_def* item = newgame_make_item(OBJ_BOOKS, BOOK_RANDART_THEME);
+    if (!item)
+        return;
+
+    vector<spell_type> incl_spells;
+
+    switch (skill)
+    {
+        case SK_CONJURATIONS:
+            incl_spells.push_back(SPELL_ISKENDERUNS_MYSTIC_BLAST);
+            incl_spells.push_back(SPELL_IOOD);
+            incl_spells.push_back(coinflip() ? SPELL_GLACIATE : SPELL_FIRE_STORM);
+            break;
+
+        case SK_EARTH_MAGIC:
+            incl_spells.push_back(coinflip() ? SPELL_PETRIFY : SPELL_LRD);
+            incl_spells.push_back(coinflip() ? SPELL_IRON_SHOT : SPELL_LEHUDIBS_CRYSTAL_SPEAR);
+            incl_spells.push_back(SPELL_SHATTER);
+            break;
+
+        case SK_AIR_MAGIC:
+            incl_spells.push_back(coinflip() ? SPELL_SUMMON_LIGHTNING_SPIRE : SPELL_AIRSTRIKE);
+            incl_spells.push_back(coinflip() ? SPELL_CONJURE_BALL_LIGHTNING : SPELL_CHAIN_LIGHTNING);
+            incl_spells.push_back(SPELL_TORNADO);
+            break;
+
+        case SK_ICE_MAGIC:
+            incl_spells.push_back(coinflip() ? SPELL_THROW_ICICLE : SPELL_SUMMON_ICE_BEAST);
+            incl_spells.push_back(coinflip() ? SPELL_BOLT_OF_COLD : SPELL_OZOCUBUS_REFRIGERATION);
+            incl_spells.push_back(SPELL_GLACIATE);
+            break;
+
+        case SK_FIRE_MAGIC:
+            incl_spells.push_back(SPELL_STICKY_FLAME);
+            incl_spells.push_back(SPELL_BOLT_OF_FIRE);
+            incl_spells.push_back(SPELL_FIRE_STORM);
+            break;
+
+        case SK_TRANSMUTATIONS:
+            incl_spells.push_back(SPELL_ICE_FORM);
+            incl_spells.push_back(coinflip() ? SPELL_STATUE_FORM : SPELL_HYDRA_FORM);
+            incl_spells.push_back(SPELL_DRAGON_FORM);
+            break;
+
+        case SK_TRANSLOCATIONS:
+            incl_spells.push_back(SPELL_GOLUBRIAS_PASSAGE);
+            incl_spells.push_back(SPELL_MALIGN_GATEWAY);
+            incl_spells.push_back(SPELL_CONTROLLED_BLINK);
+            break;
+
+        case SK_NECROMANCY:
+            incl_spells.push_back(SPELL_ANIMATE_DEAD);
+            incl_spells.push_back(coinflip() ? SPELL_SIMULACRUM : SPELL_DEATH_CHANNEL);
+            incl_spells.push_back(SPELL_BORGNJORS_REVIVIFICATION);
+            break;
+
+        case SK_SUMMONINGS:
+            incl_spells.push_back(coinflip() ? SPELL_SUMMON_ICE_BEAST : SPELL_SUMMON_LIGHTNING_SPIRE);
+            incl_spells.push_back(coinflip() ? SPELL_SUMMON_HYDRA : SPELL_MONSTROUS_MENAGERIE);
+            incl_spells.push_back(coinflip() ? SPELL_SUMMON_HORRIBLE_THINGS : SPELL_DRAGON_CALL);
+            break;
+
+        case SK_CHARMS:
+            incl_spells.push_back(SPELL_EXCRUCIATING_WOUNDS);
+            incl_spells.push_back(SPELL_DEFLECT_MISSILES);
+            incl_spells.push_back(SPELL_DEATHS_DOOR);
+            break;
+
+        case SK_HEXES:
+            incl_spells.push_back(coinflip() ? SPELL_CAUSE_FEAR : SPELL_FULMINANT_PRISM);
+            incl_spells.push_back(coinflip() ? SPELL_DARKNESS : SPELL_INVISIBILITY);
+            incl_spells.push_back(SPELL_DISCORD);
+            break;
+
+
+        default:
+            break;
+            
+    }
+
+    build_themed_book(*item, forced_spell_filter(incl_spells), forced_book_theme(school), 3);
+                            
+    item_def* manual = newgame_make_item(OBJ_BOOKS, BOOK_MANUAL);
+        manual->skill = skill;
+        manual->skill_points = 500;
+        
+    you.skills[skill] += 4;
 }
 
 static skill_type _archaeologist_armour_skill_unusable(int type)
@@ -632,6 +734,10 @@ void give_items_skills(const newgame_def& ng)
         you.spell_library.set(SPELL_INFUSION, true);
         you.spell_library.set(SPELL_SUMMON_SMALL_MAMMAL, true);
         you.spell_library.set(SPELL_PAIN, true);
+        break;
+        
+    case JOB_ASPIRANT:
+        _give_aspirant_book();
         break;
 
     default:
