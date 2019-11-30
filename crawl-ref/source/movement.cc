@@ -13,6 +13,7 @@
 #include "movement.h"
 
 #include "abyss.h"
+#include "act-iter.h"
 #include "bloodspatter.h"
 #include "cloud.h"
 #include "coord.h"
@@ -173,6 +174,46 @@ void remove_ice_armour_movement()
         you.duration[DUR_ICY_ARMOUR] = 0;
         you.redraw_armour_class = true;
     }
+}
+
+static bool _enemy_visible()
+{
+    for (monster_iterator mi; mi; ++mi)
+        if (you.can_see(**mi) && !mi->wont_attack())
+            return true;
+    return false;
+}
+
+bool cancel_manafeet_mode()
+{
+    if (!you.has_mutation(MUT_MANAFEET))
+        return false;
+    const bool visible = _enemy_visible();
+    const bool prop_exists = you.props.exists(MANAFEET_MOVE_KEY);
+    if (visible && !prop_exists)
+    {
+        std::string prompt = "If you move while enemies are visible your magic"
+                        " will leak. Continue?";
+        if (!yesno(prompt.c_str(), false, 'n'))
+        {
+            canned_msg(MSG_OK);
+            return true;
+        }
+
+        you.props[MANAFEET_MOVE_KEY] = true;
+    }
+
+    return false;
+}
+
+void handle_manafeet()
+{
+    if (!you.has_mutation(MUT_MANAFEET))
+        return;
+    if (!_enemy_visible())
+        return;
+    mpr("Your magic leaks as you move.");
+    dec_mp(1);
 }
 
 bool cancel_confused_move(bool stationary)
@@ -498,6 +539,9 @@ void move_player_action(coord_def move)
         if (cancel_barbed_move())
             return;
 
+        if (cancel_manafeet_mode())
+            return;
+
         if (!one_chance_in(3))
         {
             move.x = random2(3) - 1;
@@ -711,6 +755,9 @@ void move_player_action(coord_def move)
         if (!you.confused() && cancel_barbed_move())
             return;
 
+        if (!you.confused() && cancel_manafeet_mode())
+            return;
+
         if (!you.attempt_escape()) // false means constricted and did not escape
             return;
 
@@ -776,6 +823,7 @@ void move_player_action(coord_def move)
 
         apply_barbs_damage();
         remove_ice_armour_movement();
+        handle_manafeet();
 
         if (you_are_delayed() && current_delay()->is_run())
             env.travel_trail.push_back(you.pos());

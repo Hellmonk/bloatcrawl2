@@ -32,6 +32,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Troll Two**: They're eating her! And then they're going to eat me! Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!
 * **Turtles** are hard-shelled warriors trained in the arts of ninjutsu. They fight evil wherever it can be found and follow a strict honour code.
 * Deeper than deep, **Unfathomable Dwarves** cannot heal even through divine means. However, they have adapted to heal on kills and brew ambrosia potions from leftover life essence.
+* **Xeno Elves** are strange insectoid creatures from a distant land. Their magical efficiency is far better than most species, but drains when moving near enemies.
 * **Yeti** are large, seldom-seen creatures that live on frozen mountain peaks. Sufficiently mature Yeti passively freeze adjacent foes.
 
 ## New Backgrounds

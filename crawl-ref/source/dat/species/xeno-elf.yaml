@@ -1,0 +1,62 @@
+enum: SP_XENO_ELF
+monster: MONS_ELF
+name: Xeno Elf
+short_name: XE
+adjective: "Elven"
+genus: "Elf"
+difficulty: Intermediate
+species_flags:
+  - elven
+aptitudes:
+  xp: 1
+  hp: 1
+  mp_mod: 1
+  mr: 3
+  fighting: 1
+  short_blades: -4
+  long_blades: -2
+  maces_and_flails: -1
+  axes: 1
+  polearms: -1
+  staves: -4
+  unarmed_combat: 1
+  throwing: -4
+  slings: -4
+  bows: -4
+  crossbows: -3
+  armour: 1
+  dodging: 1
+  stealth: 1
+  shields: False
+  spellcasting: 1
+  conjurations: 1
+  hexes: -3
+  charms: -4
+  summoning: -4
+  necromancy: -4
+  translocations: 0
+  transmutations: 1
+  fire_magic: -4
+  ice_magic: -4
+  air_magic: -4
+  earth_magic: -4
+  poison_magic: -4
+  invocations: 1
+  evocations: -4
+str: 10
+int: 10
+dex: 4
+levelup_stat_frequency: 4
+levelup_stats:
+  - str
+  - int
+recommended_jobs:
+  - JOB_SKALD
+recommended_weapons:
+  - SK_AXES
+mutations:
+  1:
+    MUT_EXOSKELETON: 1
+    MUT_CHITINOUS_PLATING: 1
+    MUT_MANAFEET: 1
+    MUT_EFFICIENT_MAGIC: 1

@@ -866,7 +866,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
-    if (you.species == SP_FAERIE_DRAGON && slot == EQ_BODY_ARMOUR)
+    if (you.has_mutation(MUT_FAERIE_WINGS) && slot == EQ_BODY_ARMOUR)
     {
         if (verbose)
             mprf("Your wings are too delicate to wear that!");
@@ -881,6 +881,22 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             mprf("Your wings%s won't fit in that.", you.has_mutation(MUT_BIG_WINGS)
                  ? "" : ", even vestigial as they are,");
         }
+        return false;
+    }
+
+    if (you.has_mutation(MUT_EXOSKELETON)
+        && (slot == EQ_BODY_ARMOUR || slot == EQ_CLOAK))
+    {
+        if (verbose)
+            mprf("Your exoskeleton prevents wearing that!");
+        return false;
+    }
+
+    if (you.has_mutation(MUT_CHITINOUS_PLATING)
+        && (slot == EQ_GLOVES || slot == EQ_SHIELD))
+    {
+        if (verbose)
+            mprf("Your chitinous plates are too bulky to wear that!");
         return false;
     }
 

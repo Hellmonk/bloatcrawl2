@@ -1692,7 +1692,7 @@ static void tag_construct_you(writer &th)
     marshallBoolean(th, you.deterministic_levelgen);
     CrawlVector rng_states = rng::generators_to_vector();
     rng_states.write(th);
-    
+
     // Marshall UD overflow
     marshallUnsigned(th, you.overflow_healing_ud);
 
@@ -2998,8 +2998,7 @@ static void tag_read_you(reader &th)
         if (you.species == SP_FORMICID)
         {
             you.mutation[MUT_ANTENNAE] = you.innate_mutation[MUT_ANTENNAE] = 3;
-            you.mutation[MUT_EXOSKELETON] =
-            you.innate_mutation[MUT_EXOSKELETON] = 0;
+            you.mutation[MUT_EXOSKELETON_OLD] = you.innate_mutation[MUT_EXOSKELETON_OLD] = 0;
         }
     }
 
