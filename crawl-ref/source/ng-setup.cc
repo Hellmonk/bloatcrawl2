@@ -709,6 +709,10 @@ void give_items_skills(const newgame_def& ng)
     case JOB_WANDERER:
         create_wanderer();
         break;
+        
+    case JOB_BILLIONAIRE:
+        you.gold = 1000000;
+        break;
 
     case JOB_UNCLE:
         add_spell_to_memory(SPELL_CONFUSING_TOUCH);

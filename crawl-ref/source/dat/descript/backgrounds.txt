@@ -48,6 +48,11 @@ Berserker
 Berserkers believe in Trog, the magic-hating god of frenzy. Not much can stop a
 raging berserker early on, apart from hubris.
 %%%%
+Billionaire
+
+When the revolution comes, some Billionaires flee the surface and enter 
+the dungeon with a fraction of their hoarded wealth.
+%%%%
 Blood Knight
 
 Servants of the demon god Makhleb, blood knights begin with moderate skill in 
