@@ -184,7 +184,7 @@ static bool _enemy_visible()
     return false;
 }
 
-bool cancel_manafeet_mode()
+static bool cancel_manafeet_mode()
 {
     if (!you.has_mutation(MUT_MANAFEET))
         return false;
@@ -206,7 +206,7 @@ bool cancel_manafeet_mode()
     return false;
 }
 
-void handle_manafeet()
+static void handle_manafeet()
 {
     if (!you.has_mutation(MUT_MANAFEET))
         return;
