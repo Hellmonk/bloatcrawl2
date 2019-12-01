@@ -274,95 +274,80 @@ static void _give_aspirant_book()
         skill = skill_type(SK_FIRST_MAGIC_SCHOOL + random2(value));
     }
 
-    spschool school = skill2spell_type(skill);
-
-    item_def* item = newgame_make_item(OBJ_BOOKS, BOOK_RANDART_THEME);
-    if (!item)
-        return;
-
-    vector<spell_type> incl_spells;
-
     switch (skill)
     {
         case SK_CONJURATIONS:
-            incl_spells.push_back(SPELL_ISKENDERUNS_MYSTIC_BLAST);
-            incl_spells.push_back(SPELL_IOOD);
-            incl_spells.push_back(coinflip() ? SPELL_GLACIATE : SPELL_FIRE_STORM);
+            you.spell_library.set(SPELL_ISKENDERUNS_MYSTIC_BLAST, true);
+            you.spell_library.set(SPELL_IOOD, true);
+            you.spell_library.set(coinflip() ? SPELL_GLACIATE : SPELL_FIRE_STORM, true);
             break;
 
         case SK_EARTH_MAGIC:
-            incl_spells.push_back(coinflip() ? SPELL_PETRIFY : SPELL_LRD);
-            incl_spells.push_back(coinflip() ? SPELL_IRON_SHOT : SPELL_LEHUDIBS_CRYSTAL_SPEAR);
-            incl_spells.push_back(SPELL_SHATTER);
+            you.spell_library.set(coinflip() ? SPELL_PETRIFY : SPELL_LRD, true);
+            you.spell_library.set(coinflip() ? SPELL_IRON_SHOT : SPELL_LEHUDIBS_CRYSTAL_SPEAR, true);
+            you.spell_library.set(SPELL_SHATTER, true);
             break;
 
         case SK_AIR_MAGIC:
-            incl_spells.push_back(coinflip() ? SPELL_SUMMON_LIGHTNING_SPIRE : SPELL_AIRSTRIKE);
-            incl_spells.push_back(coinflip() ? SPELL_CONJURE_BALL_LIGHTNING : SPELL_CHAIN_LIGHTNING);
-            incl_spells.push_back(SPELL_TORNADO);
+            you.spell_library.set(coinflip() ? SPELL_SUMMON_LIGHTNING_SPIRE : SPELL_AIRSTRIKE, true);
+            you.spell_library.set(coinflip() ? SPELL_CONJURE_BALL_LIGHTNING : SPELL_CHAIN_LIGHTNING, true);
+            you.spell_library.set(SPELL_TORNADO, true);
             break;
 
         case SK_ICE_MAGIC:
-            incl_spells.push_back(coinflip() ? SPELL_THROW_ICICLE : SPELL_SUMMON_ICE_BEAST);
-            incl_spells.push_back(coinflip() ? SPELL_BOLT_OF_COLD : SPELL_OZOCUBUS_REFRIGERATION);
-            incl_spells.push_back(SPELL_GLACIATE);
+            you.spell_library.set(coinflip() ? SPELL_THROW_ICICLE : SPELL_SUMMON_ICE_BEAST, true);
+            you.spell_library.set(coinflip() ? SPELL_BOLT_OF_COLD : SPELL_OZOCUBUS_REFRIGERATION, true);
+            you.spell_library.set(SPELL_GLACIATE, true);
             break;
 
         case SK_FIRE_MAGIC:
-            incl_spells.push_back(SPELL_STICKY_FLAME);
-            incl_spells.push_back(SPELL_BOLT_OF_FIRE);
-            incl_spells.push_back(SPELL_FIRE_STORM);
+            you.spell_library.set(SPELL_STICKY_FLAME, true);
+            you.spell_library.set(SPELL_BOLT_OF_FIRE, true);
+            you.spell_library.set(SPELL_FIRE_STORM, true);
             break;
 
         case SK_TRANSMUTATIONS:
-            incl_spells.push_back(SPELL_ICE_FORM);
-            incl_spells.push_back(coinflip() ? SPELL_STATUE_FORM : SPELL_HYDRA_FORM);
-            incl_spells.push_back(SPELL_DRAGON_FORM);
+            you.spell_library.set(SPELL_ICE_FORM, true);
+            you.spell_library.set(coinflip() ? SPELL_STATUE_FORM : SPELL_HYDRA_FORM, true);
+            you.spell_library.set(SPELL_DRAGON_FORM, true);
             break;
 
         case SK_TRANSLOCATIONS:
-            incl_spells.push_back(SPELL_GOLUBRIAS_PASSAGE);
-            incl_spells.push_back(SPELL_MALIGN_GATEWAY);
-            incl_spells.push_back(SPELL_CONTROLLED_BLINK);
+            you.spell_library.set(SPELL_GOLUBRIAS_PASSAGE, true);
+            you.spell_library.set(SPELL_MALIGN_GATEWAY, true);
+            you.spell_library.set(SPELL_CONTROLLED_BLINK, true);
             break;
 
         case SK_NECROMANCY:
-            incl_spells.push_back(SPELL_ANIMATE_DEAD);
-            incl_spells.push_back(coinflip() ? SPELL_SIMULACRUM : SPELL_DEATH_CHANNEL);
-            incl_spells.push_back(SPELL_BORGNJORS_REVIVIFICATION);
+            you.spell_library.set(SPELL_ANIMATE_DEAD, true);
+            you.spell_library.set(coinflip() ? SPELL_SIMULACRUM : SPELL_DEATH_CHANNEL, true);
+            you.spell_library.set(SPELL_BORGNJORS_REVIVIFICATION, true);
             break;
 
         case SK_SUMMONINGS:
-            incl_spells.push_back(coinflip() ? SPELL_SUMMON_ICE_BEAST : SPELL_SUMMON_LIGHTNING_SPIRE);
-            incl_spells.push_back(coinflip() ? SPELL_SUMMON_HYDRA : SPELL_MONSTROUS_MENAGERIE);
-            incl_spells.push_back(coinflip() ? SPELL_SUMMON_HORRIBLE_THINGS : SPELL_DRAGON_CALL);
+            you.spell_library.set(coinflip() ? SPELL_SUMMON_ICE_BEAST : SPELL_SUMMON_LIGHTNING_SPIRE, true);
+            you.spell_library.set(coinflip() ? SPELL_SUMMON_HYDRA : SPELL_MONSTROUS_MENAGERIE, true);
+            you.spell_library.set(coinflip() ? SPELL_SUMMON_HORRIBLE_THINGS : SPELL_DRAGON_CALL, true);
             break;
 
         case SK_CHARMS:
-            incl_spells.push_back(SPELL_EXCRUCIATING_WOUNDS);
-            incl_spells.push_back(SPELL_DEFLECT_MISSILES);
-            incl_spells.push_back(SPELL_DEATHS_DOOR);
+            you.spell_library.set(SPELL_EXCRUCIATING_WOUNDS, true);
+            you.spell_library.set(SPELL_DEFLECT_MISSILES, true);
+            you.spell_library.set(SPELL_DEATHS_DOOR, true);
             break;
 
         case SK_HEXES:
-            incl_spells.push_back(coinflip() ? SPELL_CAUSE_FEAR : SPELL_FULMINANT_PRISM);
-            incl_spells.push_back(coinflip() ? SPELL_DARKNESS : SPELL_INVISIBILITY);
-            incl_spells.push_back(SPELL_DISCORD);
+            you.spell_library.set(coinflip() ? SPELL_CAUSE_FEAR : SPELL_FULMINANT_PRISM, true);
+            you.spell_library.set(coinflip() ? SPELL_DARKNESS : SPELL_INVISIBILITY, true);
+            you.spell_library.set(SPELL_DISCORD, true);
             break;
-
 
         default:
             break;
             
     }
-
-    build_themed_book(*item, forced_spell_filter(incl_spells), forced_book_theme(school), 3);
-                            
-    item_def* manual = newgame_make_item(OBJ_BOOKS, BOOK_MANUAL);
-        manual->skill = skill;
-        manual->skill_points = 500;
         
-    you.skills[skill] += 4;
+    you.skills[skill] += 7;
 }
 
 static skill_type _archaeologist_armour_skill_unusable(int type)

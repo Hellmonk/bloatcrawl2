@@ -846,7 +846,6 @@ void create_understudy()
         second_manual->skill_points = 2000;
 }
 
-
 void librarian_book()
 {
     book_type book = (book_type) random2(BOOK_ANNIHILATIONS);
