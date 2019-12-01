@@ -1267,6 +1267,10 @@ void melee_attack::player_aux_setup(unarmed_attack_type atk)
     {
         damage_brand = SPWPN_VAMPIRISM;
     }
+    else if (atk == UNAT_BITE && you.species == SP_RATLING)
+    {
+		damage_brand = SPWPN_VENOM;
+    }
 }
 
 /**

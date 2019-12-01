@@ -2137,6 +2137,20 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
+{ MUT_POISON_ENHANCER, 0, 1, mutflag::good, false,
+  "enhanced poison magic",
+
+  {"Your verminous nature enhances your poison magic.",
+   "",
+   ""},
+
+  {"You feel toxic.",
+   "",
+   ""},
+
+  {"", "", ""},
+},
+
 };
 
 static const mutation_category_def category_mut_data[] =

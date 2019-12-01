@@ -246,6 +246,11 @@ Quill Orc
 Quill orcs love to read and hate close combat. They read books and scrolls at an
 uncanny pace.
 %%%%
+Ratling
+
+Ratlings are verminous humanoids that mature at an incredible pace, but learn
+very slowly. They have an affinity for poison magic.
+%%%%
 Shapeshifter
 
 Shapeshifters imitate monsters around them to an uncanny degree. They cannot

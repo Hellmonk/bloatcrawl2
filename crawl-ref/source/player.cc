@@ -1918,6 +1918,8 @@ int player_spec_summ()
 int player_spec_poison()
 {
     int sp = 0;
+    
+    sp += you.get_mutation_level(MUT_POISON_ENHANCER);
 
     // Staves
     sp += you.wearing(EQ_STAFF, STAFF_POISON);
