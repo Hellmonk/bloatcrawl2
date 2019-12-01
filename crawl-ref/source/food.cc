@@ -121,7 +121,8 @@ bool you_foodless(bool temp)
 {
     return you.undead_state(temp) == US_UNDEAD
         || you.undead_state(temp) == US_SEMI_UNDEAD
-        || you.has_mutation(MUT_BOL_XI);
+        || you.has_mutation(MUT_BOL_XI)
+        || you.species == SP_ROBOT;
 }
 
 bool prompt_eat_item(int slot)

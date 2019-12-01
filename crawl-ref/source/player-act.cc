@@ -597,6 +597,8 @@ string player::arm_name(bool plural, bool *can_plural) const
         adj = "feathered";
     else if (you.undead_state() == US_UNDEAD)
         adj = "bandage-wrapped";
+    else if (you.species == SP_ROBOT)
+        adj = "metal";
     else if (species == SP_OCTOPODE)
         str = "tentacle";
 
@@ -793,6 +795,8 @@ bool player::can_go_berserk(bool intentional, bool potion, bool quiet,
         msg = "You're too calm and focused to rage.";
     else if (is_lifeless_undead(temp))
         msg = "You cannot raise a blood rage in your lifeless body.";
+    else if (you.species == SP_ROBOT)
+        msg = "You are incapable of feeling rage.";
     else if (stasis())
         msg = "Your stasis prevents you from going berserk.";
     else

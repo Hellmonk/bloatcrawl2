@@ -2147,6 +2147,20 @@ static const mutation_def mut_data[] =
   {"You feel toxic.",
    "",
    ""},
+   
+  {"", "", ""},
+},
+   
+{ MUT_LASER_BREATH, 0, 1, mutflag::good, false,
+  "laser",
+
+  {"You can shoot a disintegration laser from your mouth.",
+   "",
+   ""},
+
+  {"Your disintegration beam is now operational.",
+   "",
+   ""},
 
   {"", "", ""},
 },

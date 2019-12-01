@@ -6538,7 +6538,7 @@ mon_holy_type player::holiness(bool temp) const
     // Alive Vampires are MH_NATURAL
     if (is_lifeless_undead(temp))
         holi = MH_UNDEAD;
-    else if (species == SP_GARGOYLE)
+    else if (species == SP_GARGOYLE || species == SP_ROBOT)
         holi = MH_NONLIVING;
     else
         holi = MH_NATURAL;
@@ -7568,6 +7568,9 @@ bool player::can_safely_mutate(bool temp) const
 {
     if (!can_mutate())
         return false;
+    
+    if (species == SP_ROBOT)
+        return false;
 
     return undead_state(temp) == US_ALIVE
            || undead_state(temp) == US_SEMI_UNDEAD;
@@ -7584,7 +7587,7 @@ bool player::is_lifeless_undead(bool temp) const
 
 bool player::can_polymorph() const
 {
-    return !(transform_uncancellable || is_lifeless_undead());
+    return !(transform_uncancellable || is_lifeless_undead() || species == SP_ROBOT);
 }
 
 bool player::can_bleed(bool allow_tran) const

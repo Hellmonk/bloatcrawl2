@@ -1249,6 +1249,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_SUBLIMATION_OF_BLOOD:
         // XXX: write player_can_bleed(bool temp) & use that
         if (you.species == SP_GARGOYLE
+            || you.species == SP_ROBOT
             || you.undead_state() == US_HUNGRY_DEAD
             || you.undead_state() == US_UNDEAD
             || (temp && !form_can_bleed(you.form)))

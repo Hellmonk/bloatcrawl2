@@ -351,6 +351,9 @@ static const ability_def Ability_List[] =
     { ABIL_ARGON_FLASH, "Argon Flash", 0, 0, 0, 0, {}, abflag::argon_flash },
 
     { ABIL_BOL_XI_END, "End", 0, 0, 0, 0, {fail_basis::bol_xi_end, 100}, abflag::pain },
+    
+    { ABIL_LASER, "Mouth Laser",
+        0, 0, 125, 0, {fail_basis::xl, 30, 1}, abflag::breath },
 
     // EVOKE abilities use Evocations and come from items.
     // Teleportation and Blink can also come from mutations
@@ -1009,7 +1012,8 @@ ability_type fixup_ability(ability_type ability)
     case ABIL_EVOKE_BERSERK:
     case ABIL_TROG_BERSERK:
         if (you.is_lifeless_undead(false)
-            || you.species == SP_FORMICID)
+            || you.species == SP_FORMICID
+            || you.species == SP_ROBOT)
         {
             return ABIL_NON_ABILITY;
         }
@@ -1606,6 +1610,7 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
     case ABIL_BREATHE_POWER:
     case ABIL_BREATHE_STEAM:
     case ABIL_BREATHE_MEPHITIC:
+    case ABIL_LASER:
         if (you.duration[DUR_BREATH_WEAPON])
         {
             if (!quiet)
@@ -1828,6 +1833,7 @@ static int _calc_breath_ability_range(ability_type ability)
         break;
     case ABIL_BREATHE_LIGHTNING:
     case ABIL_BREATHE_POWER:
+    case ABIL_LASER:
         range = LOS_MAX_RANGE;
         break;
     default:
@@ -2178,6 +2184,19 @@ static spret _do_ability(const ability_def& abil, bool fail)
         you.increase_duration(DUR_BREATH_WEAPON,
                           3 + random2(10) + random2(30 - you.experience_level));
         break;
+    }
+    
+    case ABIL_LASER:
+    {
+	    int power = you.experience_level * 5;
+        fail_check();
+            if (your_spells(SPELL_DISINTEGRATE, power, false) == spret::abort)
+            {
+                return spret::abort;
+            }
+        you.increase_duration(DUR_BREATH_WEAPON,
+                      3 + random2(10) + random2(30 - you.experience_level));
+            break;
     }
 
     case ABIL_BREATHE_FIRE:
@@ -3715,6 +3734,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.get_mutation_level(MUT_BLINK))
         _add_talent(talents, ABIL_BLINK, check_confused);
+    
+    if(you.get_mutation_level(MUT_LASER_BREATH))
+        _add_talent(talents, ABIL_LASER, check_confused);
 
     // Religious abilities.
     for (ability_type abil : get_god_abilities(include_unusable, false,

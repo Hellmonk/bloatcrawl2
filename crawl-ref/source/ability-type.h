@@ -60,7 +60,8 @@ enum ability_type
     ABIL_ARGON_FLASH,
     // Bol Xi
     ABIL_BOL_XI_END,
-    ABIL_MAX_INTRINSIC = ABIL_BOL_XI_END,
+    ABIL_LASER,
+    ABIL_MAX_INTRINSIC = ABIL_LASER,
 
     // Evoking items.
     ABIL_EVOKE_BERSERK = 40,

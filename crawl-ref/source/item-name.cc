@@ -3578,6 +3578,7 @@ bool is_useless_item(const item_def &item, bool temp)
                    && (you.undead_state() != US_SEMI_UNDEAD
                        || temp && !you.vampire_alive)
                    || you.species == SP_FORMICID
+                   || you.species == SP_ROBOT
                    || you.get_mutation_level(MUT_NO_ARTIFICE);
 
         case RING_RESIST_CORROSION:
