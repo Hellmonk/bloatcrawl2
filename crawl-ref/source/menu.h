@@ -47,7 +47,13 @@ struct menu_letter
     {
         letter = letter == 'z'? 'A' :
                  letter == 'Z'? '0' :
-                 letter == '9'? 'a' :
+                 letter == '9'? '@' :
+                 letter == '@'? '$' :
+                 letter == '$'? '^' :
+                 letter == '^'? '&' :
+                 letter == '&'? '(' :
+                 letter == '('? ')' :
+                 letter == ')'? 'a' :
                                 letter + 1;
         return *this;
     }
