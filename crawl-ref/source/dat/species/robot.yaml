@@ -1,0 +1,67 @@
+enum: SP_ROBOT
+monster: MONS_IRON_GOLEM
+name: "Robot"
+short_name: Ro
+difficulty: Intermediate
+aptitudes:
+  xp: -1
+  hp: 0
+  mp_mod: -1
+  mr: 3
+  fighting: 0
+  short_blades: 0
+  long_blades: 0
+  axes: 0
+  maces_and_flails: 0
+  polearms: 0
+  staves: 0
+  slings: 0
+  bows: 0
+  crossbows: 0
+  throwing: 0
+  armour: 0
+  dodging: 0
+  stealth: 0
+  shields: 0
+  unarmed_combat: 0
+  spellcasting: -2
+  conjurations: -1
+  hexes: -1
+  charms: -1
+  summoning: -1
+  necromancy: -1
+  translocations: -1
+  transmutations: -1
+  fire_magic: -1
+  ice_magic: -1
+  air_magic: -1
+  earth_magic: -1
+  poison_magic: -1
+  invocations: -4
+  evocations: 2
+str: 9
+int: 11
+dex: 4
+levelup_stat_frequency: 4
+levelup_stats:
+   - str
+   - int
+mutations:
+  1:
+    MUT_NEGATIVE_ENERGY_RESISTANCE: 3
+    MUT_UNBREATHING: 1
+    MUT_TORMENT_RESISTANCE: 1
+    MUT_ROT_IMMUNITY: 1
+  5: 
+    MUT_LASER_BREATH: 1
+fake_mutations:
+  - long: You break items when uninstalling them.
+    short: fragile items
+  - long: You do not eat.
+    short: foodless
+  - long: You are sometimes slowed by electricity and fire.
+    short: slowed by fire and elec
+recommended_jobs:
+  - JOB_FIGHTER
+  - JOB_GLADIATOR
+  - JOB_ARTIFICER
