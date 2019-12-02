@@ -296,6 +296,11 @@ Turtle
 Turtles are hard-shelled warriors trained in the arts of ninjutsu. They fight
 evil wherever it can be found and follow a strict honour code.
 %%%%
+Weed Elf
+
+The permanently baked Weed Elves aren't quite as smart or nimble as other elves,
+but they are still skilled at magic. They trail smoke wherever they go.
+%%%%
 Xeno Elf
 
 Strange insectoid creatures from a distant land. Their magical efficiency is

@@ -2165,6 +2165,20 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
+{ MUT_CLOUD_TRAIL, 0, 1, mutflag::good, false,
+  "cloud trail",
+
+  {"You trail harmless clouds wherever you go.",
+   "",
+   ""},
+
+  {"You begin trailing clouds.",
+   "",
+   ""},
+
+  {"", "", ""},
+},
+
 };
 
 static const mutation_category_def category_mut_data[] =

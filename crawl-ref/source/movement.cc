@@ -780,6 +780,24 @@ void move_player_action(coord_def move)
 
         if (swap)
             _swap_places(targ_monst, mon_swap_dest);
+        else if (you.has_mutation(MUT_CLOUD_TRAIL))
+        {
+            if (cell_is_solid(you.pos()))
+                ASSERT(you.wizmode_teleported_into_rock);
+            else
+            {
+                cloud_type cloud = random_choose_weighted(8, CLOUD_BLACK_SMOKE,
+                                                          24, CLOUD_GREY_SMOKE,
+                                                          4, CLOUD_BLUE_SMOKE,
+                                                          4, CLOUD_PURPLE_SMOKE,
+                                                          2, CLOUD_MAGIC_TRAIL,
+                                                          1, CLOUD_MEPHITIC,
+                                                          1, CLOUD_STEAM,
+                                                          2, CLOUD_MIST);
+                check_place_cloud(cloud, you.pos(), random_range(3, 10), &you,
+                                  0, -1);
+            }
+        }
         else if (you.duration[DUR_CLOUD_TRAIL])
         {
             if (cell_is_solid(you.pos()))
