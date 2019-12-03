@@ -53,7 +53,8 @@ struct menu_letter
                  letter == '^'? '&' :
                  letter == '&'? '(' :
                  letter == '('? ')' :
-                 letter == ')'? 'a' :
+                 letter == ')'? '.' :
+                 letter == '.'? 'a' :
                                 letter + 1;
         return *this;
     }
