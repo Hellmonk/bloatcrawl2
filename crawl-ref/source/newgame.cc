@@ -911,7 +911,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     skill_choice_str.cprintf("kill: normal | unskilled (-1 apt) | skilled (+1 apt)");
     auto skill_choice = make_shared<ui::Text>(skill_choice_str);
     box->add_child(skill_choice);
-    
+
     formatted_string exp_choice_str;
     exp_choice_str.textcolour(WHITE);
     exp_choice_str.cprintf("\n(E)");

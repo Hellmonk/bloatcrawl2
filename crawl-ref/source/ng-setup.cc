@@ -344,9 +344,9 @@ static void _give_aspirant_book()
 
         default:
             break;
-            
+
     }
-        
+
     you.skills[skill] += 7;
 }
 
@@ -694,7 +694,7 @@ void give_items_skills(const newgame_def& ng)
     case JOB_WANDERER:
         create_wanderer();
         break;
-        
+
     case JOB_BILLIONAIRE:
         you.gold = 1000000;
         break;
@@ -715,7 +715,7 @@ void give_items_skills(const newgame_def& ng)
     case JOB_NECKBEARD:
         add_spell_to_memory(SPELL_BLINK);
         break;
-        
+
     case JOB_SOOTHSLAYER:
         you.spell_library.set(SPELL_CORONA, true);
         you.spell_library.set(SPELL_APPORTATION, true);
@@ -783,11 +783,11 @@ void give_items_skills(const newgame_def& ng)
         you.skills[SK_THROWING] = 0;
         you.skills[SK_SHIELDS] = 0;
     }
-    
+
     if (you.species == SP_ANGEL && you_worship(GOD_NO_GOD))
     {
         you.religion = GOD_SHINING_ONE;
-        you.piety = 35;		
+        you.piety = 35;
     }
 
     if (!you_worship(GOD_NO_GOD))
