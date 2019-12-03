@@ -38,6 +38,9 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 ## New Backgrounds
 
 * No Kings, No Rulers (maybe a god though). **Anarchists** are bent on dismantling the dungeon hierarchy with rocks and explosives.
+* Thoroughly inept at fighting but well dressed, **Archaeologists** enter the dungeon looking to cast light over the origins of ancient relics.
+* **Aspirants** are novices at magic who have acquired books of powerful magic. They hope to one day master the spells within.
+* When the revolution comes, some **Billionaires** flee the surface and enter the dungeon with a fraction of their hoarded wealth.
 * Servants of the demon god Makhleb, **Blood Knights** begin with moderate skill in  combat and quickly learn to harness Makhleb's destructive power.
 * **Bound** serve Ashenzari, the god of curses, and begin their journey partially bound with cursed equipment.
 * **Cavepeople** start with exceptional strength but, unfortunately, neolithic weapons.
@@ -56,13 +59,14 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Librarians** come to the Dungeon in search of new books for their collection. They serve Sif Muna the Loreminder and bring a random book along with them.
 * **Merchants** are followers of Gozag. Whether newly established or unsuccessful on the  surface world, they enter the Dungeon desperate for a source of income.
 * **Meteorologists** predict the weather and carry around some handy evocable items to make their predictions come true.
-* **Neckbeards** come to the Dungeon from their moms' basements with a cape, a fedora,
-a rusty katana and the ability to teleport behind you (nothing personal, kid).
+* **Neckbeards** come to the Dungeon from their moms' basements with a cape, a fedora, a rusty katana and the ability to teleport behind you (nothing personal, kid).
 * **Night Knights** follow the shadowy god Dithmenos. They begin lightly armoured but with good stealth.
 * **Paladin**: Worshippers of The Shining One, these holy warriors fall down a lot.
 * **Philosophers** bring their thinking hat to the dungeon, but not much else in the way of useful items.
 * Some people spend their life investigating and creating toxins. **Poison Maniacs** use these sickening creations to DESTROY libtards in their quest for the Orb.
 * **Slime Priests** follow Jiyva, the slime god. They enter the dungeon already mutated by their deity's power but with only a small amount of divine favor.
+* Highly accurate users of ranged weaponry, **Snipers** wear amulets of harm to boost their damage capabilities.
+* **Soothslayers** are battlemages who begin with a variety of simple magic in addition to their weapon.
 * **Storm Clerics** spread destruction in the name of Qazlal.
 * **Torpor Knights** follow Cheibriados and wear heavy, ponderous armour to gain their god's favour more quickly.
 * **Uncles** search the dungeon for their lost nephews.
