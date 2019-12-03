@@ -1334,7 +1334,7 @@ static job_group jobs_order[] =
     },
     {
         "Mage",
-        coord_def(1, 7), 15,
+        coord_def(1, 10), 15,
         {
             JOB_WIZARD, JOB_CONJURER, JOB_SUMMONER, JOB_NECROMANCER,
             JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST, JOB_AIR_ELEMENTALIST,
@@ -1438,7 +1438,6 @@ public:
         m_vbox->on_hotkey_event([this](const KeyEvent& event) {
             switch (event.key())
             {
-            case 'X':
             case CONTROL('Q'):
 #ifdef USE_TILE_WEB
                 tiles.send_exit_reason("cancel");
