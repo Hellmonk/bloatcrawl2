@@ -2,7 +2,7 @@ enum: SP_YETI
 monster: MONS_OGRE
 name: Yeti
 short_name: Ye
-difficulty: Intermediate
+difficulty: Simple
 aptitudes:
   xp: 0
   hp: 2
