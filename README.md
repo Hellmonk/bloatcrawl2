@@ -44,6 +44,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * Servants of the demon god Makhleb, **Blood Knights** begin with moderate skill in  combat and quickly learn to harness Makhleb's destructive power.
 * **Bound** serve Ashenzari, the god of curses, and begin their journey partially bound with cursed equipment.
 * **Cavepeople** start with exceptional strength but, unfortunately, neolithic weapons.
+* Lots of people wish they could cast spells in heavy armour. **Chaincasters** do something about it.
 * **Dancers** have left their friends behind and entered the dungeon in service of Uskayaw. They have few combat skills but are quite good at evading attacks.
 * Pontiffs of Yredelemnul, **Death Bishops** carry a weapon of draining and use the pain spell in service of their evil god.
 * **Deprived** start with nothing but a ration and almost no skills. Survival may prove... difficult.

@@ -67,6 +67,11 @@ Caveperson
 
 Cavepeople start with exceptional strength but, unfortunately, neolithic weapons.
 %%%%
+Chaincaster
+
+Lots of people wish they could cast spells in heavy armour. Chaincasters do
+something about it.
+%%%%
 Chaos Knight
 
 Chaos Knights are playthings of the unpredictable Xom, and are subject to the

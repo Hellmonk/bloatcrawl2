@@ -171,6 +171,17 @@ static const map<job_type, job_def> job_data =
     { { SK_MACES_FLAILS, 2 }, { SK_SLINGS, 2 }, { SK_UNARMED_COMBAT, 2 }, },
 } },
 
+{ JOB_CHAINCASTER, {
+    "Ch", "Chaincaster",
+    6, 6, 0,
+    { SP_TROLL_TWO, SP_MINOTAUR, SP_PROTEAN, },
+    { "ring mail", "ring of wizardry", "ring of wizardry" },
+    WCHOICE_PLAIN,
+    { { SK_WEAPON, 2 }, { SK_ARMOUR, 1 }, { SK_FIGHTING, 1 },
+      { SK_SPELLCASTING, 1 }, }, // also gets 2 skill in their spell's school
+} },
+
+
 { JOB_CHAOS_KNIGHT, {
     "CK", "Chaos Knight",
     4, 4, 4,
