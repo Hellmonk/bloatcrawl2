@@ -724,9 +724,13 @@ void give_items_skills(const newgame_def& ng)
         you.spell_library.set(SPELL_SUMMON_SMALL_MAMMAL, true);
         you.spell_library.set(SPELL_PAIN, true);
         break;
-        
+
     case JOB_ASPIRANT:
         _give_aspirant_book();
+        break;
+
+    case JOB_POISON_MANIAC:
+        add_spell_to_memory(SPELL_STING);
         break;
 
     default:

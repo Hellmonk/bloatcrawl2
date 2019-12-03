@@ -1329,7 +1329,7 @@ static job_group jobs_order[] =
         coord_def(1, 0), 15,
         {
             JOB_SKALD, JOB_TRANSMUTER, JOB_WARPER, JOB_ARCANE_MARKSMAN,
-            JOB_ENCHANTER, JOB_SOOTHSLAYER,
+            JOB_ENCHANTER, JOB_SOOTHSLAYER, JOB_POISON_MANIAC,
         }
     },
     {

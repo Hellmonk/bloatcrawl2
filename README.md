@@ -61,6 +61,7 @@ a rusty katana and the ability to teleport behind you (nothing personal, kid).
 * **Night Knights** follow the shadowy god Dithmenos. They begin lightly armoured but with good stealth.
 * **Paladin**: Worshippers of The Shining One, these holy warriors fall down a lot.
 * **Philosophers** bring their thinking hat to the dungeon, but not much else in the way of useful items.
+* Some people spend their life investigating and creating toxins. **Poison Maniacs** use these sickening creations to DESTROY libtards in their quest for the Orb.
 * **Slime Priests** follow Jiyva, the slime god. They enter the dungeon already mutated by their deity's power but with only a small amount of divine favor.
 * **Storm Clerics** spread destruction in the name of Qazlal.
 * **Torpor Knights** follow Cheibriados and wear heavy, ponderous armour to gain their god's favour more quickly.

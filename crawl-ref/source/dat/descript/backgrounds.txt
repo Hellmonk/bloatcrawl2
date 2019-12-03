@@ -212,6 +212,11 @@ Philosopher
 Philosophers bring their thinking hat to the dungeon, but not much else in the
 way of useful items.
 %%%%
+Poison Maniac
+
+Some people spend their life investigating and creating toxins. Poison Maniacs
+use these sickening creations to DESTROY libtards in their quest for the Orb.
+%%%%
 Slime Priest
 
 Slime priests follow Jiyva, the slime god. They enter the dungeon already mutated

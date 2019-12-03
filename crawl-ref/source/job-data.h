@@ -474,6 +474,17 @@ static const map<job_type, job_def> job_data =
     { { SK_FIGHTING, 2 }, { SK_SPELLCASTING, 2 }, { SK_HEXES, 1 }, { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_POISON_MANIAC, {
+    "PM", "Poison Maniac",
+    3, 9, 0,
+    { SP_NAGA, SP_OCTOPODE, SP_RATLING, },
+    { "robe", "dagger ego:poison", "ring of poison resistance", "dart ego:poisoned q:8"},
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 1 }, { SK_SHORT_BLADES, 2 },
+      { SK_DODGING, 2 },
+      { SK_SPELLCASTING, 1 }, { SK_POISON_MAGIC, 2 }, },
+} },
+
 { JOB_SKALD, {
     "Sk", "Skald",
     3, 5, 4,
