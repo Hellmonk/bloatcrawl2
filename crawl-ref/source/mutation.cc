@@ -675,6 +675,18 @@ string describe_mutations(bool drop_title)
                          num_tentacles.c_str()),
             !form_keeps_mutations());
     }
+    
+    if (you.species == SP_UNIPODE)
+    {
+        result += _annotate_form_based("You are amphibious.",
+                                       !form_likes_water());
+
+        const string num_tentacles =
+               number_in_words(you.has_usable_tentacles(false));
+        result += _annotate_form_based(
+            make_stringf("You can wear one ring."),
+            !get_form()->slot_available(EQ_RING_EIGHT));
+    }
 
     if (you.species != SP_FELID && you.species != SP_BUTTERFLY)
     {
@@ -1258,12 +1270,12 @@ bool physiology_mutation_conflict(mutation_type mutat)
         return true;
     }
 
-    // Need tentacles to grow something on them.
-    if (you.species != SP_OCTOPODE && mutat == MUT_TENTACLE_SPIKE)
+     if (you.species != SP_OCTOPODE && you.species != SP_UNIPODE
+            && mutat == MUT_TENTACLE_SPIKE)
         return true;
 
     // No bones for thin skeletal structure, and too squishy for horns.
-    if (you.species == SP_OCTOPODE
+    if (you.species == SP_OCTOPODE || you.species == SP_UNIPODE
         && (mutat == MUT_THIN_SKELETAL_STRUCTURE || mutat == MUT_HORNS))
     {
         return true;
@@ -1298,7 +1310,8 @@ bool physiology_mutation_conflict(mutation_type mutat)
 
     // Felids have innate claws, and unlike trolls/ghouls, there are no
     // increases for them. And octopodes have no hands.
-    if ((you.species == SP_FELID || you.species == SP_OCTOPODE || you.species == SP_BUTTERFLY)
+    if ((you.species == SP_FELID || you.species == SP_OCTOPODE 
+            || you.species == SP_BUTTERFLY || you.species == SP_UNIPODE)
          && mutat == MUT_CLAWS)
     {
         return true;
@@ -1680,6 +1693,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                     arms = "legs";
                 else if (you.species == SP_OCTOPODE)
                     arms = "tentacles";
+                else if (you.species == SP_UNIPODE)
+                    arms = "tentacle";
                 else
                     break;
                 mprf(MSGCH_MUTATION, "%s",

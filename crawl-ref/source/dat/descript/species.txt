@@ -291,6 +291,11 @@ Unfathomed Dwarf
 Deeper than deep, these dwarves cannot heal even through divine means. However,
 they have adapted to heal on kills and brew ambrosia potions from leftover life essence.
 %%%%
+Unipode
+
+Unipodes are distantly related to Octopodes, but have a single tentacle instead
+of eight. They can only wear one ring and cannot use two-handed weapons.
+%%%%
 Yeti
 
 Yeti are large, seldom-seen creatures that live on frozen mountain peaks.

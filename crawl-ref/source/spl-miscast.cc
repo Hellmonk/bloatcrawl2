@@ -1085,7 +1085,7 @@ void MiscastEffect::_charms(int severity)
             }
             else if (target->is_player())
             {
-                if (you.species == SP_OCTOPODE)
+                if (you.species == SP_OCTOPODE || you.species == SP_UNIPODE)
                     you_msg = "Your beak vibrates slightly."; // the only hard part
                 else
                     you_msg = "Your skull vibrates slightly.";

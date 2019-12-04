@@ -295,6 +295,7 @@ void fill_doll_equipment(dolls_data &result)
         case SP_SLITHERIER_NAGA:
         case SP_NAGA:    ch = TILEP_TRAN_STATUE_NAGA;     break;
         case SP_FELID:   ch = TILEP_TRAN_STATUE_FELID;    break;
+        case SP_UNIPODE:
         case SP_OCTOPODE:ch = TILEP_TRAN_STATUE_OCTOPODE; break;
         case SP_FAERIE_DRAGON: ch = TILEP_TRAN_STATUE_FAERIE_DRAGON; break;
         default:         ch = TILEP_TRAN_STATUE_HUMANOID; break;
@@ -311,6 +312,7 @@ void fill_doll_equipment(dolls_data &result)
         case SP_SLITHERIER_NAGA:
         case SP_NAGA:    ch = TILEP_TRAN_LICH_NAGA;     break;
         case SP_FELID:   ch = TILEP_TRAN_LICH_FELID;    break;
+        case SP_UNIPODE:
         case SP_OCTOPODE:ch = TILEP_TRAN_LICH_OCTOPODE; break;
         case SP_FAERIE_DRAGON: ch = TILEP_TRAN_LICH_FAERIE_DRAGON; break;
         default:         ch = TILEP_TRAN_LICH_HUMANOID; break;

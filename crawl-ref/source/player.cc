@@ -499,7 +499,7 @@ void moveto_location_effects(dungeon_feature_type old_feat,
                 }
             }
 
-            if (you.species == SP_OCTOPODE
+            if (you.species == SP_OCTOPODE || you.species == SP_UNIPODE
                 && !feat_is_water(old_feat)
                 && you.invisible())
             {
@@ -754,7 +754,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
     switch (eq)
     {
     case EQ_LEFT_RING:
-        if (you.get_mutation_level(MUT_MISSING_HAND))
+        if (you.get_mutation_level(MUT_MISSING_HAND) || you.species == SP_UNIPODE)
             return MB_FALSE;
         // intentional fallthrough
     case EQ_RIGHT_RING:
@@ -861,6 +861,8 @@ bool player_has_feet(bool temp, bool include_mutations)
         || you.species == SP_FELID
         || you.species == SP_BUTTERFLY
         || you.species == SP_OCTOPODE
+        || you.species == SP_FUNGOID
+        || you.species == SP_UNIPODE
         || you.fishtail && temp)
     {
         return false;
@@ -3595,7 +3597,7 @@ int player_stealth()
         if (you.in_water())
         {
             // Merfolk can sneak up on monsters underwater -- bwr
-            if (you.fishtail || you.species == SP_OCTOPODE)
+            if (you.fishtail || you.species == SP_OCTOPODE || you.species == SP_UNIPODE)
                 stealth += STEALTH_PIP;
             else if (!you.can_swim() && !you.extra_balanced())
                 stealth /= 2;       // splashy-splashy
@@ -7363,7 +7365,7 @@ int player::has_usable_tail(bool allow_tran) const
 // purpose of punching.
 bool player::has_usable_offhand() const
 {
-    if (get_mutation_level(MUT_MISSING_HAND))
+    if (get_mutation_level(MUT_MISSING_HAND) || you.species == SP_UNIPODE)
         return false;
     if (shield())
         return false;
@@ -7422,6 +7424,8 @@ int player::has_tentacles(bool allow_tran) const
         return 7;
     else if (species == SP_OCTOPODE)
         return 8;
+    else if (species == SP_UNIPODE)
+        return 1;
 
     return 0;
 }

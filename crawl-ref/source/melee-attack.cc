@@ -1308,6 +1308,9 @@ bool melee_attack::player_gets_aux_punch()
 {
     if (!get_form()->can_offhand_punch())
         return false;
+    
+    if (you.species == SP_UNIPODE)
+        return false;
 
     // roll for punch chance based on uc skill & armour penalty
     if (!attacker->fights_well_unarmed(attacker_armour_tohit_penalty

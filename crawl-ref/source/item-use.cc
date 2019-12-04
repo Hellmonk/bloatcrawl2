@@ -428,6 +428,13 @@ bool can_wield(const item_def *weapon, bool say_reason,
         SAY(mpr("You can't wield that without your missing limb."));
         return false;
     }
+    
+    if (you.species == SP_UNIPODE
+            && you.hands_reqd(*weapon) == HANDS_TWO)
+    {
+        SAY(mpr("You can't wield that with your one tentacle."));
+        return false;
+    }
 
     for (int i = EQ_MIN_ARMOUR; i <= EQ_MAX_WORN; i++)
     {
@@ -858,6 +865,13 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             mpr("You can't wear that!");
         return false;
     }
+    
+      if (you.species == SP_UNIPODE && slot != EQ_HELMET)
+    {
+        if (verbose)
+            mpr("You can't wear that!");
+        return false;
+    }
 
     if (you.species == SP_EXTINGUISHER && slot == EQ_SHIELD)
     {
@@ -952,7 +966,8 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
-    if (you.get_mutation_level(MUT_MISSING_HAND) && is_shield(item))
+    if  ((you.get_mutation_level(MUT_MISSING_HAND) || you.species == SP_UNIPODE) 
+            && is_shield(item))
     {
         if (verbose)
         {
@@ -1177,7 +1192,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
                 return false;
             }
 
-            if (you.species == SP_OCTOPODE)
+            if (you.species == SP_OCTOPODE || you.species == SP_UNIPODE)
             {
                 if (verbose)
                     mpr("You can't wear that!");
@@ -1448,7 +1463,7 @@ static vector<equipment_type> _current_ring_types()
     }
     else
     {
-        if (you.get_mutation_level(MUT_MISSING_HAND) == 0)
+        if (you.get_mutation_level(MUT_MISSING_HAND) == 0 && you.species != SP_UNIPODE)
             ret.push_back(EQ_LEFT_RING);
         ret.push_back(EQ_RIGHT_RING);
     }

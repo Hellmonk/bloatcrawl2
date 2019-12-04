@@ -356,7 +356,8 @@ bool player::can_wield(const item_def& item, bool ignore_curse,
 
     if (two_handed && (
         (!ignore_shield && shield())
-        || get_mutation_level(MUT_MISSING_HAND)))
+        || get_mutation_level(MUT_MISSING_HAND)
+        || you.species == SP_UNIPODE))
     {
         return false;
     }
@@ -413,7 +414,7 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
         return false;
     }
 
-    if (get_mutation_level(MUT_MISSING_HAND)
+    if ((get_mutation_level(MUT_MISSING_HAND) || you.species == SP_UNIPODE)
         && you.hands_reqd(item) == HANDS_TWO)
     {
         return false;
@@ -506,7 +507,7 @@ string player::hand_name(bool plural, bool *can_plural) const
     bool _can_plural;
     if (can_plural == nullptr)
         can_plural = &_can_plural;
-    *can_plural = !get_mutation_level(MUT_MISSING_HAND);
+    *can_plural = !get_mutation_level(MUT_MISSING_HAND) && you.species != SP_UNIPODE;
 
     const string singular = _hand_name_singular();
     if (plural && *can_plural)
@@ -599,7 +600,7 @@ string player::arm_name(bool plural, bool *can_plural) const
         adj = "bandage-wrapped";
     else if (you.species == SP_ROBOT)
         adj = "metal";
-    else if (species == SP_OCTOPODE)
+    else if (species == SP_OCTOPODE || species == SP_UNIPODE)
         str = "tentacle";
 
     if (form == transformation::lich)
