@@ -1,0 +1,60 @@
+enum: SP_FUNGOID
+monster: MONS_WANDERING_MUSHROOM
+name: "Fungoid"
+short_name: Fu
+difficulty: Advanced
+aptitudes:
+  xp: 0
+  hp: 2
+  mp_mod: 0
+  mr: 4
+  fighting: 0
+  short_blades: -1
+  long_blades: -1
+  axes: -1
+  maces_and_flails: -1
+  polearms: -1
+  staves: -1
+  slings: 2
+  bows: 1
+  crossbows: 1
+  throwing: 1
+  armour: 0
+  dodging: 0
+  stealth: 2
+  shields: 0
+  unarmed_combat: 0
+  spellcasting: -1
+  conjurations: 0
+  hexes: 2
+  charms: 0
+  summoning: -1
+  necromancy: 0
+  translocations: -2
+  transmutations: 0
+  fire_magic: -1
+  ice_magic: -1
+  air_magic: -1
+  earth_magic: 2
+  poison_magic: -1
+  invocations: 0
+  evocations: 0
+str: 9
+int: 8
+dex: 8
+levelup_stat_frequency: 4
+mutations:
+  1:
+    MUT_SLOW: 3
+    MUT_NEGATIVE_ENERGY_RESISTANCE: 1
+fake_mutations:
+  - long: You have roots in place of feet
+    short: no boots
+  - long: You sometimes release spores when you attack enemies in melee
+    short: spores
+  - long: You cannot move when seen by monsters
+    short: fungus form
+recommended_jobs:
+  - JOB_HUNTER
+  - JOB_ARCANE_MARKSMAN
+  - JOB_EARTH_ELEMENTALIST
