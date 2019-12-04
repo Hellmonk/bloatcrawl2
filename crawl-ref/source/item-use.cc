@@ -865,6 +865,13 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             mpr("You don't understand the use of that!");
         return false;
     }
+    
+    if(you.species == SP_FUNGOID && slot == EQ_BOOTS)
+    {
+        if (verbose)
+            mpr("You can't wear that!");
+        return false;
+    }
 
     if (you.has_mutation(MUT_FAERIE_WINGS) && slot == EQ_BODY_ARMOUR)
     {

@@ -1722,6 +1722,8 @@ string skill_title_by_rank(skill_type best_skill, uint8_t skill_rank,
         case SK_NECROMANCY:
             if (species == SP_SPRIGGAN && skill_rank == 5)
                 result = "Petite Mort";
+            else if (species == SP_FUNGOID && skill_rank == 5)
+                result = "Deathcap";
             else if (god == GOD_KIKUBAAQUDGHA)
                 result = god_title(god, species, piety);
             break;

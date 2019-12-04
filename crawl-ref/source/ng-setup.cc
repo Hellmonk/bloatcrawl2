@@ -771,6 +771,13 @@ void give_items_skills(const newgame_def& ng)
         _give_ranged_weapon(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
     else if (job_has_weapon_choice(you.char_class))
         newgame_make_item(OBJ_WEAPONS, ng.weapon);
+    
+    // give fungoids a sling to help them out
+    if (you.species == SP_FUNGOID && !job_gets_ranged_weapons(you.char_class))
+    {
+        newgame_make_item(OBJ_WEAPONS, WPN_HUNTING_SLING, 1, 0);
+        newgame_make_item(OBJ_MISSILES, MI_STONE, 5);
+    }
 
     give_job_equipment(you.char_class);
     give_job_skills(you.char_class);

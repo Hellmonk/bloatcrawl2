@@ -715,7 +715,8 @@ void move_player_action(coord_def move)
             attacking = true;
         }
     }
-    else if (you.form == transformation::fungus && moving && !you.confused())
+    else if ((you.form == transformation::fungus  || you.species == SP_FUNGOID) 
+                && moving && !you.confused())
     {
         if (you.is_nervous())
         {

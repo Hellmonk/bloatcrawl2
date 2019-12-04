@@ -7649,6 +7649,9 @@ bool player::polymorph(int pow, bool allow_immobile)
     for (int tries = 0; tries < 3; tries++)
     {
         f = forms[random2(forms.size())];
+        
+        if (you.species == SP_FUNGOID)
+            f = transformation::fungus;
 
         // need to do a dry run first, as Zin's protection has a random factor
         if (transform(pow, f, true, true))
@@ -7983,7 +7986,7 @@ void player::sentinel_mark(bool trap)
  */
 bool player::is_nervous()
 {
-    if (form != transformation::fungus)
+    if (form != transformation::fungus && species != SP_FUNGOID)
         return false;
     for (monster_near_iterator mi(&you); mi; ++mi)
     {
@@ -8001,7 +8004,7 @@ bool player::is_nervous()
  */
 bool player::made_nervous_by(const monster *mons)
 {
-    if (form != transformation::fungus)
+    if (form != transformation::fungus && species != SP_FUNGOID)
         return false;
     if (!mons)
         return false;

@@ -88,6 +88,11 @@ Felid
 Felids are many-lived cats possessing sentience. They are incapable of advanced
 item manipulation or the use of armour or weapons.
 %%%%
+Fungoid
+
+Fungoids are mushroomy humanoids with roots instead of feet. They cannot move
+when monsters are around, but release confusing spores at enemies when they attack.
+%%%%
 Gargoyle
 
 Made of living stone, Gargoyles have a preternatural affinity for the earth.
