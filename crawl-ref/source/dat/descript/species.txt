@@ -103,6 +103,11 @@ Gnoll
 Gnolls are canine-like humanoids. They have incredible proficiency and
 excellent physical attributes, but must learn all skills at once.
 %%%%
+Gnome
+
+Gnomes are small creatures who are highly attuned with the earth. They are
+skilled in the use of magical devices and ranged weaponry.
+%%%%
 Grue
 
 Grues are stealthy predators that are adapted to life in the darkness. They can

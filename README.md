@@ -16,6 +16,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Ember Elves** have depleted magical reserves, but regenerate magical power quickly. As they develop, their magic becomes more powerful but harder to control.
 * **Faerie Dragons** are attuned to magic and their spells cost fewer magic points. Their shimmering scales repel attacks and their wings let them fly.
 * **Flans** are gelatinous and slightly corrosive beings. Their fluid shape lets them fit easily into any body armour, but they cannot wear other armour types.
+* **Gnomes** are small creatures who are highly attuned with the earth. They are skilled in the use of magical devices and ranged weaponry.
 * Rolling around at the speed of sound, **Hedgehogs** have got places to go and gotta follow their rainbow.
 * Irits are magical, brutish one-eyed humanoids. They are adept at casting spells in heavy armour, although it costs them life force to do so.
 * **Kitsune** are enthralling fox spirits that take on human shapes. They are poor at most skills and frailer than humans, but can charm their foes.
