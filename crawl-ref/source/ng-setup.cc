@@ -629,6 +629,7 @@ void give_items_skills(const newgame_def& ng)
             you.props[RU_SACRIFICE_DELAY_KEY] = delay;
         }
         you.props[RU_SACRIFICE_PENALTY_KEY] = 0;
+        join_ru();
     }
         break;
 
