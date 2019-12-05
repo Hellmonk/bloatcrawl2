@@ -50,12 +50,12 @@ raging berserker early on, apart from hubris.
 %%%%
 Billionaire
 
-When the revolution comes, some Billionaires flee the surface and enter 
+When the revolution comes, some Billionaires flee the surface and enter
 the dungeon with a fraction of their hoarded wealth.
 %%%%
 Blood Knight
 
-Servants of the demon god Makhleb, blood knights begin with moderate skill in 
+Servants of the demon god Makhleb, blood knights begin with moderate skill in
 combat and quickly learn to harness Makhleb's destructive power.
 %%%%
 Bound
@@ -66,6 +66,11 @@ with cursed equipment.
 Caveperson
 
 Cavepeople start with exceptional strength but, unfortunately, neolithic weapons.
+%%%%
+Chaincaster
+
+Lots of people wish they could cast spells in heavy armour. Chaincasters do
+something about it.
 %%%%
 Chaos Knight
 
@@ -83,7 +88,7 @@ They have few combat skills but are quite good at evading attacks.
 %%%%
 Death Bishop
 
-Pontiffs of Yredelemnul, Death Bishops carry a weapon of draining and use the pain spell 
+Pontiffs of Yredelemnul, Death Bishops carry a weapon of draining and use the pain spell
 in service of their evil god.
 %%%%
 Deprived
@@ -112,7 +117,7 @@ and are equipped with an enchanted dagger.
 %%%%
 Entomologist
 
-Entomologists study insects and related creatures. They bring along a net and a sack 
+Entomologists study insects and related creatures. They bring along a net and a sack
 of spiders, and can also summon butterflies.
 %%%%
 Fencer
@@ -175,7 +180,7 @@ serve Sif Muna the Loreminder and bring a random book along with them.
 %%%%
 Merchant
 
-Merchants are followers of Gozag. Whether newly established or unsuccessful on the 
+Merchants are followers of Gozag. Whether newly established or unsuccessful on the
 surface world, they enter the Dungeon desperate for a source of income.
 %%%%
 Meteorologist
@@ -190,7 +195,7 @@ with the first god they worship.
 %%%%
 Neckbeard
 
-Neckbeards come to the Dungeon from their moms' basements with a cape, a fedora, 
+Neckbeards come to the Dungeon from their moms' basements with a cape, a fedora,
 a rusty katana and the ability to teleport behind you (nothing personal, kid).
 %%%%
 Necromancer
@@ -205,12 +210,17 @@ armoured but with good stealth.
 %%%%
 Paladin
 
-Worshippers of The Shining One, these holy warriors fall down a lot. 
+Worshippers of The Shining One, these holy warriors fall down a lot.
 %%%%
 Philosopher
 
 Philosophers bring their thinking hat to the dungeon, but not much else in the
 way of useful items.
+%%%%
+Poison Maniac
+
+Some people spend their life investigating and creating toxins. Poison Maniacs
+use these sickening creations to DESTROY libtards in their quest for the Orb.
 %%%%
 Slime Priest
 
@@ -258,7 +268,7 @@ Uncles search the dungeon for their lost nephews.
 Understudy
 
 It's opening night for "The Orb of Zot" and the hero is sick! The Understudy
-must learn their role quickly if they want to make it through the final act.   
+must learn their role quickly if they want to make it through the final act.
 %%%%
 Venom Mage
 

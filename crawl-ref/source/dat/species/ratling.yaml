@@ -2,7 +2,7 @@ enum: SP_RATLING
 monster: MONS_RAT
 name: "Ratling"
 short_name: Ra
-difficulty: Intermediate
+difficulty: Simple
 aptitudes:
   xp: 6
   hp: -1

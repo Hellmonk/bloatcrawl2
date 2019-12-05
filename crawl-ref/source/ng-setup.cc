@@ -182,12 +182,24 @@ item_def* newgame_make_item(object_class_type base,
         return nullptr;
     }
 
+    equipment_type eq_slot = get_item_slot(item);
+    // Rings need special attention to find an appropriate slot. Expand the
+    // below logic if any background can start with more than two equipped
+    // rings.
+    if (eq_slot == EQ_RINGS)
+    {
+        if (you.species == SP_OCTOPODE)
+            eq_slot = you.equip[EQ_RING_ONE] == -1 ? EQ_RING_ONE : EQ_RING_TWO;
+        else
+            eq_slot = you.equip[EQ_LEFT_RING] == -1 ? EQ_LEFT_RING : EQ_RIGHT_RING;
+    }
     if ((item.base_type == OBJ_WEAPONS && can_wield(&item, false, false)
          || (item.base_type == OBJ_ARMOUR && can_wear_armour(item, false, false))
          || item.base_type == OBJ_JEWELLERY)
-        && you.equip[get_item_slot(item)] == -1)
+        // and nothing already equipped
+        && you.equip[eq_slot] == -1)
     {
-        you.equip[get_item_slot(item)] = slot;
+        you.equip[eq_slot] = slot;
     }
 
     if (item.base_type == OBJ_MISSILES)
@@ -344,9 +356,9 @@ static void _give_aspirant_book()
 
         default:
             break;
-            
+
     }
-        
+
     you.skills[skill] += 7;
 }
 
@@ -694,7 +706,7 @@ void give_items_skills(const newgame_def& ng)
     case JOB_WANDERER:
         create_wanderer();
         break;
-        
+
     case JOB_BILLIONAIRE:
         you.gold = 1000000;
         break;
@@ -715,7 +727,7 @@ void give_items_skills(const newgame_def& ng)
     case JOB_NECKBEARD:
         add_spell_to_memory(SPELL_BLINK);
         break;
-        
+
     case JOB_SOOTHSLAYER:
         you.spell_library.set(SPELL_CORONA, true);
         you.spell_library.set(SPELL_APPORTATION, true);
@@ -724,10 +736,31 @@ void give_items_skills(const newgame_def& ng)
         you.spell_library.set(SPELL_SUMMON_SMALL_MAMMAL, true);
         you.spell_library.set(SPELL_PAIN, true);
         break;
-        
+
     case JOB_ASPIRANT:
         _give_aspirant_book();
         break;
+
+    case JOB_POISON_MANIAC:
+        add_spell_to_memory(SPELL_STING);
+        break;
+
+    case JOB_CHAINCASTER:
+    {
+        std::pair<skill_type, spell_type> selection = random_choose(
+            make_pair(SK_CONJURATIONS, SPELL_MAGIC_DART),
+            make_pair(SK_POISON_MAGIC, SPELL_STING),
+            make_pair(SK_FIRE_MAGIC, SPELL_FLAME_TONGUE),
+            // SPELL_FREEZE, no point having a range one spell
+            make_pair(SK_AIR_MAGIC, SPELL_SHOCK),
+            make_pair(SK_EARTH_MAGIC, SPELL_SANDBLAST),
+            make_pair(SK_NECROMANCY, SPELL_PAIN),
+            make_pair(SK_SUMMONINGS, SPELL_SUMMON_SMALL_MAMMAL)
+        );
+        add_spell_to_memory(selection.second);
+        you.skills[selection.first] += 2;
+        break;
+    }
 
     default:
         break;
@@ -790,11 +823,11 @@ void give_items_skills(const newgame_def& ng)
         you.skills[SK_THROWING] = 0;
         you.skills[SK_SHIELDS] = 0;
     }
-    
+
     if (you.species == SP_ANGEL && you_worship(GOD_NO_GOD))
     {
         you.religion = GOD_SHINING_ONE;
-        you.piety = 35;		
+        you.piety = 35;
     }
 
     if (!you_worship(GOD_NO_GOD))

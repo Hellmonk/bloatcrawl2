@@ -911,7 +911,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     skill_choice_str.cprintf("kill: normal | unskilled (-1 apt) | skilled (+1 apt)");
     auto skill_choice = make_shared<ui::Text>(skill_choice_str);
     box->add_child(skill_choice);
-    
+
     formatted_string exp_choice_str;
     exp_choice_str.textcolour(WHITE);
     exp_choice_str.cprintf("\n(E)");
@@ -1316,7 +1316,7 @@ static job_group jobs_order[] =
     },
     {
         "Adventurer",
-        coord_def(0, 9), 15,
+        coord_def(0, 10), 15,
         {
             JOB_ARTIFICER, JOB_WANDERER, JOB_ANARCHIST, JOB_UNDERSTUDY,
             JOB_METEOROLOGIST, JOB_UNCLE, JOB_ENTOMOLOGIST, JOB_DEPRIVED,
@@ -1329,12 +1329,12 @@ static job_group jobs_order[] =
         coord_def(1, 0), 15,
         {
             JOB_SKALD, JOB_TRANSMUTER, JOB_WARPER, JOB_ARCANE_MARKSMAN,
-            JOB_ENCHANTER, JOB_SOOTHSLAYER,
+            JOB_ENCHANTER, JOB_SOOTHSLAYER, JOB_POISON_MANIAC, JOB_CHAINCASTER,
         }
     },
     {
         "Mage",
-        coord_def(1, 7), 15,
+        coord_def(1, 10), 15,
         {
             JOB_WIZARD, JOB_CONJURER, JOB_SUMMONER, JOB_NECROMANCER,
             JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST, JOB_AIR_ELEMENTALIST,
@@ -1438,7 +1438,6 @@ public:
         m_vbox->on_hotkey_event([this](const KeyEvent& event) {
             switch (event.key())
             {
-            case 'X':
             case CONTROL('Q'):
 #ifdef USE_TILE_WEB
                 tiles.send_exit_reason("cancel");

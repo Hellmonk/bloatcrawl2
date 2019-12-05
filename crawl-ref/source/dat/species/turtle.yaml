@@ -4,7 +4,7 @@ name: Turtle
 genus: Turtle
 species_flags:
   - turtle
-difficulty: Intermediate
+difficulty: Simple
 aptitudes:
   xp: 0
   hp: -1

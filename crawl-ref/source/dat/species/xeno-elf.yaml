@@ -4,7 +4,7 @@ name: Xeno Elf
 short_name: XE
 adjective: "Elven"
 genus: "Elf"
-difficulty: Intermediate
+difficulty: Advanced
 species_flags:
   - elven
 aptitudes:

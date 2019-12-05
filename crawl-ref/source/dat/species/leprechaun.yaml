@@ -2,8 +2,7 @@ enum: SP_LEPRECHAUN
 monster: MONS_BOGGART
 name: "Leprechaun"
 short_name: "Le"
-difficulty: Intermediate
-# difficulty_priority: 40
+difficulty: Simple
 aptitudes:
   xp: 0
   hp: -2

@@ -171,6 +171,17 @@ static const map<job_type, job_def> job_data =
     { { SK_MACES_FLAILS, 2 }, { SK_SLINGS, 2 }, { SK_UNARMED_COMBAT, 2 }, },
 } },
 
+{ JOB_CHAINCASTER, {
+    "Ch", "Chaincaster",
+    6, 6, 0,
+    { SP_TROLL_TWO, SP_MINOTAUR, SP_PROTEAN, },
+    { "ring mail", "ring of wizardry", "ring of wizardry" },
+    WCHOICE_PLAIN,
+    { { SK_WEAPON, 2 }, { SK_ARMOUR, 1 }, { SK_FIGHTING, 1 },
+      { SK_SPELLCASTING, 1 }, }, // also gets 2 skill in their spell's school
+} },
+
+
 { JOB_CHAOS_KNIGHT, {
     "CK", "Chaos Knight",
     4, 4, 4,
@@ -474,6 +485,17 @@ static const map<job_type, job_def> job_data =
     { { SK_FIGHTING, 2 }, { SK_SPELLCASTING, 2 }, { SK_HEXES, 1 }, { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_POISON_MANIAC, {
+    "PM", "Poison Maniac",
+    3, 9, 0,
+    { SP_NAGA, SP_OCTOPODE, SP_RATLING, },
+    { "robe", "dagger ego:poison", "ring of poison resistance", "dart ego:poisoned q:8"},
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 1 }, { SK_SHORT_BLADES, 2 },
+      { SK_DODGING, 2 },
+      { SK_SPELLCASTING, 1 }, { SK_POISON_MAGIC, 2 }, },
+} },
+
 { JOB_SKALD, {
     "Sk", "Skald",
     3, 5, 4,
@@ -522,8 +544,8 @@ static const map<job_type, job_def> job_data =
     { "ring mail" },
     WCHOICE_PLAIN,
     { { SK_FIGHTING, 2 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 },
-      { SK_SPELLCASTING, 2 }, { SK_CHARMS, 1 }, { SK_HEXES, 1 }, 
-      { SK_TRANSLOCATIONS, 1 }, { SK_TRANSMUTATIONS, 1 }, 
+      { SK_SPELLCASTING, 2 }, { SK_CHARMS, 1 }, { SK_HEXES, 1 },
+      { SK_TRANSLOCATIONS, 1 }, { SK_TRANSMUTATIONS, 1 },
       { SK_NECROMANCY, 1 }, { SK_SUMMONINGS, 1 }, { SK_WEAPON, 2 }, },
 } },
 

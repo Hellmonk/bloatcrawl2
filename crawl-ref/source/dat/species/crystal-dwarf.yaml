@@ -4,7 +4,7 @@ name: "Crystal Dwarf"
 short_name: "CD"
 adjective: "Dwarven"
 genus: "Dwarf"
-difficulty: Intermediate
+difficulty: Simple
 aptitudes:
   xp: -1
   hp: -2
