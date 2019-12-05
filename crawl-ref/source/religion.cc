@@ -4710,6 +4710,15 @@ vector<god_type> nontemple_god_list()
     return god_list;
 }
 
+/**
+ * Is this ability a Ru sacrifice? (Note: does not include Reject Sacrifices.)
+ */
+bool is_ru_sacrifice(ability_type abil)
+{
+    return abil >= ABIL_FIRST_SACRIFICE
+        && abil <= ABIL_FINAL_SACRIFICE;
+}
+
 bool god_power_usable(const god_power& power, bool ignore_piety, bool ignore_penance)
 {
     // not an activated power
@@ -4717,7 +4726,7 @@ bool god_power_usable(const god_power& power, bool ignore_piety, bool ignore_pen
         return false;
     // Bunyips cannot use active divine powers
     // ...but Ru's sacrifices don't count as a divine power
-    if (you.has_mutation(MUT_PASSIVE_WORSHIP) && you.religion != GOD_RU)
+    if (you.has_mutation(MUT_PASSIVE_WORSHIP) && !is_ru_sacrifice(power.abil))
         return false;
     const ability_type abil = fixup_ability(power.abil);
     ASSERT(abil != ABIL_NON_ABILITY);
