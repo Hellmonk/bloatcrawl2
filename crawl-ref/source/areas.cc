@@ -479,7 +479,10 @@ static int _silence_range(int dur)
 
 int player::silence_radius() const
 {
-    return _silence_range(duration[DUR_SILENCE]);
+    int aura = _silence_range(duration[DUR_SILENCE]);
+    if (you.has_mutation(MUT_SILENT_AURA))
+        aura = max(3, aura);
+    return aura;
 }
 
 int monster::silence_radius() const

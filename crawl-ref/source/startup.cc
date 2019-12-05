@@ -366,6 +366,7 @@ static void _post_init(bool newc)
         switch (you.species)
         {
         case SP_ARGON:
+        case SP_SILENT_SPECTRE:
             you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = true;
             // deliberate fall-through
         case SP_FAERIE_DRAGON:

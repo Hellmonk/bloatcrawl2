@@ -29,6 +29,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Proteans** are a race of vaguely humanoid amoebas. They grow in health and size as they mutate.
 * **Quill orcs** love to read and hate close combat. They read books and scrolls at an uncanny pace.
 * **Shapeshifters** imitate monsters around them to an uncanny degree. They cannot control their shifting, and are only rarely seen in their true form.
+* **Silent Spectres** are terrible spirits that bring an unearthly silence to the area around them, preventing spell casting, divine invocations and even reading scrolls.
 * **Slitherier Nagas** are offbrand Nagas, and about twice as much everything. Extremely healthy, extremely stealthy, extremely big, and excruciatingly slow.
 * Less dextrous than other elves, **Squat Elves** have mastered the art of the power squat. They use this ability to enhance their strength and intelligence.
 * **Troll Two**: They're eating her! And then they're going to eat me! Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!

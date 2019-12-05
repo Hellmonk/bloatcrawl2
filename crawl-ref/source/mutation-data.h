@@ -2203,6 +2203,13 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
+{ MUT_SILENT_AURA, 0, 1, mutflag::good, true,
+   "silence aura",
+
+   {"You are surrounded by an aura of silence.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

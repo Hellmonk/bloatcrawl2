@@ -196,6 +196,11 @@ Oni
 Monstrous in nature with the rough appearance of Ogres, albeit smaller.
 They discover spells as they gain experience and ignore schools of magic.
 %%%%
+Silent Spectre
+
+Terrible spirits that bring an unearthly silence to the area around them,
+preventing spell casting, divine invocations and even reading scrolls.
+%%%%
 Slitherier Naga
 
 An offbrand Naga that's about twice as much everything. Extremely healthy,
