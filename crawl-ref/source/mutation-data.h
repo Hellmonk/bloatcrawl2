@@ -2179,6 +2179,30 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
+{ MUT_STEALTHY_SWIMMER, 0, 1, mutflag::good, true,
+   "stealthy swimmer",
+
+   {"You are extremely stealthy in the water. (Stealth++)", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_PASSIVE_WORSHIP, 0, 1, mutflag::good, true,
+   "passive worship",
+
+   {"You cannot invoke divine powers.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_SLIPPERY, 0, 1, mutflag::good, true,
+   "slippery",
+
+   {"You cannot be constricted.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
 };
 
 static const mutation_category_def category_mut_data[] =

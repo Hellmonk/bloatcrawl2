@@ -4716,6 +4716,10 @@ bool god_power_usable(const god_power& power, bool ignore_piety, bool ignore_pen
     // not an activated power
     if (power.abil == ABIL_NON_ABILITY)
         return false;
+    // Bunyips cannot use active divine powers
+    // ...but Ru's sacrifices don't count as a divine power
+    if (you.has_mutation(MUT_PASSIVE_WORSHIP) && you.religion != GOD_RU)
+        return false;
     const ability_type abil = fixup_ability(power.abil);
     ASSERT(abil != ABIL_NON_ABILITY);
     return (power.rank <= 0

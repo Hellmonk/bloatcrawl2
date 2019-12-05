@@ -631,6 +631,12 @@ void actor::start_constricting(actor &whom, int dur)
 
     ASSERT(constricting->find(whom.mid) == constricting->end());
 
+    if (whom.is_player() && you.has_mutation(MUT_SLIPPERY))
+    {
+        mpr("You slip easily out of the attempted constriction.");
+        return;
+    }
+
     (*constricting)[whom.mid] = dur;
     whom.constricted_by = mid;
 

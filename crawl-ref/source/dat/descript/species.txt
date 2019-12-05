@@ -24,6 +24,11 @@ Boomer
 An elderly subspecies of humans, Boomers have deformed, rapidly degenerating
 bodies. They never tip more than 10%.
 %%%%
+Bunyip
+
+Strange, black, oily creatures that live in billabongs. They swim well but
+cannot call on divine powers or wear any armour.
+%%%%
 Butterfly
 
 A cute butterfly that will stop at nothing to obtain the Orb. Monsters turn
