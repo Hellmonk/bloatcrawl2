@@ -1962,7 +1962,9 @@ int species_apt(skill_type skill, species_type species)
     if (you.has_mutation(MUT_BOL_XI))
         return you.bol_xi_apts[(int)skill];
 
-    const int undead_modifier = you.undead_modifier == US_UNDEAD ? -2
+    // Forced undead species don't have their aptitudes modified
+    const int undead_modifier = !species_can_use_modified_undeadness(you.species) ? 0
+                              : you.undead_modifier == US_UNDEAD ? -2
                               : you.undead_modifier == US_HUNGRY_DEAD ? -1
                               : 0; // US_ALIVE & US_SEMI_UNDEAD
 
