@@ -17,6 +17,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Ember Elves** have depleted magical reserves, but regenerate magical power quickly. As they develop, their magic becomes more powerful but harder to control.
 * **Faerie Dragons** are attuned to magic and their spells cost fewer magic points. Their shimmering scales repel attacks and their wings let them fly.
 * **Flans** are gelatinous and slightly corrosive beings. Their fluid shape lets them fit easily into any body armour, but they cannot wear other armour types.
+* **Fungoids** are mushroomy humanoids with roots instead of feet. They cannot move when monsters are around, but release confusing spores at enemies when they attack.
 * **Gnomes** are small creatures who are highly attuned with the earth. They are skilled in the use of magical devices and ranged weaponry.
 * Rolling around at the speed of sound, **Hedgehogs** have got places to go and gotta follow their rainbow.
 * Irits are magical, brutish one-eyed humanoids. They are adept at casting spells in heavy armour, although it costs them life force to do so.
@@ -28,6 +29,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * Deeper than a Deep Elf and twice as elven, **Profound Elves** are extremely frail magical experts.
 * **Proteans** are a race of vaguely humanoid amoebas. They grow in health and size as they mutate.
 * **Quill orcs** love to read and hate close combat. They read books and scrolls at an uncanny pace.
+* **Robots** are metallic humanoids crafted by Dwarves. They break equipment when uninstalling it and have a poor grasp of religion, but can shoot lasers.
 * **Shapeshifters** imitate monsters around them to an uncanny degree. They cannot control their shifting, and are only rarely seen in their true form.
 * **Silent Spectres** are terrible spirits that bring an unearthly silence to the area around them, preventing spell casting, divine invocations and even reading scrolls.
 * **Slitherier Nagas** are offbrand Nagas, and about twice as much everything. Extremely healthy, extremely stealthy, extremely big, and excruciatingly slow.
@@ -35,6 +37,8 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Troll Two**: They're eating her! And then they're going to eat me! Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!
 * **Turtles** are hard-shelled warriors trained in the arts of ninjutsu. They fight evil wherever it can be found and follow a strict honour code.
 * Deeper than deep, **Unfathomable Dwarves** cannot heal even through divine means. However, they have adapted to heal on kills and brew ambrosia potions from leftover life essence.
+* **Unipodes** are distantly related to Octopodes, but have a single tentacle instead of eight. They can only wear one ring and cannot use two-handed weapons.
+* The permanently baked **Weed Elves** aren't quite as smart or nimble as other elves, but they are still skilled at magic. They trail smoke wherever they go.
 * **Xeno Elves** are strange insectoid creatures from a distant land. Their magical efficiency is far better than most species, but drains when moving near enemies.
 * **Yeti** are large, seldom-seen creatures that live on frozen mountain peaks. Sufficiently mature Yeti passively freeze adjacent foes.
 
@@ -54,7 +58,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Disciples** follow the Wu Jian Council and begin the game with a good weapon.
 * **Doctor**: Medical professionals from the surface occasionally enter the dungeon. They follow the healer god Elyvilon.
 * **Entomologists** study insects and related creatures. They bring along a net and a sack of spiders, and can also summon butterflies.
-* Incredibly dextrous, **Fencers** enter the dungeon with a rapier, gloves of dexterity, and an amulet of the acrobat.
+* Incredibly dextrous, **Fencers** enter the dungeon with a rapier, fencer's gloves, and an amulet of the acrobat.
 * **Gambler**: Followers of Nemelex Xobeh who have lost everything in a run of bad luck sometimes venture into the Dungeon. They'll need Nemelex's help to turn things around.
 * **Gardeners** worship Fedhas Madash and enter the dungeon to grow shrooms.
 * Followers of Ru, **Hermits** renounce the world and follow the path of asceticism.
@@ -67,10 +71,11 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Night Knights** follow the shadowy god Dithmenos. They begin lightly armoured but with good stealth.
 * **Paladin**: Worshippers of The Shining One, these holy warriors fall down a lot.
 * **Philosophers** bring their thinking hat to the dungeon, but not much else in the way of useful items.
-* Some people spend their life investigating and creating toxins. **Poison Maniacs** use these sickening creations to DESTROY libtards in their quest for the Orb.
+* **Ratlings** are verminous humanoids that mature at an incredible pace, but learn very slowly. They have an affinity for poison magic.
 * **Slime Priests** follow Jiyva, the slime god. They enter the dungeon already mutated by their deity's power but with only a small amount of divine favor.
 * Highly accurate users of ranged weaponry, **Snipers** wear amulets of harm to boost their damage capabilities.
 * **Soothslayers** are battlemages who begin with a variety of simple magic in addition to their weapon.
+* **Stalkers** are assassins who have some aptitude in the use of poison magic.
 * **Storm Clerics** spread destruction in the name of Qazlal.
 * **Torpor Knights** follow Cheibriados and wear heavy, ponderous armour to gain their god's favour more quickly.
 * **Uncles** search the dungeon for their lost nephews.

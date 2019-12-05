@@ -122,8 +122,8 @@ of spiders, and can also summon butterflies.
 %%%%
 Fencer
 
-Incredibly dextrous, fencers enter the dungeon with a rapier, gloves of dexterity, and an
-amulet of the acrobat.
+Incredibly dextrous, fencers enter the dungeon with a rapier, fencer's gloves,
+and an amulet of the acrobat.
 %%%%
 Fighter
 
