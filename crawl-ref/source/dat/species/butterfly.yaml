@@ -2,6 +2,7 @@ enum: SP_BUTTERFLY
 monster: MONS_BUTTERFLY
 name: Butterfly
 genus: Lepidopteran
+short_name: Bu
 difficulty: Advanced
 aptitudes:
   xp: 0
