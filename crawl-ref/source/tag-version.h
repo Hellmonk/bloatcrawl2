@@ -236,6 +236,9 @@ enum tag_minor_version
     TAG_MINOR_ABYSS_UNIQUE_VAULTS, // Separate abyss vault tracking from main dungeon
     TAG_MINOR_INCREMENTAL_PREGEN,  // save tracks whether the game is an incremental pregen game
     TAG_MINOR_NO_SUNLIGHT,         // Removal of Fedhas' Sunlight
+    TAG_MINOR_POSITIONAL_MAGIC,    // Positional attack magic overhaul
+    TAG_MINOR_GHOST_MAGIC,         // Ghost update for positional magic
+    TAG_MINOR_MORE_GHOST_MAGIC,    // Update already placed ghosts for positional magic
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1
@@ -253,6 +256,8 @@ const set<int> bones_minor_tags =
          TAG_MINOR_MON_COLOUR_LOOKUP,
          TAG_MINOR_GHOST_ENERGY,
          TAG_MINOR_BOOL_FLIGHT,
+         TAG_MINOR_POSITIONAL_MAGIC,
+         TAG_MINOR_GHOST_MAGIC,
 #endif
         };
 

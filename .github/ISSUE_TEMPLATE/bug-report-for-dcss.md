@@ -1,4 +1,14 @@
-<!-- When reporting a dcss bug, please include the following: -->
+---
+name: DCSS bug report
+about: Use this template for reporting bugs in Dungeon Crawl Stone Soup
+title: ''
+labels: ''
+assignees: ''
+
+---
+
+<!-- When reporting a dcss bug, please include answers to the following
+    questions, replacing or deleting all italicized text in the template: -->
 
 **PLATFORM and OS or BROWSER:**
 *e.g. "local tiles", "webtiles", or "console". Putting this in the labels is

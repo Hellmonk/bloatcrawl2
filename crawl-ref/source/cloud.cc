@@ -289,6 +289,16 @@ static const cloud_data clouds[] = {
       BEAM_NONE, {},                              // beam & damage
       true,                                       // opacity
     },
+    // CLOUD_EMBERS,
+    { "smoldering embers", "embers",
+        ETC_SMOKE,
+        { TILE_CLOUD_BLACK_SMOKE, CTVARY_NONE },
+    },
+    // CLOUD_FLAME,
+    { "wisps of flame", nullptr,          // terse, verbose name
+      ETC_FIRE,                                // colour
+      { TILE_CLOUD_FLAME, CTVARY_RANDOM },   // tile
+    },
 };
 COMPILE_CHECK(ARRAYSZ(clouds) == NUM_CLOUD_TYPES);
 
@@ -437,8 +447,11 @@ static void _spread_fire(const cloud_struct &cloud)
 
         // forest fire doesn't spread in all directions at once,
         // every neighbouring square gets a separate roll
-        if (!feat_is_tree(grd(*ai)) || x_chance_in_y(19, 20))
+        if (!feat_is_tree(grd(*ai)) || is_temp_terrain(*ai)
+            || x_chance_in_y(19, 20))
+        {
             continue;
+        }
 
         if (env.markers.property_at(*ai, MAT_ANY, "veto_fire") == "veto")
             continue;
@@ -477,6 +490,36 @@ static void _cloud_interacts_with_terrain(const cloud_struct &cloud)
                                         cloud.source, -1);
             _los_cloud_changed(p, env.cloud[p].type, old);
         }
+    }
+}
+
+/**
+ * Convert timing out embers to conjured flames.
+ *
+ * @param cloud     The cloud in question.
+ * @return          Whether a flame cloud has been created.
+ */
+static bool _handle_conjure_flame(const cloud_struct &cloud)
+{
+    if (cloud.type != CLOUD_EMBERS)
+        return false;
+
+    if (you.pos() == cloud.pos)
+    {
+        mpr("You smother the flame.");
+        return false;
+    }
+    else if (monster_at(cloud.pos))
+    {
+        mprf("%s smothers the flame.",
+             monster_at(cloud.pos)->name(DESC_THE).c_str());
+        return false;
+    }
+    else
+    {
+        mpr("The fire ignites!");
+        place_cloud(CLOUD_FIRE, cloud.pos, you.props["cflame_dur"], &you);
+        return true;
     }
 }
 
@@ -521,7 +564,7 @@ static void _dissipate_cloud(cloud_struct& cloud)
     }
 
     // Check for total dissipation and handle accordingly.
-    if (cloud.decay < 1)
+    if (cloud.decay < 1 && !_handle_conjure_flame(cloud))
         delete_cloud(cloud.pos);
 }
 

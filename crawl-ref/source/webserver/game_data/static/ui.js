@@ -113,7 +113,7 @@ function ($, comm, client, options, focus_trap) {
                     }
                 },
                 allowOutsideClick: function (ev) {
-                    return $(ev.target).closest("#chat").length !== 0;
+                    return $(ev.target).closest("#game").length !== 1;
                 },
             }).activate();
         });
@@ -260,17 +260,33 @@ function ($, comm, client, options, focus_trap) {
         }
     }
 
+    var MO = new MutationObserver(function(mutations) {
+        mutations.forEach(function(record) {
+            var $chat = $(record.target);
+            if ($chat.css("display") === "none")
+                $chat[0].focus_trap.deactivate();
+        });
+    });
+
     function ui_chat_focus_handler(ev) {
         if ($("#chat").hasClass("focus-trap"))
             return;
-        focus_trap($("#chat")[0], {
+
+        var $chat = $("#chat");
+        $chat[0].focus_trap = focus_trap($chat[0], {
             escapeDeactivates: true,
             onActivate: function () {
-                $("#chat").addClass("focus-trap");
+                $chat.addClass("focus-trap");
+                /* detect chat.js calling hide() via style attribute */
+                MO.observe($chat[0], {
+                    attributes : true,
+                    attributeFilter : ['style'],
+                });
             },
             onDeactivate: function () {
-                $("#chat").removeClass("focus-trap");
+                $chat.removeClass("focus-trap");
             },
+            returnFocusOnDeactivate: false,
         }).activate();
     }
 

@@ -201,6 +201,8 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_SHALLOW_WATER;
     case DNGN_OPEN_SEA:
         return TILE_DNGN_OPEN_SEA;
+    case DNGN_TOXIC_BOG:
+        return TILE_DNGN_TOXIC_BOG;
     case DNGN_FLOOR:
         return TILE_FLOOR_NORMAL;
     case DNGN_ENDLESS_SALT:
@@ -1937,6 +1939,29 @@ tileidx_t tileidx_monster(const monster_info& mons)
         ch |= TILE_FLAG_GD_NEUTRAL;
     else if (mons.neutral())
         ch |= TILE_FLAG_NEUTRAL;
+    else
+        switch (mons.threat)
+        {
+        case MTHRT_TRIVIAL:
+            if (Options.tile_show_threat_levels.find("trivial") != string::npos)
+                ch |= TILE_FLAG_TRIVIAL;
+            break;
+        case MTHRT_EASY:
+            if (Options.tile_show_threat_levels.find("easy") != string::npos)
+                ch |= TILE_FLAG_EASY;
+            break;
+        case MTHRT_TOUGH:
+            if (Options.tile_show_threat_levels.find("tough") != string::npos)
+                ch |= TILE_FLAG_TOUGH;
+            break;
+        case MTHRT_NASTY:
+            if (Options.tile_show_threat_levels.find("nasty") != string::npos)
+                ch |= TILE_FLAG_NASTY;
+            break;
+        default:
+            break;
+        }
+
     if (mons.is(MB_FLEEING))
         ch |= TILE_FLAG_FLEEING;
     else if (mons.is(MB_STABBABLE) || mons.is(MB_SLEEPING)
@@ -2969,7 +2994,7 @@ tileidx_t tileidx_bolt(const bolt &bolt)
         else if (bolt.name == "shard of ice")
             return TILE_BOLT_ICICLE + dir;
         else if (bolt.name == "searing ray")
-            return TILE_BOLT_SEARING_RAY_III;
+            return TILE_BOLT_SEARING_RAY;
         break;
 
     case LIGHTCYAN:
@@ -2992,8 +3017,6 @@ tileidx_t tileidx_bolt(const bolt &bolt)
     case LIGHTMAGENTA:
         if (bolt.name == "magic dart")
             return TILE_BOLT_MAGIC_DART;
-        else if (bolt.name == "searing ray")
-            return TILE_BOLT_SEARING_RAY_II;
         break;
 
     case BROWN:
@@ -3005,7 +3028,7 @@ tileidx_t tileidx_bolt(const bolt &bolt)
 
     case GREEN:
         if (bolt.name == "sting")
-            return TILE_BOLT_STING;
+            return TILE_BOLT_POISON_ARROW + dir;
         break;
 
     case LIGHTGREEN:
@@ -3024,8 +3047,6 @@ tileidx_t tileidx_bolt(const bolt &bolt)
         break;
 
     case MAGENTA:
-        if (bolt.name == "searing ray")
-            return TILE_BOLT_SEARING_RAY_I;
         break;
 
     case CYAN:

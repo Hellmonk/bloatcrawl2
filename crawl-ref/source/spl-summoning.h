@@ -70,6 +70,7 @@ void do_dragon_call(int time);
 
 void doom_howl(int time);
 
+spell_type player_servitor_spell();
 void init_servitor(monster* servitor, actor* caster);
 spret cast_spellforged_servitor(int pow, god_type god, bool fail);
 
@@ -130,3 +131,5 @@ bool fedhas_wall_of_briars();
 spret fedhas_grow_ballistomycete(bool fail);
 bool fedhas_overgrow();
 spret fedhas_grow_oklob(bool fail);
+
+spret cast_foxfire(int pow, god_type god, bool fail);

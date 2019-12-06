@@ -16,7 +16,8 @@ lethal.
 Airstrike spell
 
 Causes the air around a creature to twist itself into a whirling vortex of
-meteorological fury. It is especially effective against flying enemies.
+meteorological fury. It does more damage to targets surrounded by empty space.
+It is especially effective against flying enemies.
 %%%%
 Alistair's Intoxication spell
 
@@ -321,7 +322,10 @@ exploding.
 %%%%
 Conjure Flame spell
 
-Creates a blazing column of flame in a targeted empty location.
+Create a cloud of magically sustained fire at the caster's feet. The fire takes
+a moment to begin burning with vigor and in its fragile initial state is easily
+smothered by either the caster or a wandering monster. Re-casting the spell
+will bring the fire fully to life, but will burn the caster.
 %%%%
 Controlled Blink spell
 
@@ -338,8 +342,8 @@ affected creature appreciably easier to hit.
 Corpse Rot spell
 
 Rapidly accelerates the decomposition of any corpses lying around the caster,
-emitting in the process a foul miasmic vapour, which eats away at the life
-force of any creature it envelops.
+and gathers the foul miasmic vapour around the caster. The clouds eat away at
+the life force of any creature they envelop.
 %%%%
 Corrosive Bolt spell
 
@@ -363,10 +367,11 @@ Darkness spell
 
 Dims the light of the dungeon, reducing the range of vision.
 %%%%
-Dazzling Spray spell
+Dazzling Flash spell
 
-Fires a spread of scintillating energy bolts from the caster's fingertips. Any
-living creature they strike may be dazzled and left stumbling blindly.
+The caster erupts in a scintillating display of light. Any living creature
+nearby may be dazzled and left stumbling blindly. Creatures closer to the
+caster are more likely to be dazzled.
 %%%%
 Death Channel spell
 
@@ -540,6 +545,15 @@ Entropic Weave spell
 
 Corrodes the target, with no direct line of fire required.
 %%%%
+Eringya's Noxious Bog spell
+
+Causes the caster to release a torrent of sludge, which transforms the dungeon
+into a toxic bog in the caster's wake. The sludge damages and poisons all
+monsters, even those resistant to poison. The sludge is temporary, cannot
+replace deep water or lava, and cannot be sustained out of the caster's sight.
+Spellpower will increase both the duration of the torrent and how long the
+sludge lingers.
+%%%%
 Excruciating Wounds spell
 
 Temporarily infuses the weapon held by the caster with the essence of pain
@@ -593,6 +607,13 @@ Forceful Invitation spell
 Summons some of the lesser threats from one of the Lair of Beasts, the Snake
 Pit, the Spider Nest, the Swamp, the Shoals, the Orcish Mines, the Elven Halls,
 the Vaults, or the Crypt; the specific branch varies with the caster.
+%%%%
+Foxfire spell
+
+Conjures two balls of burning swamp gas adjacent to the caster. The balls will
+rapidly seek the nearest monster and burn them. If unable to reach a target the
+foxfire will dissipate harmlessly. Foxfire will burn anything that tries to
+change places with it.
 %%%%
 Freeze spell
 
@@ -648,6 +669,15 @@ out of view.
 Greater Servant of Makhleb spell
 
 <Greater Servant of Makhleb ability>
+%%%%
+%%%%
+Hailstorm spell
+
+Conjures a cannonade of hail. The peculiarities of the magic involved in
+creating the hail prevent the spell from hitting monsters adjacent to the
+caster. Due to the strong impact and cutting edges a significant portion of its
+damage bypasses cold resistance. However, creatures made of pure ice are
+immune.
 %%%%
 Haste Other spell
 
@@ -761,8 +791,9 @@ Releases a thick cloud of ink to obscure vision.
 %%%%
 Inner Flame spell
 
-Fills an enemy with an intense fire, to be explosively released upon death. The
-size of the explosion caused is dependent on the size of the target.
+Fills an enemy with an intense fire. This fire is released any time the target
+is hit, and explosively released upon death. The size of the explosion caused
+is dependent on the size of the target.
 %%%%
 Invisibility spell
 
@@ -795,9 +826,8 @@ and deals more damage per volley.
 %%%%
 Iskenderun's Mystic Blast spell
 
-Throws a crackling sphere of destructive energy. The sphere will sometimes
-explode on impact, and the chance of it doing so is higher if the sphere has
-traveled less distance.
+Detonates a crackling sphere of destructive energy. The explosion will hit all
+nearby monsters with physical force, knocking them back if damage is done.
 %%%%
 Leda's Liquefaction spell
 
@@ -1126,11 +1156,10 @@ the caster from traversing them.
 %%%%
 Searing Ray spell
 
-Fires a continuous ray of arcane energy from the caster's hands. Though
-initially mild, so long as the caster maintains focus upon the spell and
-supplies it with magical power (by waiting in place and not taking any other
-actions), the ray will grow in strength until it becomes a surging bolt able to
-tear clean through the ranks of the caster's foes.
+Fires a continuous piercing ray of arcane energy from the caster's hands. So
+long as the caster maintains focus upon the spell and supplies it with magical
+power (by waiting in place and not taking any other actions), the ray will
+follow the caster's target if it should move.
 %%%%
 Searing Breath spell
 
@@ -1282,6 +1311,12 @@ Sprint spell
 
 Causes the caster to move across terrain more rapidly for a short duration.
 %%%%
+Starburst spell
+
+Releases penetrating bolts of fire from the caster in every direction.
+The range of each bolt is decreased by one for every creature
+it strikes.
+%%%%
 Static Discharge spell
 
 Releases electrical charges against those next to the caster. These may arc to
@@ -1327,7 +1362,10 @@ begin to form again as normal.
 %%%%
 Sting spell
 
-Fires a magical dart of poison.
+Briefly transforms one of the caster's limbs into a long insectoid stinger,
+which lashes out at the target. The stinger's impact will always poison a
+susceptible target. Even resistant targets have a chance to be poisoned and
+immune monsters will be damaged by the physical impact of the stinger.
 %%%%
 Stone Arrow spell
 

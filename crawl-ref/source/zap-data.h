@@ -384,24 +384,6 @@ _mon_hex_zap(ZAP_POLYMORPH, BEAM_POLYMORPH),
     8
 },
 
-{
-    ZAP_ISKENDERUNS_MYSTIC_BLAST,
-    "orb of energy",
-    100,
-    new calcdice_calculator<2, 12, 1, 3>,
-    new tohit_calculator<10, 1, 7>,
-    new dicedef_calculator<3, 7, 1, 14>,
-    new tohit_calculator<20, 1, 20>,
-    LIGHTMAGENTA,
-    false,
-    BEAM_MMISSILE,
-    DCHAR_FIRED_ZAP,
-    true,
-    false,
-    false,
-    4
-},
-
 _mon_hex_zap(ZAP_ENSLAVEMENT, BEAM_ENSLAVE),
 
 {
@@ -476,6 +458,24 @@ _mon_hex_zap(ZAP_ENSLAVEMENT, BEAM_ENSLAVE),
     0
 },
 
+{
+    ZAP_DISPEL_UNDEAD_RANGE,
+    "",
+    100,
+    new calcdice_calculator<3, 20, 3, 4>,
+    new tohit_calculator<0, 3, 2>,
+    new dicedef_calculator<3, 6, 1, 10>,
+    new tohit_calculator<AUTOMATIC_HIT>,
+    BLACK,
+    true,
+    BEAM_DISPEL_UNDEAD,
+    NUM_DCHAR_TYPES,
+    false,
+    false,
+    false,
+    0
+},
+
 _mon_hex_zap(ZAP_BANISHMENT, BEAM_BANISH, 150),
 
 {
@@ -488,7 +488,7 @@ _mon_hex_zap(ZAP_BANISHMENT, BEAM_BANISH, 150),
     new tohit_calculator<60, 0, 1>,
     GREEN,
     false,
-    BEAM_POISON,
+    BEAM_POISON_ARROW,
     DCHAR_FIRED_ZAP,
     true,
     false,
@@ -732,6 +732,24 @@ _mon_hex_zap(ZAP_BANISHMENT, BEAM_BANISH, 150),
 },
 
 {
+    ZAP_AGONY_RANGE,
+    "agony",
+    100,
+    nullptr,
+    new tohit_calculator<0, 5, 1>,
+    nullptr,
+    new tohit_calculator<0, 1, 3>,
+    BLACK,
+    true,
+    BEAM_AGONY,
+    NUM_DCHAR_TYPES,
+    false,
+    false,
+    false,
+    0
+},
+
+{
     ZAP_DISINTEGRATE,
     "",
     100,
@@ -938,24 +956,6 @@ _mon_hex_zap(ZAP_SLEEP, BEAM_SLEEP),
 },
 
 {
-    ZAP_DAZZLING_SPRAY,
-    "spray of energy",
-    50,
-    new calcdice_calculator<2, 6, 1, 4>,
-    new tohit_calculator<9, 1, 7>,
-    new dicedef_calculator<3, 5, 1, 17>,
-    new tohit_calculator<16, 1, 22>,
-    LIGHTMAGENTA,
-    false,
-    BEAM_MMISSILE,
-    DCHAR_FIRED_ZAP,
-    true,
-    false,
-    false,
-    3
-},
-
-{
     ZAP_FORCE_LANCE,
     "lance of force",
     100,
@@ -974,47 +974,11 @@ _mon_hex_zap(ZAP_SLEEP, BEAM_SLEEP),
 },
 
 {
-    ZAP_SEARING_RAY_I,
-    "searing ray",
-    50,
-    new dicedef_calculator<2, 3, 1, 13>,
-    new tohit_calculator<10, 1, 9>,
-    nullptr,
-    nullptr,
-    MAGENTA,
-    false,
-    BEAM_MMISSILE,
-    DCHAR_FIRED_ZAP,
-    true,
-    false,
-    false,
-    2
-},
-
-{
-    ZAP_SEARING_RAY_II,
+    ZAP_SEARING_RAY,
     "searing ray",
     50,
     new dicedef_calculator<3, 3, 1, 12>,
     new tohit_calculator<11, 1, 8>,
-    nullptr,
-    nullptr,
-    LIGHTMAGENTA,
-    false,
-    BEAM_MMISSILE,
-    DCHAR_FIRED_ZAP,
-    true,
-    false,
-    false,
-    2
-},
-
-{
-    ZAP_SEARING_RAY_III,
-    "searing ray",
-    50,
-    new dicedef_calculator<4, 3, 1, 12>,
-    new tohit_calculator<12, 1, 7>,
     nullptr,
     nullptr,
     WHITE,
@@ -1299,18 +1263,18 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
     BEAM_VILE_CLUTCH,
     DCHAR_FIRED_BURST,
     true,
-    false,
     true,
-    0 // handled by explosion
+    false,
+    5
 },
 
 {
     ZAP_REFRIGERATE,
     "refrigeration",
     200,
-    new calcdice_calculator<3, 15, 3, 10>,
+    new calcdice_calculator<4, 20, 4, 10>,
     new tohit_calculator<40>,
-    new calcdice_calculator<3, 15, 3, 10>,
+    new calcdice_calculator<4, 20, 4, 10>,
     new tohit_calculator<40>,
     LIGHTCYAN,
     false,
@@ -1374,6 +1338,24 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
     false,
     false,
     6
+},
+
+{
+    ZAP_FOXFIRE,
+    "foxfire",
+    50,
+    new dicedef_calculator<1, 4, 1, 5>,
+    new tohit_calculator<AUTOMATIC_HIT>,
+    new dicedef_calculator<3, 3, 1, 12>,
+    new tohit_calculator<AUTOMATIC_HIT>,
+    RED,
+    false,
+    BEAM_FIRE,
+    DCHAR_FIRED_BOLT,
+    true,
+    false,
+    false,
+    1
 },
 
 };

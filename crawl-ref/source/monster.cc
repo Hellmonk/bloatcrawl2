@@ -2715,6 +2715,8 @@ bool monster::fumbles_attack()
         {
             mprf("%s %s", name(DESC_THE).c_str(), liquefied(pos())
                  ? "becomes momentarily stuck in the liquid earth."
+                 : grd(pos()) == DNGN_TOXIC_BOG
+                 ? "becomes momentarily stuck in the toxic bog."
                  : "splashes around in the water.");
         }
         else if (player_can_hear(pos(), LOS_RADIUS))
@@ -6057,6 +6059,15 @@ void monster::react_to_damage(const actor *oppressor, int damage,
 
     if (!alive())
         return;
+
+    if (!mons_is_tentacle_or_tentacle_segment(type)
+        && has_ench(ENCH_INNER_FLAME) && oppressor
+        && damage)
+    {
+        mon_enchant i_f = get_ench(ENCH_INNER_FLAME);
+        mprf("Flame seeps out of %s.", name(DESC_THE).c_str());
+        check_place_cloud(CLOUD_FIRE, pos(), 3, actor_by_mid(i_f.source));
+    }
 
 
     if (mons_species() == MONS_BUSH
