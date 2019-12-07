@@ -149,6 +149,10 @@ Gladiator
 Gladiators are ready for the arena with light armour, nets, and a weapon of
 their choice.
 %%%%
+Gonger
+
+Gongers gong. They gong real loud.
+%%%%
 Hermit
 
 Followers of Ru, Hermits renounce the world and follow the path of asceticism.

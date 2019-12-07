@@ -345,6 +345,15 @@ static const map<job_type, job_def> job_data =
       { SK_WEAPON, 3}, },
 } },
 
+{ JOB_GONGER, {
+    "Go", "Gonger",
+    4, 4, 4,
+    { SP_TROLL, },
+    { "robe", "mace", "shield of the gong" },
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 3 }, { SK_SHIELDS, 5 }, },
+} },
+
 { JOB_HERMIT, {
     "Hm", "Hermit",
     4, 4, 4,
