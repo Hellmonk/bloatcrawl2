@@ -128,6 +128,7 @@ void vehumet_accept_gift(spell_type spell);
 
 mgen_data hepliaklqana_ancestor_gen_data();
 string make_ancestor_name(bool female);
+void join_ru();
 string hepliaklqana_ally_name();
 int hepliaklqana_ally_hp();
 
@@ -215,4 +216,5 @@ struct god_power
 void set_god_ability_slots();
 vector<god_power> get_god_powers(god_type god);
 const god_power* god_power_from_ability(ability_type abil);
+bool is_ru_sacrifice(ability_type abil);
 bool god_power_usable(const god_power& power, bool ignore_piety=false, bool ignore_penance=false);

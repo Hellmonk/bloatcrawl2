@@ -3635,6 +3635,11 @@ int player_stealth()
     if (you.has_mutation(MUT_FAERIE_SCALES))
         stealth -= STEALTH_PIP;
 
+    const bool in_water = you.in_water();
+    stealth += (in_water ? 1 : 0)
+               * STEALTH_PIP * 2
+               * you.get_mutation_level(MUT_STEALTHY_SWIMMER);
+
     // Radiating silence is the negative complement of shouting all the
     // time... a sudden change from background noise to no noise is going
     // to clue anything in to the fact that something is very wrong...
@@ -3650,11 +3655,14 @@ int player_stealth()
 
     if (!you.airborne())
     {
-        if (you.in_water())
+        if (in_water)
         {
             // Merfolk can sneak up on monsters underwater -- bwr
-            if (you.fishtail || you.species == SP_OCTOPODE || you.species == SP_UNIPODE)
+            if (you.fishtail || you.species == SP_OCTOPODE
+                || you.species == SP_UNIPODE)
+            {
                 stealth += STEALTH_PIP;
+            }
             else if (!you.can_swim() && !you.extra_balanced())
                 stealth /= 2;       // splashy-splashy
         }

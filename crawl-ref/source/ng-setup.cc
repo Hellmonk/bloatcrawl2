@@ -629,6 +629,7 @@ void give_items_skills(const newgame_def& ng)
             you.props[RU_SACRIFICE_DELAY_KEY] = delay;
         }
         you.props[RU_SACRIFICE_PENALTY_KEY] = 0;
+        join_ru();
     }
         break;
 
@@ -741,7 +742,7 @@ void give_items_skills(const newgame_def& ng)
         _give_aspirant_book();
         break;
 
-    case JOB_POISON_MANIAC:
+    case JOB_STALKER:
         add_spell_to_memory(SPELL_STING);
         break;
 

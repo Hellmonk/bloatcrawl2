@@ -92,7 +92,7 @@ static const map<job_type, job_def> job_data =
     "Ar", "Artificer",
     4, 3, 5,
     { SP_DEEP_DWARF, SP_HALFLING, SP_KOBOLD, SP_SPRIGGAN, SP_BASE_DRACONIAN,
-      SP_DEMONSPAWN, },
+      SP_DEMONSPAWN, SP_GNOME, },
     { "short sword", "leather armour", "wand of flame charges:15",
       "wand of enslavement charges:15", "wand of random effects charges:15" },
     WCHOICE_NONE,
@@ -255,7 +255,7 @@ static const map<job_type, job_def> job_data =
     "EE", "Earth Elementalist",
     0, 7, 5,
     { SP_DEEP_ELF, SP_DEEP_DWARF, SP_SPRIGGAN, SP_GARGOYLE, SP_DEMIGOD,
-      SP_OCTOPODE, SP_PROFOUND_ELF, },
+      SP_OCTOPODE, SP_PROFOUND_ELF, SP_GNOME, },
     { "book of Geomancy", "stone q:30", "robe", },
     WCHOICE_NONE,
     { { SK_TRANSMUTATIONS, 1 }, { SK_EARTH_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
@@ -494,17 +494,6 @@ static const map<job_type, job_def> job_data =
     { { SK_FIGHTING, 2 }, { SK_SPELLCASTING, 2 }, { SK_HEXES, 1 }, { SK_STEALTH, 2 }, },
 } },
 
-{ JOB_POISON_MANIAC, {
-    "PM", "Poison Maniac",
-    3, 9, 0,
-    { SP_NAGA, SP_OCTOPODE, SP_RATLING, },
-    { "robe", "dagger ego:poison", "ring of poison resistance", "dart ego:poisoned q:8"},
-    WCHOICE_NONE,
-    { { SK_FIGHTING, 1 }, { SK_SHORT_BLADES, 2 },
-      { SK_DODGING, 2 },
-      { SK_SPELLCASTING, 1 }, { SK_POISON_MAGIC, 2 }, },
-} },
-
 { JOB_SKALD, {
     "Sk", "Skald",
     3, 5, 4,
@@ -557,6 +546,18 @@ static const map<job_type, job_def> job_data =
       { SK_TRANSLOCATIONS, 1 }, { SK_TRANSMUTATIONS, 1 },
       { SK_NECROMANCY, 1 }, { SK_SUMMONINGS, 1 }, { SK_WEAPON, 2 }, },
 } },
+
+{ JOB_STALKER, {
+    "St", "Stalker",
+    3, 9, 0,
+    { SP_NAGA, SP_OCTOPODE, SP_RATLING, },
+    { "robe", "dagger ego:poison", "ring of poison resistance", "dart ego:poisoned q:8"},
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 1 }, { SK_SHORT_BLADES, 2 },
+      { SK_DODGING, 2 },
+      { SK_SPELLCASTING, 1 }, { SK_POISON_MAGIC, 2 }, },
+} },
+
 
 { JOB_SUMMONER, {
     "Su", "Summoner",
@@ -722,7 +723,7 @@ static const map<job_type, job_def> job_data =
     { },
 } },
 
-{ JOB_STALKER, {
+{ JOB_STALKER_OLD, {
     "St", "Stalker",
     0, 0, 0,
     { },

@@ -1,0 +1,58 @@
+enum: SP_GNOME
+monster: MONS_HALFLING
+name: Gnome
+adjective: Gnomish
+difficulty: Simple
+aptitudes:
+  xp: 1
+  hp: -2
+  mp_mod: 0
+  mr: 6
+  short_blades: 2
+  maces_and_flails: -2
+  polearms: -3
+  staves: -2
+  slings: 3
+  crossbows: 1
+  throwing: 3
+  armour: -4
+  dodging: 3
+  stealth: 5
+  shields: -1
+  unarmed_combat: -1
+  spellcasting: -1
+  summoning: -1
+  necromancy: -3
+  translocations: -3
+  charms: -2
+  air_magic: -5
+  earth_magic: 5
+  poison_magic: -3
+  invocations: -2
+  evocations: 5
+size: small
+str: 7
+int: 7
+dex: 8
+levelup_stat_frequency: 4
+levelup_stats:
+  - int
+  - dex
+mutations:
+  1:
+    MUT_PASSIVE_MAPPING: 1
+  7:
+    MUT_PASSIVE_MAPPING: 1
+  14:
+    MUT_PASSIVE_MAPPING: 1
+recommended_jobs:
+  - JOB_HUNTER
+  - JOB_EARTH_ELEMENTALIST
+  - JOB_ASSASSIN
+  - JOB_ARTIFICER
+recommended_weapons:
+  - SK_SHORT_BLADES
+  - SK_LONG_BLADES
+  - SK_SLINGS
+  - SK_THROWING
+  - SK_CROSSBOWS
