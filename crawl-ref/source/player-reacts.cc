@@ -40,6 +40,7 @@
 #include "coordit.h"
 #include "crash.h"
 #include "database.h"
+#include "decks.h"
 #include "dbg-util.h"
 #include "delay.h"
 #include "describe.h"
@@ -1097,6 +1098,19 @@ void player_reacts()
 
     // Player stealth check.
     seen_monsters_react(stealth);
+    
+    // Nelexians might get a card effect
+    if (you.species == SP_NELEXIAN)
+    {
+        if (one_chance_in(52) && x_chance_in_y(get_tension(GOD_NEMELEX_XOBEH) - 1, 10))
+        {
+            mprf("You feel the heart of the cards.");
+            card_type card = random_choose(CARD_VELOCITY, CARD_EXILE, CARD_ELIXIR, CARD_SHAFT, CARD_TOMB,
+            CARD_SUMMON_DEMON, CARD_ELEMENTS, CARD_RANGERS, CARD_SUMMON_WEAPON, CARD_SUMMON_FLYING, CARD_CLOUD,
+            CARD_STORM, CARD_ILLUSION, CARD_DEGEN, CARD_WILD_MAGIC);
+            card_effect(card);
+        }
+    }
 
     // XOM now ticks from here, to increase his reaction time to tension.
     if (you_worship(GOD_XOM))

@@ -1713,6 +1713,9 @@ static int _card_power(bool punishment)
 {
     if (punishment)
         return you.experience_level * 18;
+    
+    if(you.species == SP_NELEXIAN && you.religion != GOD_NEMELEX_XOBEH)
+        return you.experience_level * 20 + random2(300);
 
     int result = you.piety;
     result *= you.skill(SK_INVOCATIONS, 100) + 2500;

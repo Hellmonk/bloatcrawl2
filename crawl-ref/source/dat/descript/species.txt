@@ -171,6 +171,11 @@ Naga
 Nagas are hybrids; human from the chest up, with a scaly, muscular torso
 trailing off like that of a snake. They move slowly but are naturally resilient.
 %%%%
+Nelexian
+
+Nelexians are mysterious humanoids with a distant, mostly forgotten connection 
+to Nemelex. The cards are said to aid them in times of need.
+%%%%
 Octopode
 
 Octopodes are a species of amphibious cephalopods. They can wear eight rings,

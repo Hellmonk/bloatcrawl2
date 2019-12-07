@@ -1,0 +1,51 @@
+enum: SP_NELEXIAN
+monster: MONS_HUMAN
+name: "Nelexian"
+short_name: Ne
+difficulty: Intermediate
+aptitudes:
+  xp: 0
+  hp: 0
+  mp_mod: 0
+  mr: 3
+  fighting: 0
+  short_blades: 0
+  long_blades: 0
+  axes: 0
+  maces_and_flails: 0
+  polearms: 0
+  staves: 0
+  slings: 0
+  bows: 0
+  crossbows: 0
+  throwing: 0
+  armour: 0
+  dodging: 0
+  stealth: 0
+  shields: 0
+  unarmed_combat: 0
+  spellcasting: 0
+  conjurations: 0
+  hexes: 0
+  charms: 0
+  summoning: 0
+  necromancy: 0
+  translocations: 0
+  transmutations: 0
+  fire_magic: 0
+  ice_magic: 0
+  air_magic: 0
+  earth_magic: 0
+  poison_magic: 0
+  invocations: 2
+  evocations: 2
+str: 8
+int: 8
+dex: 8
+levelup_stat_frequency: 5
+fake_mutations:
+  - long: A card will sometimes be dealt when you are in danger.
+    short: heart of the cards
+recommended_jobs:
+  - JOB_ARTIFICER
+  - JOB_WANDERER
