@@ -885,7 +885,7 @@ static const char* _job_name(int job)
     case OLD_JOB_REAVER:
         return "Reaver";
     case OLD_JOB_STALKER:
-        return "Stalker";
+        return "Old Stalker";
     case OLD_JOB_JESTER:
         return "Jester";
     case OLD_JOB_PRIEST:

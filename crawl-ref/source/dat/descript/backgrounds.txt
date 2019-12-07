@@ -122,8 +122,8 @@ of spiders, and can also summon butterflies.
 %%%%
 Fencer
 
-Incredibly dextrous, fencers enter the dungeon with a rapier, gloves of dexterity, and an
-amulet of the acrobat.
+Incredibly dextrous, fencers enter the dungeon with a rapier, fencer's gloves,
+and an amulet of the acrobat.
 %%%%
 Fighter
 
@@ -217,11 +217,6 @@ Philosopher
 Philosophers bring their thinking hat to the dungeon, but not much else in the
 way of useful items.
 %%%%
-Poison Maniac
-
-Some people spend their life investigating and creating toxins. Poison Maniacs
-use these sickening creations to DESTROY libtards in their quest for the Orb.
-%%%%
 Slime Priest
 
 Slime priests follow Jiyva, the slime god. They enter the dungeon already mutated
@@ -241,6 +236,10 @@ Soothslayer
 
 Soothslayers are battlemages who begin with a variety of simple magic in addition
 to their weapon.
+%%%%
+Stalker
+
+An assassin who has some aptitude in the use of poison magic.
 %%%%
 Storm Cleric
 

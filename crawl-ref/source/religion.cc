@@ -3142,7 +3142,6 @@ bool player_can_join_god(god_type which_god)
         return false;
     }
 
-
 #if TAG_MAJOR_VERSION == 34
     if (you.get_mutation_level(MUT_NO_ARTIFICE)
         && which_god == GOD_PAKELLAS)
@@ -3531,7 +3530,7 @@ static void _join_jiyva()
 }
 
 /// Setup when joining the sacred cult of Ru.
-static void _join_ru()
+void join_ru()
 {
     _make_empty_vec(you.props[AVAILABLE_SAC_KEY], SV_INT);
     _make_empty_vec(you.props[HEALTH_SAC_KEY], SV_INT);
@@ -3625,7 +3624,7 @@ static const map<god_type, function<void ()>> on_join = {
 #if TAG_MAJOR_VERSION == 34
     { GOD_PAKELLAS, _join_pakellas },
 #endif
-    { GOD_RU, _join_ru },
+    { GOD_RU, join_ru },
     { GOD_TROG, _join_trog },
     { GOD_ZIN, _join_zin },
 };
@@ -4709,10 +4708,23 @@ vector<god_type> nontemple_god_list()
     return god_list;
 }
 
+/**
+ * Is this ability a Ru sacrifice? (Note: does not include Reject Sacrifices.)
+ */
+bool is_ru_sacrifice(ability_type abil)
+{
+    return abil >= ABIL_FIRST_SACRIFICE
+        && abil <= ABIL_FINAL_SACRIFICE;
+}
+
 bool god_power_usable(const god_power& power, bool ignore_piety, bool ignore_penance)
 {
     // not an activated power
     if (power.abil == ABIL_NON_ABILITY)
+        return false;
+    // Bunyips cannot use active divine powers
+    // ...but Ru's sacrifices don't count as a divine power
+    if (you.has_mutation(MUT_PASSIVE_WORSHIP) && !is_ru_sacrifice(power.abil))
         return false;
     const ability_type abil = fixup_ability(power.abil);
     ASSERT(abil != ABIL_NON_ABILITY);

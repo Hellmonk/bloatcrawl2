@@ -729,6 +729,15 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
         return false;
     }
 
+    // Silent Spectres have no way to uncurse items
+    if (you.has_mutation(MUT_SILENT_AURA)
+        && !item_ident(new_wpn, ISFLAG_KNOW_CURSE)
+        && !yes_or_no("Do you really want to wield this possibly cursed weapon?"))
+    {
+        canned_msg(MSG_OK);
+        return false;
+    }
+
     // Unwield any old weapon.
     if (you.weapon())
     {
@@ -848,7 +857,8 @@ static int armour_equip_delay(const item_def &/*item*/)
 bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 {
     const object_class_type base_type = item.base_type;
-    if (base_type != OBJ_ARMOUR || you.species == SP_FELID || you.species == SP_BUTTERFLY)
+    if (base_type != OBJ_ARMOUR || you.species == SP_FELID
+        || you.species == SP_BUTTERFLY || you.species == SP_BUNYIP)
     {
         if (verbose)
             mpr("You can't wear that.");
@@ -1242,7 +1252,8 @@ bool wear_armour(int item)
     // conditions that would make it impossible to wear any type of armour.
     // TODO: perhaps also worth checking here whether all available armour slots
     // are cursed. Same with jewellery.
-    if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
+    if (you.species == SP_FELID || you.species == SP_BUTTERFLY
+        || you.species == SP_BUNYIP)
     {
         mpr("You can't wear anything.");
         return false;
@@ -1313,6 +1324,15 @@ bool wear_armour(int item)
     // might be reasons it's not advisable. Warn about any dangerous
     // inscriptions, giving the player an opportunity to bail out.
     if (!check_warning_inscriptions(*to_wear, OPER_WEAR))
+    {
+        canned_msg(MSG_OK);
+        return false;
+    }
+
+    // Silent Spectres have no way to uncurse items
+    if (you.has_mutation(MUT_SILENT_AURA)
+        && !item_ident(*to_wear, ISFLAG_KNOW_CURSE)
+        && !yes_or_no("Do you really want to equip this possibly cursed armour?"))
     {
         canned_msg(MSG_OK);
         return false;
@@ -1982,6 +2002,15 @@ static bool _puton_item(const item_def &item, bool prompt_slot,
     // put it on, except when they have already been prompted with them
     // from switching rings.
     if (check_for_inscriptions && !check_warning_inscriptions(item, OPER_PUTON))
+    {
+        canned_msg(MSG_OK);
+        return false;
+    }
+
+    // Silent Spectres have no way to uncurse items
+    if (you.has_mutation(MUT_SILENT_AURA)
+        && !item_ident(item, ISFLAG_KNOW_CURSE)
+        && !yes_or_no("Do you really want to equip this possibly cursed jewellery?"))
     {
         canned_msg(MSG_OK);
         return false;

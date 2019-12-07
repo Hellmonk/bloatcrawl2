@@ -24,6 +24,11 @@ Boomer
 An elderly subspecies of humans, Boomers have deformed, rapidly degenerating
 bodies. They never tip more than 10%.
 %%%%
+Bunyip
+
+Strange, black, oily creatures that live in billabongs. They swim well but
+cannot call on divine powers or wear any armour.
+%%%%
 Butterfly
 
 A cute butterfly that will stop at nothing to obtain the Orb. Monsters turn
@@ -102,6 +107,11 @@ Gnoll
 
 Gnolls are canine-like humanoids. They have incredible proficiency and
 excellent physical attributes, but must learn all skills at once.
+%%%%
+Gnome
+
+Gnomes are small creatures who are highly attuned with the earth. They are
+skilled in the use of magical devices and ranged weaponry.
 %%%%
 Grue
 
@@ -190,6 +200,11 @@ Oni
 
 Monstrous in nature with the rough appearance of Ogres, albeit smaller.
 They discover spells as they gain experience and ignore schools of magic.
+%%%%
+Silent Spectre
+
+Terrible spirits that bring an unearthly silence to the area around them,
+preventing spell casting, divine invocations and even reading scrolls.
 %%%%
 Slitherier Naga
 

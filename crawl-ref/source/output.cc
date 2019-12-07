@@ -1265,12 +1265,16 @@ static void _redraw_title()
     if (you.shapeshifter_species && you.species != SP_SHAPESHIFTER)
         species = make_stringf("%s-shaped Shapeshifter", species.c_str());
     const auto undead = you.undead_state();
-    if (undead == US_UNDEAD)
-        species = make_stringf("%s Mummy", species.c_str());
-    if (undead == US_HUNGRY_DEAD && you.species != SP_MIRROR_EIDOLON) // ugh
-        species = make_stringf("Zombie %s", species.c_str());
-    if (undead == US_SEMI_UNDEAD)
-        species = make_stringf("Vampire %s", species.c_str());
+    const bool undead_optional = species_can_use_modified_undeadness(you.species);
+    if (undead_optional)
+    {
+        if (undead == US_UNDEAD)
+            species = make_stringf("%s Mummy", species.c_str());
+        if (undead == US_HUNGRY_DEAD && you.species != SP_MIRROR_EIDOLON) // ugh
+            species = make_stringf("Zombie %s", species.c_str());
+        if (undead == US_SEMI_UNDEAD)
+            species = make_stringf("Vampire %s", species.c_str());
+    }
     NOWRAP_EOL_CPRINTF("%s", species.c_str());
 
     if (you_worship(GOD_NO_GOD))

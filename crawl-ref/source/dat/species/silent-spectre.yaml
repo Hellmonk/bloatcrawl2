@@ -1,0 +1,35 @@
+enum: SP_SILENT_SPECTRE
+monster: MONS_SILENT_SPECTRE
+name: Silent Spectre
+adjective: Spectral
+genus: Spectre
+difficulty: Intermediate
+aptitudes:
+  xp: -1
+  hp: -2
+  mp_mod: 0
+  mr: 3
+  spellcasting: False
+  conjurations: False
+  hexes: False
+  charms: False
+  summoning: False
+  necromancy: False
+  translocations: False
+  transmutations: False
+  fire_magic: False
+  air_magic: False
+  ice_magic: False
+  earth_magic: False
+  poison_magic: False
+  invocations: False
+undead_type: US_UNDEAD
+str: 6
+int: 2
+dex: 6
+levelup_stat_frequency: 5
+mutations:
+  1:
+    MUT_SILENT_AURA: 1
+recommended_jobs:
+  - JOB_FIGHTER
