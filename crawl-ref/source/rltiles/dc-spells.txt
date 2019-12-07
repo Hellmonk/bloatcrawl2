@@ -66,6 +66,8 @@ sticky_flame STICKY_FLAME
 throw_flame THROW_FLAME
 inner_flame INNER_FLAME
 ignition IGNITION
+starburst STARBURST
+foxfire FOXFIRE
 
 %sdir gui/spells/ice
 bolt_of_cold BOLT_OF_COLD
@@ -79,6 +81,7 @@ metabolic_englaciation METABOLIC_ENGLACIATION
 ozocubus_armour OZOCUBUS_ARMOUR
 ozocubus_refrigeration OZOCUBUS_REFRIGERATION
 throw_frost THROW_FROST
+hailstorm HAILSTORM
 
 %sdir gui/spells/necromancy
 agony AGONY
@@ -112,6 +115,7 @@ spider_form SPIDER_FORM
 sting STING
 venom_bolt VENOM_BOLT
 poisonous_vapours POISONOUS_VAPOURS
+noxious_bog NOXIOUS_BOG
 
 %sdir gui/spells/summoning
 mass_abjuration MASS_ABJURATION

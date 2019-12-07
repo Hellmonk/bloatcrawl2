@@ -32,7 +32,6 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_MEPHITIC_CLOUD, ZAP_MEPHITIC },
     { SPELL_VIOLENT_UNRAVELLING, ZAP_UNRAVELLING },
     { SPELL_DISPEL_UNDEAD, ZAP_DISPEL_UNDEAD },
-    { SPELL_ISKENDERUNS_MYSTIC_BLAST, ZAP_ISKENDERUNS_MYSTIC_BLAST },
     { SPELL_AGONY, ZAP_AGONY },
     { SPELL_DISINTEGRATE, ZAP_DISINTEGRATE },
     { SPELL_THROW_ICICLE, ZAP_THROW_ICICLE },
@@ -64,6 +63,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_OZOCUBUS_REFRIGERATION, ZAP_REFRIGERATE},
     { SPELL_DRAIN_LIFE, ZAP_DRAIN_LIFE},
     { SPELL_SONIC_WAVE, ZAP_SONIC_WAVE},
+    { SPELL_BORGNJORS_VILE_CLUTCH, ZAP_VILE_CLUTCH},
 
     // monster-specific
     { SPELL_SLUG_DART, ZAP_SLUG_DART },
@@ -78,13 +78,14 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_DRAIN_MAGIC, ZAP_DRAIN_MAGIC },
     { SPELL_HARPOON_SHOT, ZAP_HARPOON_SHOT},
     { SPELL_THROW_PIE, ZAP_THROW_PIE},
+    { SPELL_AGONY_RANGE, ZAP_AGONY_RANGE },
+    { SPELL_DISPEL_UNDEAD_RANGE, ZAP_DISPEL_UNDEAD_RANGE },
 
     // These are all for zap -> spell lookup.
     { SPELL_QUICKSILVER_BOLT, ZAP_QUICKSILVER_BOLT },
     { SPELL_QUICKSILVER_BOLT, ZAP_BREATHE_POWER },
     { SPELL_STICKY_FLAME, ZAP_STICKY_FLAME },
     { SPELL_STICKY_FLAME_RANGE, ZAP_STICKY_FLAME_RANGE },
-    { SPELL_DAZZLING_SPRAY, ZAP_DAZZLING_SPRAY },
     { SPELL_STEAM_BALL, ZAP_BREATHE_STEAM },
     { SPELL_ORB_OF_ELECTRICITY, ZAP_ORB_OF_ELECTRICITY },
     { SPELL_CHILLING_BREATH, ZAP_BREATHE_FROST },
@@ -95,11 +96,6 @@ static pair<spell_type, zap_type> _spl_zaps[] =
 
 zap_type spell_to_zap(spell_type spell)
 {
-    // This is to make sure that spl-cast.cc doesn't just zap dazzling
-    // spray right away.
-    if (spell == SPELL_DAZZLING_SPRAY)
-        return NUM_ZAPS;
-
     for (const auto &spzap : _spl_zaps)
         if (spzap.first == spell)
             return spzap.second;

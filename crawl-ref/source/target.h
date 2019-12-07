@@ -72,17 +72,6 @@ public:
     bool set_aim(coord_def a) override;
 };
 
-class targeter_imb : public targeter_beam
-{
-public:
-    targeter_imb(const actor *act, int pow, int range);
-    bool set_aim(coord_def a) override;
-    aff_type is_affected(coord_def loc) override;
-private:
-    vector<coord_def> splash;
-    vector<coord_def> splash2;
-};
-
 class targeter_view : public targeter
 {
 public:
@@ -183,16 +172,16 @@ private:
     int range;
 };
 
-class targeter_los : public targeter
+class targeter_radius : public targeter
 {
 public:
-    targeter_los(const actor *act, los_type los = LOS_DEFAULT,
-                  int ran = LOS_RADIUS, int ran_max = 0);
+    targeter_radius(const actor *act, los_type los = LOS_DEFAULT,
+                  int ran = LOS_RADIUS, int ran_max = 0, int ran_min = 0);
     bool valid_aim(coord_def a) override;
     aff_type is_affected(coord_def loc) override;
 private:
     los_type los;
-    int range, range_max;
+    int range, range_max, range_min;
 };
 
 class targeter_thunderbolt : public targeter
@@ -208,21 +197,6 @@ public:
 private:
     coord_def prev;
     int range;
-};
-
-class targeter_spray : public targeter
-{
-public:
-    targeter_spray(const actor* act, int range, zap_type zap);
-
-    bool valid_aim(coord_def a) override;
-    bool set_aim(coord_def a) override;
-    aff_type is_affected(coord_def loc) override;
-    bolt base_beam;
-    vector<bolt> beams;
-private:
-    vector<vector<coord_def> > paths_taken;
-    int _range;
 };
 
 enum class shadow_step_blocked

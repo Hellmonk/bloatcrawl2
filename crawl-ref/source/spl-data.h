@@ -91,10 +91,10 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_CONJURE_FLAME, "Conjure Flame",
     spschool::conjuration | spschool::fire,
-    spflag::target | spflag::neutral | spflag::not_self,
+    spflag::neutral | spflag::no_ghost,
     3,
     100,
-    3, 3,
+    -1, -1,
     3, 2,
     TILEG_CONJURE_FLAME,
 },
@@ -114,7 +114,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_BOLT_OF_FIRE, "Bolt of Fire",
     spschool::conjuration | spschool::fire,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     6,
     200,
     6, 6,
@@ -125,7 +125,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_BOLT_OF_COLD, "Bolt of Cold",
     spschool::conjuration | spschool::ice,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     6,
     200,
     5, 5,
@@ -238,7 +238,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_THROW_FLAME, "Throw Flame",
     spschool::conjuration | spschool::fire,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     2,
     50,
     LOS_RADIUS, LOS_RADIUS,
@@ -249,7 +249,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_THROW_FROST, "Throw Frost",
     spschool::conjuration | spschool::ice,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     2,
     50,
     6, 6,
@@ -329,7 +329,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_VENOM_BOLT, "Venom Bolt",
     spschool::conjuration | spschool::poison,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     5,
     200,
     5, 5,
@@ -443,7 +443,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_BOLT_OF_DRAINING, "Bolt of Draining",
     spschool::conjuration | spschool::necromancy,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     5,
     200,
     5, 5,
@@ -567,11 +567,11 @@ static const struct spell_desc spelldata[] =
 // of PCHACK - credit goes to its creator (whoever that may be):
 {
     SPELL_ISKENDERUNS_MYSTIC_BLAST, "Iskenderun's Mystic Blast",
-    spschool::conjuration,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spschool::conjuration | spschool::translocation,
+    spflag::area,
     4,
     100,
-    6, 6,
+    2, 2,
     4, 10,
     TILEG_ISKENDERUNS_MYSTIC_BLAST,
 },
@@ -823,7 +823,7 @@ static const struct spell_desc spelldata[] =
     spflag::dir_or_target | spflag::needs_tracer,
     5,
     100,
-    4, 4,
+    1, 1,
     4, 0,
     TILEG_DISPEL_UNDEAD,
 },
@@ -844,7 +844,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_POISON_ARROW, "Poison Arrow",
     spschool::conjuration | spschool::poison,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     6,
     200,
     6, 6,
@@ -902,11 +902,11 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_STING, "Sting",
-    spschool::conjuration | spschool::poison,
+    spschool::transmutation | spschool::poison,
     spflag::dir_or_target | spflag::needs_tracer,
     1,
     25,
-    6, 6,
+    3, 3,
     1, 0,
     TILEG_STING,
 },
@@ -971,7 +971,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CORPSE_ROT, "Corpse Rot",
-    spschool::necromancy,
+    spschool::necromancy | spschool::air,
     spflag::area | spflag::neutral | spflag::unclean,
     2,
     0,
@@ -1149,7 +1149,7 @@ static const struct spell_desc spelldata[] =
         | spflag::MR_check,
     5,
     200,
-    LOS_RADIUS, LOS_RADIUS,
+    1, 1,
     4, 0,
     TILEG_AGONY,
 },
@@ -1280,7 +1280,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_THROW_ICICLE, "Throw Icicle",
     spschool::conjuration | spschool::ice,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     4,
     100,
     5, 5,
@@ -1336,7 +1336,8 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_FLAME_TONGUE, "Flame Tongue",
     spschool::conjuration | spschool::fire,
-    spflag::dir_or_target | spflag::not_self | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::not_self | spflag::needs_tracer
+        | spflag::monster,
     1,
     40, // cap for range; damage cap is at 25
     2, 5,
@@ -2647,20 +2648,20 @@ static const struct spell_desc spelldata[] =
 #endif
 
 {
-    SPELL_DAZZLING_SPRAY, "Dazzling Spray",
+    SPELL_DAZZLING_FLASH, "Dazzling Flash",
     spschool::conjuration | spschool::hexes,
-    spflag::dir_or_target | spflag::not_self,
+    spflag::area | spflag::no_ghost,
     3,
     50,
-    5, 5,
-    3, 0,
+    2, 3,
+    0, 0,
     TILEG_DAZZLING_SPRAY,
 },
 
 {
     SPELL_FORCE_LANCE, "Force Lance",
     spschool::conjuration | spschool::translocation,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     4,
     100,
     3, 3,
@@ -3970,10 +3971,10 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_BORGNJORS_VILE_CLUTCH, "Borgnjor's Vile Clutch",
     spschool::necromancy | spschool::earth,
-    spflag::target,
+    spflag::target | spflag::needs_tracer,
     5,
     200,
-    5, 5,
+    6, 6,
     5, 4,
     TILEG_BORGNJORS_VILE_CLUTCH,
 },
@@ -4020,6 +4021,73 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     5, 0,
     TILEG_SPORULATE,
+},
+
+{
+    SPELL_STARBURST, "Starburst",
+    spschool::conjuration | spschool::fire,
+    spflag::area,
+    6,
+    200,
+    5, 5,
+    6, 0,
+    TILEG_STARBURST,
+},
+
+{
+    SPELL_FOXFIRE, "Foxfire",
+    spschool::conjuration | spschool::fire,
+    spflag::selfench,
+    1,
+    25,
+    -1, -1,
+    1, 0,
+    TILEG_FOXFIRE,
+},
+
+{
+    SPELL_HAILSTORM, "Hailstorm",
+    spschool::conjuration | spschool::ice,
+    spflag::area,
+    4,
+    100,
+    3, 3, // Range special-cased in describe-spells
+    4, 0,
+    TILEG_HAILSTORM,
+},
+
+{
+    SPELL_NOXIOUS_BOG, "Eringya's Noxious Bog",
+    spschool::poison | spschool::transmutation,
+    spflag::selfench,
+    6,
+    200,
+    -1, -1,
+    2, 0,
+    TILEG_NOXIOUS_BOG,
+},
+
+{
+    SPELL_AGONY_RANGE, "Agony Range",
+    spschool::necromancy,
+    spflag::dir_or_target | spflag::not_self | spflag::needs_tracer
+        | spflag::monster | spflag::MR_check,
+    5,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    4, 0,
+    TILEG_AGONY,
+},
+
+{
+    SPELL_DISPEL_UNDEAD_RANGE, "Dispel Undead Range",
+    spschool::necromancy,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
+    5,
+    100,
+    4, 4,
+    4, 0,
+    TILEG_DISPEL_UNDEAD,
 },
 
 {

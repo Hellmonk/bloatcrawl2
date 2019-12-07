@@ -247,6 +247,26 @@ bool check_moveto_terrain(const coord_def& p, const string &move_verb,
 
     if (!_check_moveto_dangerous(p, msg))
         return false;
+    if (!you.airborne() && env.grid(you.pos()) != DNGN_TOXIC_BOG
+        && env.grid(p) == DNGN_TOXIC_BOG)
+    {
+        string prompt;
+
+        if (prompted)
+            *prompted = true;
+
+        if (!msg.empty())
+            prompt = msg + " ";
+
+        prompt += "Are you sure you want to " + move_verb
+                + " into a toxic bog?";
+
+        if (!yesno(prompt.c_str(), false, 'n'))
+        {
+            canned_msg(MSG_OK);
+            return false;
+        }
+    }
     if (!need_expiration_warning() && need_expiration_warning(p)
         && !crawl_state.disables[DIS_CONFIRMATIONS])
     {
@@ -379,6 +399,17 @@ bool swap_check(monster* mons, coord_def &loc, bool quiet)
         return false;
     }
 
+    // Foxfire swaps burn you and dissapate the foxfire. Prompt for this.
+    // XXX: We still need the location so we can swap the foxfire and kill it
+    // in its new location (which is finalized after the player's movement is
+    // complete).
+    if (mons->type == MONS_FOXFIRE && !quiet
+        && !yesno(make_stringf("Do you really want to walk into %s?",
+                  mons->name(DESC_YOUR).c_str()).c_str(), true, 'N'))
+    {
+        return false;
+    }
+
     // First try: move monster onto your position.
     bool swap = !monster_at(loc) && monster_habitable_grid(mons, grd(loc));
 
@@ -465,9 +496,18 @@ void moveto_location_effects(dungeon_feature_type old_feat,
                 const bool entering = !feat_is_water(old_feat);
                 if (entering)
                 {
-                    mprf("You %s the %s water.",
-                         stepped ? "enter" : "fall into",
-                         new_grid == DNGN_SHALLOW_WATER ? "shallow" : "deep");
+                    if (new_grid == DNGN_TOXIC_BOG)
+                    {
+                        mprf("You %s the toxic bog.",
+                                stepped ? "enter" : "fall into");
+                    }
+                    else
+                    {
+                        mprf("You %s the %s water.",
+                             stepped ? "enter" : "fall into",
+                             new_grid == DNGN_SHALLOW_WATER ? "shallow"
+                             : "deep");
+                    }
                 }
 
                 if (new_grid == DNGN_DEEP_WATER && old_feat != DNGN_DEEP_WATER)
@@ -511,6 +551,10 @@ void moveto_location_effects(dungeon_feature_type old_feat,
     }
 
     id_floor_items();
+
+    // Falling into a toxic bog, take the damage
+    if (old_pos == you.pos() && stepped)
+        actor_apply_toxic_bog(&you);
 
     // Traps go off.
     // (But not when losing flight - i.e., moving into the same tile)
@@ -1847,6 +1891,9 @@ int player_spec_fire()
     if (you.duration[DUR_FIRE_SHIELD])
         sf++;
 
+    if (player_equip_unrand(UNRAND_ELEMENTAL_STAFF))
+        sf++;
+
     return sf;
 }
 
@@ -1860,6 +1907,9 @@ int player_spec_cold()
     // rings of ice:
     sc += you.wearing(EQ_RINGS, RING_ICE);
 
+    if (player_equip_unrand(UNRAND_ELEMENTAL_STAFF))
+        sc++;
+
     return sc;
 }
 
@@ -1870,6 +1920,9 @@ int player_spec_earth()
     // Staves
     se += you.wearing(EQ_STAFF, STAFF_EARTH);
 
+    if (player_equip_unrand(UNRAND_ELEMENTAL_STAFF))
+        se++;
+
     return se;
 }
 
@@ -1879,6 +1932,9 @@ int player_spec_air()
 
     // Staves
     sa += you.wearing(EQ_STAFF, STAFF_AIR);
+
+    if (player_equip_unrand(UNRAND_ELEMENTAL_STAFF))
+        sa++;
 
     return sa;
 }
@@ -8055,7 +8111,7 @@ bool need_expiration_warning(duration_type dur, dungeon_feature_type feat)
     if (dur == DUR_FLIGHT)
         return true;
     else if (dur == DUR_TRANSFORMATION
-             && (form_can_swim() || form_can_fly()))
+             && (form_can_swim()) || form_can_fly())
     {
         return true;
     }

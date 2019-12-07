@@ -33,84 +33,46 @@
 #include "terrain.h"
 #include "viewchar.h"
 
-spret conjure_flame(const actor *agent, int pow, const coord_def& where,
-                         bool fail)
+spret conjure_flame(int pow, bool fail)
 {
-    // FIXME: This would be better handled by a flag to enforce max range.
-    if (grid_distance(where, agent->pos()) > spell_range(SPELL_CONJURE_FLAME, pow)
-        || !in_bounds(where))
+    cloud_struct* cloud = cloud_at(you.pos());
+
+    if (cloud && !(cloud->type == CLOUD_FIRE || cloud->type == CLOUD_EMBERS))
     {
-        if (agent->is_player())
-            mpr("That's too far away.");
+        mpr("There's already a cloud here!");
         return spret::abort;
-    }
-
-    if (cell_is_solid(where))
-    {
-        if (agent->is_player())
-        {
-            const char *feat = feat_type_name(grd(where));
-            mprf("You can't place the cloud on %s.", article_a(feat).c_str());
-        }
-        return spret::abort;
-    }
-
-    cloud_struct* cloud = cloud_at(where);
-
-    if (cloud && cloud->type != CLOUD_FIRE)
-    {
-        if (agent->is_player())
-            mpr("There's already a cloud there!");
-        return spret::abort;
-    }
-
-    actor* victim = actor_at(where);
-    if (victim)
-    {
-        if (agent->can_see(*victim))
-        {
-            if (agent->is_player())
-                mpr("You can't place the cloud on a creature.");
-            return spret::abort;
-        }
-
-        fail_check();
-
-        // FIXME: maybe should do _paranoid_option_disable() here?
-        if (agent->is_player())
-            canned_msg(MSG_GHOSTLY_OUTLINE);
-        return spret::success;      // Don't give free detection!
     }
 
     fail_check();
 
-    if (cloud)
+    if (cloud && cloud->type == CLOUD_FIRE)
     {
         // Reinforce the cloud - but not too much.
         // It must be a fire cloud from a previous test.
-        if (you.see_cell(where))
-            mpr("The fire blazes with new energy!");
+        mpr("The fire blazes with new energy!");
         const int extra_dur = 2 + min(random2(pow) / 2, 20);
         cloud->decay += extra_dur * 5;
-        cloud->source = agent->mid;
-        if (agent->is_player())
-            cloud->set_whose(KC_YOU);
-        else
-            cloud->set_killer(KILL_MON_MISSILE);
+        cloud->source = you.mid ;
+        cloud->set_whose(KC_YOU);
+    }
+    else if (cloud && cloud->type == CLOUD_EMBERS)
+    {
+        mpr("The fire ignites!");
+        place_cloud(CLOUD_FIRE, you.pos(), min(5 + (random2(pow)/2)
+                                                 + (random2(pow)/2), 23), &you);
     }
     else
     {
-        const int durat = min(5 + (random2(pow)/2) + (random2(pow)/2), 23);
-        place_cloud(CLOUD_FIRE, where, durat, agent);
-        if (you.see_cell(where))
-        {
-            if (agent->is_player())
-                mpr("The fire ignites!");
-            else
-                mpr("A cloud of flames bursts into life!");
-        }
+        you.props["cflame_dur"] = min(5 + (random2(pow)/2)
+                                               + (random2(pow)/2), 23);
+        place_cloud(CLOUD_EMBERS, you.pos(), 1, &you);
+        // Create a cloud for 11 auts, so that no matter what happens
+        // the flame tries to ignite after one player action.
+        cloud = cloud_at(you.pos());
+        cloud->decay++;
+        mpr("The fire begins to smolder!");
     }
-    noisy(spell_effect_noise(SPELL_CONJURE_FLAME), where);
+    noisy(spell_effect_noise(SPELL_CONJURE_FLAME), you.pos());
 
     return spret::success;
 }
@@ -276,21 +238,6 @@ void manage_fire_shield()
 
 spret cast_corpse_rot(bool fail)
 {
-    if (!you.res_rotting())
-    {
-        for (stack_iterator si(you.pos()); si; ++si)
-        {
-            if (si->is_type(OBJ_CORPSES, CORPSE_BODY))
-            {
-                if (!yesno(("Really cast Corpse Rot while standing on " + si->name(DESC_A) + "?").c_str(), false, 'n'))
-                {
-                    canned_msg(MSG_OK);
-                    return spret::abort;
-                }
-                break;
-            }
-        }
-    }
     fail_check();
     corpse_rot(&you);
     return spret::success;
@@ -301,6 +248,7 @@ void corpse_rot(actor* caster)
     // If there is no caster (god wrath), centre the effect on the player.
     const coord_def center = caster ? caster->pos() : you.pos();
     bool saw_rot = false;
+    int did_rot = 0;
 
     for (radius_iterator ri(center, LOS_NO_TRANS); ri; ++ri)
     {
@@ -317,14 +265,26 @@ void corpse_rot(actor* caster)
                     else
                         turn_corpse_into_skeleton(*si);
 
-                    place_cloud(CLOUD_MIASMA, *ri, 4+random2avg(16, 3),caster);
-
                     if (!saw_rot && you.see_cell(*ri))
                         saw_rot = true;
+
+                    ++did_rot;
 
                     // Don't look for more corpses here.
                     break;
                 }
+    }
+
+    for (fair_adjacent_iterator ai(center); ai; ++ai)
+    {
+        if (did_rot == 0)
+            break;
+
+        if (cell_is_solid(*ai))
+            continue;
+
+        place_cloud(CLOUD_MIASMA, *ai, 2+random2avg(8, 2),caster);
+        --did_rot;
     }
 
     if (saw_rot)

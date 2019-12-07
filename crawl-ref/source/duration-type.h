@@ -202,5 +202,6 @@ enum duration_type
     DUR_ACROBAT,
     DUR_SHAFT_IMMUNITY,
     DUR_SQUAT,
+    DUR_NOXIOUS_BOG,
     NUM_DURATIONS
 };
