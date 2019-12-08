@@ -2,7 +2,7 @@ enum: SP_BUNYIP
 monster: MONS_QUICKSILVER_DRAGON
 name: Bunyip
 short_name: By
-difficulty: Advanced
+difficulty: Simple
 aptitudes:
   xp: 1
   hp: 3

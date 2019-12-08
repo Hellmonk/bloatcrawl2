@@ -123,6 +123,11 @@ Halfling
 Small but hardy, Halflings excel with slings. They have an increased resistance
 to mutagenic effects.
 %%%%
+Hermit Crab
+
+These clever crustaceans move into larger shells over time. If their shell is
+broken in an attack, they can usually escape and find a smaller replacement.
+%%%%
 Hill Orc
 
 Orcs are skilled in close combat, and often dabble in offensive magic. Hated by

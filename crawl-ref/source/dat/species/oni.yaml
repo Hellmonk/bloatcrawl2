@@ -1,7 +1,7 @@
 enum: SP_ONI
 monster: MONS_ONI
 name: "Oni"
-difficulty: Intermediate
+difficulty: Simple
 aptitudes:
   xp: 0
   hp: 1
