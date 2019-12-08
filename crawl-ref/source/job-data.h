@@ -46,6 +46,16 @@ static const map<job_type, job_def> job_data =
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_ALCHEMIST, {
+    "Al", "Alchemist",
+    2, 5, 5,
+    { SP_SPRIGGAN },
+    { "dagger", "robe", "potion of mutation", "potion of lignification",
+      "potion of cancellation", "potion of brilliance", "hat of the alchemist"},
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 2 }, { SK_DODGING, 4 }, { SK_STEALTH, 3 }, },
+} },
+
 { JOB_ANARCHIST, {
     "A!", "Anarchist",
     5, 2, 5,

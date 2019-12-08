@@ -9,6 +9,11 @@ Air Elementalist
 Air Elementalists have learned the Shock spell. Later on, their selection of
 Air Magic spells provides them with the flexibility to survive.
 %%%%
+Alchemist
+
+Alchemists bring some homebrewed potions and a very special hat on their
+dungeon adventure.
+%%%%
 Anarchist
 
 No Kings, No Rulers (maybe a god though). Anarchists are bent on dismantling
@@ -191,6 +196,11 @@ Meteorologist
 
 Meteorologists predict the weather and carry around some handy evocable items
 to make their predictions come true.
+%%%%
+Misfortunate
+
+The Misfortunate received an unlucky robe from some shady source. Perhaps the robe
+attracted them to the dungeon for some reason?
 %%%%
 Monk
 
