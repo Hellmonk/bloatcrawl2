@@ -21,5 +21,5 @@ fake_mutations:
   - long: When killed, you can scuttle off to find a smaller shell.
 recommended_jobs:
   - JOB_FIGHTER
-  walking_verb: Scuttl
-  altar_action: rest your weary claws in front of
+walking_verb: Scuttl
+altar_action: rest your weary claws in front of

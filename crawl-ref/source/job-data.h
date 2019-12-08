@@ -432,6 +432,15 @@ static const map<job_type, job_def> job_data =
     { { SK_EVOCATIONS, 4 }, { SK_DODGING, 1 }, { SK_STEALTH, 1 }, },
 } },
 
+{ JOB_MISFORTUNATE, {
+    "Mi", "Misfortunate",
+    2, 6, 4,
+    { SP_SPRIGGAN, },
+    { "robe of misfortune", "dagger", "hunting sling", "stone q:1" },
+    WCHOICE_NONE,
+    { { SK_SPELLCASTING, 3 }, { SK_DODGING, 3 }, { SK_STEALTH, 3 }, },
+} },
+
 { JOB_MONK, {
     "Mo", "Monk",
     3, 2, 7,

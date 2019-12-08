@@ -79,6 +79,7 @@ enum job_type
     JOB_STALKER,
     JOB_CHAINCASTER,
     JOB_GONGER,
+    JOB_MISFORTUNATE,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,

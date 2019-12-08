@@ -745,6 +745,9 @@ void give_items_skills(const newgame_def& ng)
     case JOB_STALKER:
         add_spell_to_memory(SPELL_STING);
         break;
+        
+    case JOB_MISFORTUNATE:
+        add_spell_to_memory(SPELL_MAGIC_DART);
 
     case JOB_CHAINCASTER:
     {

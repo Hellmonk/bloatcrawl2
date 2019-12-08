@@ -2210,6 +2210,14 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+{ MUT_HERMIT_SHELL, 0, 1, mutflag::good, true,
+   "hermit shell",
+
+   {"You live in a shell that you carry on your back.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

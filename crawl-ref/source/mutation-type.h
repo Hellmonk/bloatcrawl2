@@ -70,6 +70,7 @@ enum mutation_type
     MUT_PASSIVE_WORSHIP,
     MUT_SLIPPERY,
     MUT_SILENT_AURA,
+    MUT_HERMIT_SHELL,
 #endif
     MUT_ACUTE_VISION,
     MUT_AGILE,
@@ -285,6 +286,7 @@ enum mutation_type
     MUT_PASSIVE_WORSHIP,
     MUT_SLIPPERY,
     MUT_SILENT_AURA,
+    MUT_HERMIT_SHELL,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,
