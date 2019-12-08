@@ -6395,8 +6395,10 @@ int player::racial_ac(bool temp) const
 
     if (!(player_is_shapechanged() && temp))
     {
-        if (species == SP_NAGA || species == SP_SLITHERIER_NAGA)
+        if (species == SP_NAGA)
             return 100 * experience_level / 3;              // max 9
+        if (species == SP_SLITHERIER_NAGA)
+            return 200 * experience_level / 3;
         else if (species == SP_GARGOYLE)
         {
             return 200 + 100 * experience_level * 2 / 5     // max 20
