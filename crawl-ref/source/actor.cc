@@ -980,13 +980,13 @@ void actor::collide(coord_def newpos, const actor *agent, int pow)
 
         const string thisname = name(DESC_A, true);
         const string othername = other->name(DESC_A, true);
-        if (!fedhas_prot_other)
+        if (!fedhas_prot_other && !actor_collision_immune(other))
         {
             other->hurt(agent, other->apply_ac(damage.roll()),
                         BEAM_MISSILE, KILLED_BY_COLLISION,
                         othername, thisname);
         }
-        if (alive() && !fedhas_prot)
+        if (alive() && !fedhas_prot && !actor_collision_immune(this))
         {
             hurt(agent, apply_ac(damage.roll()), BEAM_MISSILE,
                  KILLED_BY_COLLISION, thisname, othername);
@@ -1019,7 +1019,7 @@ void actor::collide(coord_def newpos, const actor *agent, int pow)
         }
     }
 
-    if (!fedhas_prot)
+    if (!fedhas_prot && !actor_collision_immune(this))
     {
         hurt(agent, apply_ac(damage.roll()), BEAM_MISSILE,
              KILLED_BY_COLLISION, "",

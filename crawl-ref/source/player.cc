@@ -1345,9 +1345,6 @@ int player_hunger_rate(bool temp)
     if (you.species == SP_TROLL)
         hunger += 3;            // in addition to the +3 for fast metabolism
 
-    if (you.species == SP_TROLL_TWO)
-        hunger += 20;
-
     if (temp
         && (you.duration[DUR_REGENERATION]
             || you.duration[DUR_TROGS_HAND])

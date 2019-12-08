@@ -184,7 +184,7 @@ static const map<job_type, job_def> job_data =
 { JOB_CHAINCASTER, {
     "Ch", "Chaincaster",
     6, 6, 0,
-    { SP_TROLL_TWO, SP_MINOTAUR, SP_PROTEAN, },
+    { SP_MINOTAUR, SP_PROTEAN, },
     { "ring mail", "ring of wizardry", "ring of wizardry" },
     WCHOICE_PLAIN,
     { { SK_WEAPON, 2 }, { SK_ARMOUR, 1 }, { SK_FIGHTING, 1 },

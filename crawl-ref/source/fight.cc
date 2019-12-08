@@ -1079,6 +1079,14 @@ bool stop_attack_prompt(targeter &hitfunc, const char* verb,
     }
 }
 
+bool actor_collision_immune(const actor *agent)
+{
+	if(agent->is_player() && you.species == SP_ZODACH)
+        return true;
+        
+    return false;
+}
+
 /**
  * Does the player have Olgreb's Toxic Radiance up that would/could cause
  * a hostile summon to be created? If so, prompt the player as to whether they

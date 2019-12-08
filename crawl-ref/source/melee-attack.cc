@@ -1295,6 +1295,10 @@ void melee_attack::player_aux_setup(unarmed_attack_type atk)
     {
 		damage_brand = SPWPN_VENOM;
     }
+    else if (you.species == SP_ZODACH)
+    {
+        damage_brand = SPWPN_CHAOS;
+    }
 }
 
 /**
@@ -1456,6 +1460,13 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
 
             if (damage_brand == SPWPN_VENOM && coinflip())
                 poison_monster(defender->as_monster(), &you);
+            
+            if (damage_brand == SPWPN_CHAOS && !you_worship(GOD_ZIN)
+                && !cloud_at(defender->pos()) && x_chance_in_y(5 + you.experience_level / 3, 15))
+            {
+                place_cloud(CLOUD_CHAOS, defender->pos(), 1 + random2(3), &you);
+                mprf("%s is engulfed in chaos!", defender->name(DESC_THE).c_str());
+            }
 
             // Normal vampiric biting attack, not if already got stabbing special.
             if (damage_brand == SPWPN_VAMPIRISM && you.undead_state() == US_SEMI_UNDEAD

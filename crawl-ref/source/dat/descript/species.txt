@@ -336,3 +336,8 @@ Xeno Elf
 Strange insectoid creatures from a distant land. Their magical efficiency is
 far better than most species, but drains when moving near enemies.
 %%%%
+Zodach
+
+Zodach are the burnt-out remnants of a decayed celestial species. Nearby monsters
+are drawn in by their immense gravitas.
+%%%%

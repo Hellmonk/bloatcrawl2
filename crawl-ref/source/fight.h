@@ -75,3 +75,4 @@ bool stop_attack_prompt(targeter &hitfunc, const char* verb,
                         const monster *mons = nullptr);
 
 bool otr_stop_summoning_prompt(string verb = "summon");
+bool actor_collision_immune(const actor *agent);	
