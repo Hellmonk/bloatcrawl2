@@ -231,6 +231,11 @@ Philosopher
 Philosophers bring their thinking hat to the dungeon, but not much else in the
 way of useful items.
 %%%%
+Ronin
+
+Wandering warriors. They start with simple weapons and gain a little additional
+piety with the first god they worship.
+%%%%
 Slime Priest
 
 Slime priests follow Jiyva, the slime god. They enter the dungeon already mutated

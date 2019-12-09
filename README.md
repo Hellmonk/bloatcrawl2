@@ -73,6 +73,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Night Knights** follow the shadowy god Dithmenos. They begin lightly armoured but with good stealth.
 * **Paladin**: Worshippers of The Shining One, these holy warriors fall down a lot.
 * **Philosophers** bring their thinking hat to the dungeon, but not much else in the way of useful items.
+* **Ronin** are wandering warriors. They start with simple weapons and gain a little additional piety with the first god they worship.
 * **Slime Priests** follow Jiyva, the slime god. They enter the dungeon already mutated by their deity's power but with only a small amount of divine favor.
 * Highly accurate users of ranged weaponry, **Snipers** wear amulets of harm to boost their damage capabilities.
 * **Soothslayers** are battlemages who begin with a variety of simple magic in addition to their weapon.

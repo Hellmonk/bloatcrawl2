@@ -513,6 +513,16 @@ static const map<job_type, job_def> job_data =
     { { SK_FIGHTING, 2 }, { SK_SPELLCASTING, 2 }, { SK_HEXES, 1 }, { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_RONIN, {
+    "Ro", "Ronin",
+    4, 4, 4,
+    { SP_HUMAN, },
+    { "katana", "rapier", "bow", "arrows q:20", "leather armour" },
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 1 }, { SK_LONG_BLADES, 2}, { SK_SHORT_BLADES, 1 },
+      { SK_BOWS, 2}, { SK_ARMOUR, 1 }, { SK_DODGING, 1 }, },
+} },
+
 { JOB_SKALD, {
     "Sk", "Skald",
     3, 5, 4,

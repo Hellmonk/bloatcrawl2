@@ -3094,6 +3094,9 @@ int gozag_service_fee()
     const int gold = you.attribute[ATTR_GOLD_GENERATED];
     int fee = (int)(gold - gold / log10(gold + 10.0))/2;
 
+    if (you.char_class == JOB_RONIN && had_gods() == 0)
+        fee /= 2;
+
     dprf("found %d gold, fee %d", gold, fee);
     return fee;
 }
@@ -3299,6 +3302,23 @@ static void _apply_monk_bonus()
         gain_piety(35, 1, false);
 }
 
+static void _apply_ronin_bonus()
+{
+    if (you.char_class != JOB_RONIN || had_gods() > 0)
+        return;
+
+    // monks get bonus piety for first god
+    if (you_worship(GOD_RU))
+    {
+        you.props[RU_SACRIFICE_DELAY_KEY] =
+            you.props[RU_SACRIFICE_DELAY_KEY].get_int() / 2;
+    }
+    else if (you_worship(GOD_USKAYAW))  // Gaining piety past this point does nothing
+        gain_piety(15, 1, false);       // of value with Uskayaw and looks weird.
+    else
+        gain_piety(20, 1, false);
+}
+
 /// Transfer some piety from an old good god to a new one, if applicable.
 static void _transfer_good_god_piety()
 {
@@ -3429,6 +3449,7 @@ static void _set_initial_god_piety()
         gain_piety(30, 1, false);
 
     _apply_monk_bonus();
+    _apply_ronin_bonus();
     _transfer_good_god_piety();
 }
 
