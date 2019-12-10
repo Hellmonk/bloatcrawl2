@@ -494,6 +494,15 @@ static const map<job_type, job_def> job_data =
       { SK_STEALTH, 4 }, { SK_INVOCATIONS, 2 }, },
 } },
 
+{ JOB_OVERSEER, {
+    "Ov", "Overseer",
+    4, 8, 0,
+    { SP_OGRE, SP_HERMIT_CRAB, SP_BUNYIP, SP_HEDGEHOG, },
+    { "whip", },
+    WCHOICE_NONE,
+    { { SK_SUMMONINGS, 5 }, { SK_MACES_FLAILS, 2 }, { SK_FIGHTING, 1} },
+} },
+
 { JOB_PALADIN, {
     "Pa", "Paladin",
     4, 4, 4,

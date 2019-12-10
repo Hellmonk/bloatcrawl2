@@ -222,6 +222,11 @@ Night Knight
 These knights of the night follow the shadowy god Dithmenos. They begin lightly
 armoured but with good stealth.
 %%%%
+Overseer
+
+Overseers can summon lesser demonic slaves, and eventually even call forth a
+limb of their true patron. What they traded for this power is unknown.
+%%%%
 Paladin
 
 Worshippers of The Shining One, these holy warriors fall down a lot.

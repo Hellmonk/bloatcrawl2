@@ -71,6 +71,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Meteorologists** predict the weather and carry around some handy evocable items to make their predictions come true.
 * **Neckbeards** come to the Dungeon from their moms' basements with a cape, a fedora, a rusty katana and the ability to teleport behind you (nothing personal, kid).
 * **Night Knights** follow the shadowy god Dithmenos. They begin lightly armoured but with good stealth.
+* **Overseers** can summon lesser demonic slaves, and eventually even call forth a limb of their true patron. What they traded for this power is unknown.
 * **Paladin**: Worshippers of The Shining One, these holy warriors fall down a lot.
 * **Philosophers** bring their thinking hat to the dungeon, but not much else in the way of useful items.
 * **Ronin** are wandering warriors. They start with simple weapons and gain a little additional piety with the first god they worship.
