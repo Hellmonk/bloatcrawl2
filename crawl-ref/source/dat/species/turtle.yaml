@@ -41,6 +41,9 @@ str: 6
 int: 9
 dex: 9
 levelup_stat_frequency: 4
+mutations:
+  1:
+    MUT_TURTLE_SHELL: 1
 recommended_jobs:
   - JOB_ASSASSIN
   - JOB_GLADIATOR

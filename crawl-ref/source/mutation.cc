@@ -2337,6 +2337,12 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         ostr << mdef.have[level - 1] << chitinous_shield_bonus() / 200 << " SH)";
         result = ostr.str();
     }
+    else if (mut == MUT_TURTLE_SHELL)
+    {
+        ostringstream ostr;
+        ostr << mdef.have[level - 1] << turtle_shell_bonus() / 100 << ")";
+        result = ostr.str();
+    }
     else if (mut == MUT_UNBREATHING && you.has_mutation(MUT_BOL_XI))
     {
         result = "There is no breath.\nNor hunger.";

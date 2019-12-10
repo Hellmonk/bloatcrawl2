@@ -6317,6 +6317,14 @@ int sanguine_armour_bonus()
     return 300 + mut_lev * 300;
 }
 
+int turtle_shell_bonus()
+{
+    if (you.has_mutation(MUT_TURTLE_SHELL))
+        return (1 + you.experience_level / 3) * 100;
+    else
+        return 0;
+}
+
 /**
  * @return      The SH bonus * 200. (For scaling.)
  */
@@ -6512,6 +6520,8 @@ int player::armour_class(bool /*calc_unid*/) const
         AC -= 400 * you.props["corrosion_amount"].get_int();
 
     AC += sanguine_armour_bonus();
+
+    AC += turtle_shell_bonus();
 
     return AC / scale;
 }

@@ -996,6 +996,7 @@ int calc_hunger(int food_cost);
 
 int player_icemail_armour_class();
 int sanguine_armour_bonus();
+int turtle_shell_bonus();
 int protean_hp_bonus();
 int chitinous_shield_bonus();
 
