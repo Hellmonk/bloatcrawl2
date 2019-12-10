@@ -3218,10 +3218,10 @@ void level_change(bool skip_attribute_increase)
             tiles.layout_statcol();
             redraw_screen();
 #endif
+            update_shapeshifter_species();
+
             if (!skip_attribute_increase)
                 species_stat_gain(you.species);
-
-            update_shapeshifter_species();
 
             switch (you.species)
             {
