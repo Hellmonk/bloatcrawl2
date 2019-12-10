@@ -819,7 +819,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
 
     case EQ_WEAPON:
     case EQ_STAFF:
-        return you.species == SP_FELID || you.species == SP_BUTTERFLY ? MB_FALSE :
+        return (you.species == SP_FELID || you.species == SP_BUTTERFLY) ? MB_FALSE :
                you.body_size(PSIZE_TORSO, !temp) < SIZE_MEDIUM ? MB_MAYBE :
                                          MB_TRUE;
 

@@ -700,7 +700,7 @@ void give_items_skills(const newgame_def& ng)
         you.religion = GOD_USKAYAW;
         you.piety = 200; //you had a really good party right before entering the dungeon
         break;
-        
+
     case JOB_DERSERKER:
         you.penance[GOD_TROG] = 50;
         break;
