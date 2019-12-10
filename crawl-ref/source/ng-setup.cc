@@ -27,6 +27,7 @@
 #include "randbook.h"
 #include "religion.h"
 #include "shopping.h"
+#include "size-type.h"
 #include "skills.h"
 #include "spl-book.h"
 #include "spl-util.h"
@@ -1022,13 +1023,12 @@ static void _setup_generic(const newgame_def& ng)
     you.vaporous_resistance_elec = 0;
     you.vaporous_resistance_poison = 0;
     you.argon_flashes_available = 0;
-
-    species_stat_init(you.species);     // must be down here {dlb}
-
-    // Only relevant for Bol Xi, but saved for every species
     you.bol_xi_end_uses = 0;
     if (ng.species == SP_BOL_XI)
         bol_xi_aptitude_shuffle();
+    you.hermit_shell_size = SIZE_MEDIUM;
+
+    species_stat_init(you.species);     // must be down here {dlb}
 
     // Before we get into the inventory init, set light radius based
     // on species vision.

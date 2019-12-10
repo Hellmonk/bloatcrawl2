@@ -923,6 +923,14 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
+    if (you.has_mutation(MUT_HERMIT_SHELL)
+        && (slot == EQ_BODY_ARMOUR || slot == EQ_CLOAK))
+    {
+        if (verbose)
+            mprf("Your hermit shell prevents wearing that!");
+        return false;
+    }
+
     if (you.has_mutation(MUT_CHITINOUS_PLATING)
         && (slot == EQ_GLOVES || slot == EQ_SHIELD))
     {

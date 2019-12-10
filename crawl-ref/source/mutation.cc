@@ -2343,6 +2343,15 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         ostr << mdef.have[level - 1] << turtle_shell_bonus() / 100 << ")";
         result = ostr.str();
     }
+    else if (mut == MUT_HERMIT_SHELL)
+    {
+        ostringstream ostr;
+        ostr << mdef.have[level - 1] << hermit_shell_bonus() / 100 << ")";
+        ostr << "\nYour shell prevents wearing body armour and cloaks.";
+        if (hermit_crab_can_escape())
+            ostr << "\nYou can escape to a smaller shell if your shell is broken.";
+        result = ostr.str();
+    }
     else if (mut == MUT_UNBREATHING && you.has_mutation(MUT_BOL_XI))
     {
         result = "There is no breath.\nNor hunger.";

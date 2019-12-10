@@ -1096,6 +1096,28 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         _place_player_corpse(death_type == KILLED_BY_DISINT);
         return;
     }
+    else if (!non_death && you.has_mutation(MUT_HERMIT_SHELL)
+             && you.hermit_shell_size > SIZE_TINY)
+    {
+        mark_milestone("death", lowercase_first(se.long_kill_message()).c_str());
+        you.hermit_shell_size = static_cast<size_type>(
+            static_cast<int>(you.hermit_shell_size) - 1);
+        you.deaths++;
+
+        you.pending_revival = true;
+
+        stop_delay(true);
+
+        // You wouldn't want to lose this accomplishment to a crash, would you?
+        // Especially if you manage to trigger one via lua somehow...
+        if (!crawl_state.disables[DIS_SAVE_CHECKPOINTS])
+            save_game(false);
+
+        mpr("Your shell breaks...");
+        xom_death_message((kill_method_type) se.get_death_type());
+        more();
+        return;
+    }
 
     // Prevent bogus notes.
     activate_notes(false);

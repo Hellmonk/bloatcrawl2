@@ -1958,7 +1958,10 @@ void canned_msg(canned_message_type which_message)
             mpr("You cannot move.");
             break;
         case MSG_YOU_DIE:
-            mpr_nojoin(MSGCH_PLAIN, "You die...");
+            if (you.has_mutation(MUT_HERMIT_SHELL))
+                mpr_nojoin(MSGCH_PLAIN, "Your journey is over little crab."); // gooncrawl
+            else
+                mpr_nojoin(MSGCH_PLAIN, "You die...");
             break;
         case MSG_GHOSTLY_OUTLINE:
             mpr("You see a ghostly outline there, and the spell fizzles.");

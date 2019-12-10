@@ -76,3 +76,4 @@ species_type random_turtle_colour();
 string turtle_bandana_colour(species_type sp);
 void update_shapeshifter_species();
 bool species_can_use_modified_undeadness(species_type sp);
+bool hermit_crab_can_escape();

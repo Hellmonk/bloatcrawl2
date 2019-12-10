@@ -16,9 +16,6 @@ levelup_stat_frequency: 4
 mutations:
   1:
     MUT_HERMIT_SHELL: 1
-fake_mutations:
-  - long: Your shell prevents wearing body armour and cloaks.
-  - long: When killed, you can scuttle off to find a smaller shell.
 recommended_jobs:
   - JOB_FIGHTER
 walking_verb: Scuttl
