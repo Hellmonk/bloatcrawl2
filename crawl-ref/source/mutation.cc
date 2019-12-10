@@ -675,7 +675,7 @@ string describe_mutations(bool drop_title)
                          num_tentacles.c_str()),
             !form_keeps_mutations());
     }
-    
+
     if (you.species == SP_UNIPODE)
     {
         result += _annotate_form_based("You are amphibious.",
@@ -1310,7 +1310,7 @@ bool physiology_mutation_conflict(mutation_type mutat)
 
     // Felids have innate claws, and unlike trolls/ghouls, there are no
     // increases for them. And octopodes have no hands.
-    if ((you.species == SP_FELID || you.species == SP_OCTOPODE 
+    if ((you.species == SP_FELID || you.species == SP_OCTOPODE
             || you.species == SP_BUTTERFLY || you.species == SP_UNIPODE)
          && mutat == MUT_CLAWS)
     {

@@ -1973,7 +1973,7 @@ int player_spec_summ()
 int player_spec_poison()
 {
     int sp = 0;
-    
+
     sp += you.get_mutation_level(MUT_POISON_ENHANCER);
 
     // Staves
@@ -7645,7 +7645,7 @@ bool player::can_safely_mutate(bool temp) const
 {
     if (!can_mutate())
         return false;
-    
+
     if (species == SP_ROBOT)
         return false;
 
@@ -7726,7 +7726,7 @@ bool player::polymorph(int pow, bool allow_immobile)
     for (int tries = 0; tries < 3; tries++)
     {
         f = forms[random2(forms.size())];
-        
+
         if (you.species == SP_FUNGOID)
             f = transformation::fungus;
 

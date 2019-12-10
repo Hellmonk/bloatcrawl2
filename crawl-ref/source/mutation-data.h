@@ -2147,10 +2147,10 @@ static const mutation_def mut_data[] =
   {"You feel toxic.",
    "",
    ""},
-   
+
   {"", "", ""},
 },
-   
+
 { MUT_LASER_BREATH, 0, 1, mutflag::good, false,
   "laser",
 
