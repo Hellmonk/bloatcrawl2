@@ -30,6 +30,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * Deeper than a Deep Elf and twice as elven, **Profound Elves** are extremely frail magical experts.
 * **Proteans** are a race of vaguely humanoid amoebas. They grow in health and size as they mutate.
 * **Quill orcs** love to read and hate close combat. They read books and scrolls at an uncanny pace.
+* **Ratlings** are verminous humanoids that mature at an incredible pace, but learn very slowly. They have an affinity for poison magic.
 * **Robots** are metallic humanoids crafted by Dwarves. They break equipment when uninstalling it and have a poor grasp of religion, but can shoot lasers.
 * **Shapeshifters** imitate monsters around them to an uncanny degree. They cannot control their shifting, and are only rarely seen in their true form.
 * **Silent Spectres** are terrible spirits that bring an unearthly silence to the area around them, preventing spell casting, divine invocations and even reading scrolls.
@@ -70,9 +71,10 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Meteorologists** predict the weather and carry around some handy evocable items to make their predictions come true.
 * **Neckbeards** come to the Dungeon from their moms' basements with a cape, a fedora, a rusty katana and the ability to teleport behind you (nothing personal, kid).
 * **Night Knights** follow the shadowy god Dithmenos. They begin lightly armoured but with good stealth.
+* **Overseers** can summon lesser demonic slaves, and eventually even call forth a limb of their true patron. What they traded for this power is unknown.
 * **Paladin**: Worshippers of The Shining One, these holy warriors fall down a lot.
 * **Philosophers** bring their thinking hat to the dungeon, but not much else in the way of useful items.
-* **Ratlings** are verminous humanoids that mature at an incredible pace, but learn very slowly. They have an affinity for poison magic.
+* **Ronin** are wandering warriors. They start with simple weapons and gain a little additional piety with the first god they worship.
 * **Slime Priests** follow Jiyva, the slime god. They enter the dungeon already mutated by their deity's power but with only a small amount of divine favor.
 * Highly accurate users of ranged weaponry, **Snipers** wear amulets of harm to boost their damage capabilities.
 * **Soothslayers** are battlemages who begin with a variety of simple magic in addition to their weapon.

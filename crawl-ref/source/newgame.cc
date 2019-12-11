@@ -1311,12 +1311,12 @@ static job_group jobs_order[] =
         coord_def(0, 0), 15,
         {
             JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_HUNTER, JOB_ASSASSIN,
-            JOB_FENCER, JOB_CAVEPERSON, JOB_SNIPER,
+            JOB_FENCER, JOB_CAVEPERSON, JOB_SNIPER, JOB_RONIN,
         }
     },
     {
         "Adventurer",
-        coord_def(0, 10), 15,
+        coord_def(0, 11), 15,
         {
             JOB_ARTIFICER, JOB_WANDERER, JOB_ANARCHIST, JOB_UNDERSTUDY,
             JOB_METEOROLOGIST, JOB_UNCLE, JOB_ENTOMOLOGIST, JOB_DEPRIVED,
@@ -1339,6 +1339,7 @@ static job_group jobs_order[] =
             JOB_WIZARD, JOB_CONJURER, JOB_SUMMONER, JOB_NECROMANCER,
             JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST, JOB_AIR_ELEMENTALIST,
             JOB_EARTH_ELEMENTALIST, JOB_VENOM_MAGE, JOB_PHILOSOPHER, JOB_ASPIRANT,
+            JOB_OVERSEER,
         }
     },
     {

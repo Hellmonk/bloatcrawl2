@@ -227,6 +227,11 @@ Night Knight
 These knights of the night follow the shadowy god Dithmenos. They begin lightly
 armoured but with good stealth.
 %%%%
+Overseer
+
+Overseers can summon lesser demonic slaves, and eventually even call forth a
+limb of their true patron. What they traded for this power is unknown.
+%%%%
 Paladin
 
 Worshippers of The Shining One, these holy warriors fall down a lot.
@@ -235,6 +240,11 @@ Philosopher
 
 Philosophers bring their thinking hat to the dungeon, but not much else in the
 way of useful items.
+%%%%
+Ronin
+
+Wandering warriors. They start with simple weapons and gain a little additional
+piety with the first god they worship.
 %%%%
 Slime Priest
 

@@ -1279,10 +1279,10 @@ static void _redraw_title()
 
     if (you_worship(GOD_NO_GOD))
     {
-        if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
-            && !had_gods())
+        if ((you.char_class == JOB_MONK || you.char_class == JOB_RONIN)
+            && you.species != SP_DEMIGOD && !had_gods())
         {
-            string godpiety = "**....";
+            string godpiety = you.char_class == JOB_MONK ? "**...." : "*.....";
             textcolour(DARKGREY);
             if ((unsigned int)(strwidth(species) + strwidth(godpiety) + 1) <= WIDTH)
                 NOWRAP_EOL_CPRINTF(" %s", godpiety.c_str());

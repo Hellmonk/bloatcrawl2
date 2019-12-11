@@ -749,7 +749,7 @@ void give_items_skills(const newgame_def& ng)
     case JOB_STALKER:
         add_spell_to_memory(SPELL_STING);
         break;
-        
+
     case JOB_MISFORTUNATE:
         add_spell_to_memory(SPELL_MAGIC_DART);
 
@@ -768,6 +768,14 @@ void give_items_skills(const newgame_def& ng)
         add_spell_to_memory(selection.second);
         you.skills[selection.first] += 2;
         break;
+    }
+
+    case JOB_OVERSEER:
+    {
+        add_spell_to_memory(SPELL_BEASTLY_APPENDAGE);
+        you.spell_library.set(SPELL_CALL_IMP, true);
+        you.spell_library.set(SPELL_SUMMON_DEMON, true);
+        you.spell_library.set(SPELL_MALIGN_GATEWAY, true);
     }
 
     default:
@@ -814,7 +822,7 @@ void give_items_skills(const newgame_def& ng)
         _give_ranged_weapon(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
     else if (job_has_weapon_choice(you.char_class))
         newgame_make_item(OBJ_WEAPONS, ng.weapon);
-    
+
     // give fungoids a sling to help them out
     if (you.species == SP_FUNGOID && !job_gets_ranged_weapons(you.char_class))
     {

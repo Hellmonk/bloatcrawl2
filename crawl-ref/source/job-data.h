@@ -504,6 +504,15 @@ static const map<job_type, job_def> job_data =
       { SK_STEALTH, 4 }, { SK_INVOCATIONS, 2 }, },
 } },
 
+{ JOB_OVERSEER, {
+    "Ov", "Overseer",
+    4, 8, 0,
+    { SP_OGRE, SP_HERMIT_CRAB, SP_BUNYIP, SP_HEDGEHOG, },
+    { "whip", },
+    WCHOICE_NONE,
+    { { SK_SUMMONINGS, 5 }, { SK_MACES_FLAILS, 2 }, { SK_FIGHTING, 1} },
+} },
+
 { JOB_PALADIN, {
     "Pa", "Paladin",
     4, 4, 4,
@@ -521,6 +530,16 @@ static const map<job_type, job_def> job_data =
     { "robe", "hat of pondering", "staff of wizardry", "scroll of random uselessness"},
     WCHOICE_NONE,
     { { SK_FIGHTING, 2 }, { SK_SPELLCASTING, 2 }, { SK_HEXES, 1 }, { SK_STEALTH, 2 }, },
+} },
+
+{ JOB_RONIN, {
+    "Ro", "Ronin",
+    4, 4, 4,
+    { SP_HUMAN, },
+    { "katana", "rapier", "bow", "arrows q:20", "leather armour" },
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 1 }, { SK_LONG_BLADES, 2}, { SK_SHORT_BLADES, 1 },
+      { SK_BOWS, 2}, { SK_ARMOUR, 1 }, { SK_DODGING, 1 }, },
 } },
 
 { JOB_SKALD, {

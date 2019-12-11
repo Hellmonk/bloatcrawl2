@@ -202,7 +202,7 @@ bool job_is_zealot(job_type job)
     return (job == JOB_BERSERKER
             || job == JOB_CHAOS_KNIGHT
             || job == JOB_ABYSSAL_KNIGHT
-            || job == JOB_MONK
+            || job == JOB_MONK // sorta
             || job == JOB_PALADIN
             || job == JOB_BOUND
             || job == JOB_WITNESS
@@ -224,7 +224,9 @@ bool job_is_zealot(job_type job)
             || job == JOB_ANNIHILATOR
             || job == JOB_DISCIPLE
             || job == JOB_DEATH_BISHOP
-            || job == JOB_ZINJA);
+            || job == JOB_ZINJA
+            || job == JOB_RONIN // sorta
+            );
 }
 
 bool job_is_good_god_zealot(job_type job)
