@@ -1413,10 +1413,7 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         || you.duration[DUR_WATER_HOLD] && !you.res_water_drowning())
     {
         talent tal = get_talent(abil.ability, false);
-        // Renounce religion and Ru's sacrifices are always available,
-        // regardless of silence.
-        if (tal.is_invocation && tal.which != ABIL_RENOUNCE_RELIGION
-                              && !is_ru_sacrifice(abil.ability))
+        if (tal.is_invocation && abil.ability != ABIL_RENOUNCE_RELIGION)
         {
             if (!quiet)
             {

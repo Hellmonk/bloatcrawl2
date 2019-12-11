@@ -2,8 +2,7 @@ enum: SP_HEDGEHOG
 monster: MONS_PORCUPINE
 name: "Hedgehog"
 short_name: "OC"
-difficulty: Advanced
-# difficulty_priority: 40
+difficulty: Intermediate
 aptitudes:
   xp: 1
   hp: -2

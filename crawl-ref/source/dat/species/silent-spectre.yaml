@@ -3,7 +3,7 @@ monster: MONS_SILENT_SPECTRE
 name: Silent Spectre
 adjective: Spectral
 genus: Spectre
-difficulty: Intermediate
+difficulty: Advanced
 aptitudes:
   xp: -1
   hp: -2

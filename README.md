@@ -20,6 +20,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Fungoids** are mushroomy humanoids with roots instead of feet. They cannot move when monsters are around, but release confusing spores at enemies when they attack.
 * **Gnomes** are small creatures who are highly attuned with the earth. They are skilled in the use of magical devices and ranged weaponry.
 * Rolling around at the speed of sound, **Hedgehogs** have got places to go and gotta follow their rainbow.
+* **Hermit Crabs**: These clever crustaceans move into larger shells over time. If their shell is broken in an attack, they can usually escape and find a smaller replacement.
 * Irits are magical, brutish one-eyed humanoids. They are adept at casting spells in heavy armour, although it costs them life force to do so.
 * **Kitsune** are enthralling fox spirits that take on human shapes. They are poor at most skills and frailer than humans, but can charm their foes.
 * **Leprechauns** are small and frail but versatile. Their intrinsic luck gives them a knack for finding better items.
