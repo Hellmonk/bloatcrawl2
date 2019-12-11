@@ -3,7 +3,6 @@ monster: MONS_ORC
 name: Quill Orc
 short_name: QO
 difficulty: Simple
-difficulty_priority: 100
 species_flags:
   - orcish
 aptitudes:
