@@ -699,6 +699,10 @@ void give_items_skills(const newgame_def& ng)
         you.religion = GOD_USKAYAW;
         you.piety = 200; //you had a really good party right before entering the dungeon
         break;
+        
+    case JOB_DERSERKER:
+        you.penance[GOD_TROG] = 50;
+        break;
 
     case JOB_UNDERSTUDY:
         create_understudy();
@@ -790,6 +794,8 @@ void give_items_skills(const newgame_def& ng)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1, SPWPN_HOLY_WRATH);
     else if (you.char_class == JOB_DISCIPLE)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +3);
+    else if (you.char_class == JOB_DERSERKER)
+        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +8, SPWPN_FLAMING);
     else if (you.char_class == JOB_NIGHT_KNIGHT)
     {
        newgame_make_item(OBJ_ARMOUR, ARM_ROBE, 1, +1, SPARM_STEALTH);

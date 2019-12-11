@@ -101,6 +101,11 @@ Deprived
 Deprived start with nothing but a ration and almost no skills. Survival may prove...
 difficult.
 %%%%
+Derserker
+
+Derserkers are ex-berserkers, who ran off with excellent weapons. Now, they
+must face Trog's terrible wrath.
+%%%%
 Disciple
 
 Disciples follow the Wu Jian Council and begin the game with a good weapon.

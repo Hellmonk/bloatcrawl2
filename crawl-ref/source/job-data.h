@@ -242,6 +242,16 @@ static const map<job_type, job_def> job_data =
     { { SK_STEALTH, 1 }, },
 } },
 
+{ JOB_DERSERKER, {
+    "Ds", "Derserker",
+    9, -1, 4,
+    { SP_HILL_ORC, SP_HALFLING, SP_OGRE, SP_MERFOLK, SP_MINOTAUR, SP_GARGOYLE,
+      SP_DEMONSPAWN, },
+    { "animal skin",  "wrath of trog"},
+    WCHOICE_GOOD,
+    { { SK_FIGHTING, 3 }, { SK_DODGING, 2 }, { SK_WEAPON, 3 }, },
+} },
+
 { JOB_DISCIPLE, {
     "Di", "Disciple",
     4, 4, 4,
