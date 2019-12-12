@@ -162,6 +162,11 @@ bool species_is_coloured_turtle(species_type species)
     return species_is_turtle(species) && species != SP_TURTLE;
 }
 
+bool species_is_demonic(species_type species)
+{
+    return bool(get_species_def(species).flags & SPF_DEMONIC);
+}
+
 size_type species_size(species_type species, size_part_type psize)
 {
     const size_type size = get_species_def(species).size;

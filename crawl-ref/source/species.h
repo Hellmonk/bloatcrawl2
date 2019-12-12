@@ -15,6 +15,7 @@ bool species_is_orcish(species_type species);
 bool species_has_hair(species_type species);
 bool species_is_turtle(species_type species);
 bool species_is_coloured_turtle(species_type species);
+bool species_is_demonic(species_type species);
 bool species_can_throw_large_rocks(species_type species);
 
 bool species_has_claws(species_type species);

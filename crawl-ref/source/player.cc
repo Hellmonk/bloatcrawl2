@@ -1767,6 +1767,10 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
             break;
     }
 
+    // Demons are poison immune
+    if (you.holiness() & MH_DEMONIC)
+        return 3;
+
     if (you.is_nonliving(temp)
         || you.species == SP_MOONOTAUR
         || temp && get_form()->res_pois() == 3
@@ -6677,6 +6681,9 @@ mon_holy_type player::holiness(bool temp) const
         holi |= MH_EVIL;
     }
 
+    if (species_is_demonic(you.species))
+        holi |= MH_DEMONIC;
+
     // possible XXX: Monsters get evil/unholy bits set on spell selection
     //  should players?
     return holi;
@@ -6684,8 +6691,11 @@ mon_holy_type player::holiness(bool temp) const
 
 bool player::undead_or_demonic() const
 {
-    // This is only for TSO-related stuff, so demonspawn and oni are included.
-    return undead_state() || species == SP_DEMONSPAWN;
+    return undead_state()
+        // Demonspawn and Oni are demonic enough for this check
+        || species == SP_DEMONSPAWN
+        || species == SP_ONI
+        || holiness() & MH_DEMONIC;
 }
 
 bool player::is_holy(bool /*check_spells*/) const
