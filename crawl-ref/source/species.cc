@@ -610,6 +610,9 @@ void update_shapeshifter_species()
     if (sp == SP_JANUVIAN && coinflip())
         sp = SP_JATWOVIAN;
 
+    if (sp == SP_ANGEL && you_worship(GOD_YREDELEMNUL))
+        sp = SP_PROFANE_SERVITOR;
+
     if (sp == SP_BASE_DRACONIAN && you.experience_level >= 7)
         sp = random_draconian_colour();
 
