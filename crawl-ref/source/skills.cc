@@ -1611,13 +1611,14 @@ skill_type str_to_skill_safe(const string &skill)
 
 static string _stk_weight(species_type species)
 {
-    if (species_size(species) == SIZE_LARGE)
+    const size_type size = player_size();
+    if (size == SIZE_LARGE)
         return "Heavy";
-    else if (species_size(species, PSIZE_BODY) == SIZE_LARGE)
+    else if (size == SIZE_LARGE)
         return "Cruiser";
-    else if (species_size(species) == SIZE_SMALL || species == SP_TENGU)
+    else if (size == SIZE_SMALL || species == SP_TENGU)
         return "Feather";
-    else if (species_size(species) == SIZE_LITTLE)
+    else if (size == SIZE_LITTLE)
         return "Fly";
     else if (species_is_elven(species))
         return "Light";

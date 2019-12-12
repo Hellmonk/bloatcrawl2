@@ -2322,7 +2322,7 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     else if (mut == MUT_PROTEAN_BODY)
     {
         const int hp = protean_hp_bonus();
-        const string size = get_size_adj(species_size(you.species, PSIZE_BODY));
+        const string size = get_size_adj(player_size());
         ostringstream ostr;
         ostr << mdef.have[level - 1]
             << "+" << hp << "% HP).";

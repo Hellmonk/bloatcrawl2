@@ -164,33 +164,7 @@ bool species_is_coloured_turtle(species_type species)
 
 size_type species_size(species_type species, size_part_type psize)
 {
-    size_type size = get_species_def(species).size;
-
-    if (you.get_mutation_level(MUT_PROTEAN_BODY))
-    {
-        // Sizes go: tiny(0) little small medium large big giant(6)
-        // Protean has +0% hp and gets +10hp per mutation level (non-innate).
-        // XL 1 Fighting 0 = 13hp
-        // XL 27 Fighting 0 = 156hp
-        // XL 27 Fighting 27 = 249hp
-        const int hp = you.hp_max;
-        if (hp <= 50) // 0-50
-            size = SIZE_TINY;
-        else if (hp <= 100) // 51-100
-            size = SIZE_LITTLE;
-        else if (hp <= 150) // 101-150
-            size = SIZE_SMALL;
-        else if (hp <= 200) // 150-200
-            size = SIZE_MEDIUM;
-        else if (hp <= 300) // 201-300 -- 100hp deltas from here
-            size = SIZE_LARGE;
-        else if (hp <= 400) // 301-400
-            size = SIZE_BIG;
-        else                // 401+ -- need 16 mutation levels at max XL/Fighting
-            size = SIZE_GIANT;
-    }
-    else if (you.has_mutation(MUT_HERMIT_SHELL))
-        return you.hermit_shell_size;
+    const size_type size = get_species_def(species).size;
 
     if (psize == PSIZE_TORSO
         && bool(get_species_def(species).flags & SPF_SMALL_TORSO))
@@ -456,6 +430,7 @@ void change_species_to(species_type sp, bool rescale_skills)
 {
     ASSERT(sp < NUM_SPECIES);
     const species_type old_sp = you.species;
+    const size_type old_size = player_size();
     bool had_racial_permanent_flight = you.racial_permanent_flight();
 
     // Re-scale skill-points.
@@ -665,5 +640,5 @@ bool species_can_use_modified_undeadness(species_type sp)
 
 bool hermit_crab_can_escape()
 {
-    return species_size(you.species) > SIZE_TINY;
+    return player_size() > SIZE_TINY;
 }

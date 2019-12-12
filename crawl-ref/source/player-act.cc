@@ -175,13 +175,16 @@ bool player::is_habitable_feat(dungeon_feature_type actual_grid) const
 
 size_type player::body_size(size_part_type psize, bool base) const
 {
+    const bool torso = psize == PSIZE_TORSO;
+
     if (base)
-        return species_size(species, psize);
+        return torso ? player_size() : species_size(species, psize);
     else
     {
         size_type tf_size = get_form()->size;
-        return tf_size == SIZE_CHARACTER ? species_size(species, psize)
-                                         : tf_size;
+        return tf_size == SIZE_CHARACTER ?
+            (torso ? player_size() : species_size(species, psize))
+            : tf_size;
     }
 }
 
