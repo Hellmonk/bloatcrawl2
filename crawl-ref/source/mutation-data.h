@@ -2228,6 +2228,14 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+{ MUT_GHOSTLY, 0, 1, mutflag::good, true,
+   "ghostly",
+
+   {"Your ghostly form has no feet.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =
