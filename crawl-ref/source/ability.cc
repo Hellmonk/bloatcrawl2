@@ -50,6 +50,7 @@
 #include "item-use.h"
 #include "level-state-type.h"
 #include "libutil.h"
+#include "los.h"
 #include "macro.h"
 #include "maps.h"
 #include "menu.h"
@@ -2076,6 +2077,12 @@ static spret _do_ability(const ability_def& abil, bool fail)
         you.bol_xi_end_uses++;
         mprf(MSGCH_ORB, "You think of home.");
         flash_view_delay(UA_HP, LIGHTMAGENTA, 200);
+        more();
+
+        for (radius_iterator ri(you.pos(), get_los_radius(), C_SQUARE); ri; ++ri)
+            if (you.see_cell(*ri) and one_chance_in(4))
+                if (feat_is_solid(grd(*ri)))
+                    grd(*ri) = one_chance_in(3) ? DNGN_LAVA : DNGN_FLOOR;
 
         enum end_effect
         {
