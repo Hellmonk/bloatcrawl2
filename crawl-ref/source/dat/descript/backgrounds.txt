@@ -93,8 +93,8 @@ They have few combat skills but are quite good at evading attacks.
 %%%%
 Death Bishop
 
-Pontiffs of Yredelemnul, Death Bishops carry a weapon of draining and use the pain spell
-in service of their evil god.
+Pontiffs of Yredelemnul, Death Bishops carry an unholy staff and use the pain
+spell in service of their evil god.
 %%%%
 Deprived
 

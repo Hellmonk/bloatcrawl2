@@ -790,8 +790,6 @@ void give_items_skills(const newgame_def& ng)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_CHAOS);
     else if (you.char_class == JOB_WARRIOR)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, -2);
-    else if (you.char_class == JOB_DEATH_BISHOP)
-        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_DRAINING);
     else if (you.char_class == JOB_PALADIN)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1, SPWPN_HOLY_WRATH);
     else if (you.char_class == JOB_DISCIPLE)

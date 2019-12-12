@@ -57,7 +57,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Cavepeople** start with exceptional strength but, unfortunately, neolithic weapons.
 * Lots of people wish they could cast spells in heavy armour. **Chaincasters** do something about it.
 * **Dancers** have left their friends behind and entered the dungeon in service of Uskayaw. They have few combat skills but are quite good at evading attacks.
-* Pontiffs of Yredelemnul, **Death Bishops** carry a weapon of draining and use the pain spell in service of their evil god.
+* Pontiffs of **Yredelemnul**, Death Bishops carry an unholy staff and use the pain spell in service of their evil god.
 * **Deprived** start with nothing but a ration and almost no skills. Survival may prove... difficult.
 * **Disciples** follow the Wu Jian Council and begin the game with a good weapon.
 * **Doctor**: Medical professionals from the surface occasionally enter the dungeon. They follow the healer god Elyvilon.
