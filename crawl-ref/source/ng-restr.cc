@@ -54,6 +54,8 @@ static bool _banned_combination(job_type job, species_type species)
         return job_is_evil_god_zealot(job);
     case SP_ROBOT:
         return job == JOB_TRANSMUTER;
+    case SP_SILENT_SPECTRE:
+        return job_is_mage(job) || job_is_warrior_mage(job) || job_is_magic_god_zealot(job);
     default:
         break;
     }
