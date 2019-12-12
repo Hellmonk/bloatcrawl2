@@ -27,7 +27,12 @@ static bool _banned_combination(job_type job, species_type species)
             || job == JOB_HUNTER
             || job == JOB_ARCANE_MARKSMAN
             || job == JOB_NECKBEARD
-            || job == JOB_ARCHAEOLOGIST)
+            || job == JOB_ARCHAEOLOGIST
+            || job == JOB_SNIPER
+            || job == JOB_CAVEPERSON
+            || job == JOB_RONIN
+            || job == JOB_FENCER
+            || job == JOB_DERSERKER)
         {
             return true;
         }
