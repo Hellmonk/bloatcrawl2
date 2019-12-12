@@ -575,6 +575,7 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     switch (sp)
     {
     case SP_HUMAN:
+    case SP_BOOMER:
         return TILEP_BASE_HUMAN;
 #if TAG_MAJOR_VERSION == 34
     case SP_HIGH_ELF:
@@ -583,6 +584,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_DEEP_ELF:
     case SP_EMBER_ELF:
     case SP_PROFOUND_ELF:
+    case SP_WEED_ELF:
+    case SP_SQUAT_ELF:
         return TILEP_BASE_DEEP_ELF;
     case SP_HALFLING:
         return TILEP_BASE_HALFLING;
@@ -626,8 +629,7 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_MERFOLK:
         return TILEP_BASE_MERFOLK;
     case SP_DEEP_DWARF:
-    case SP_DAB_DWARF:
-    case SP_CRYSTAL_DWARF:
+    case SP_UNFATHOMED_DWARF:
         return TILEP_BASE_DEEP_DWARF;
     case SP_GARGOYLE:
     case SP_ROBOT:
@@ -644,11 +646,40 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_BARACHI:
         return TILEP_BASE_BARACHI;
     case SP_GNOLL:
+    case SP_ANCIENT_GNOLL:
         return TILEP_BASE_GNOLL;
     case SP_ONI:
         return TILEP_BASE_ONI;
     case SP_FAERIE_DRAGON:
         return TILEP_BASE_FAERIE_DRAGON;
+    case SP_YETI:
+        return TILEP_BASE_YETI;
+    case SP_GNOME:
+        return TILEP_BASE_GNOME;
+    case SP_LEPRECHAUN:
+        return TILEP_BASE_LEPRECHAUN;
+    case SP_PROTEAN:
+        return TILEP_BASE_PROTEAN;
+    case SP_BUNYIP:
+        return TILEP_BASE_BUNYIP;
+    case SP_ARGON:
+        return TILEP_BASE_ARGON;
+    case SP_BUTTERFLY:
+        return TILEP_BASE_BUTTERFLY;
+    case SP_UNIPODE:
+        return TILEP_BASE_UNIPODE;
+    case SP_SHAPESHIFTER:
+        return TILEP_BASE_SHAPESHIFTER;
+    case SP_SILENT_SPECTRE:
+        return TILEP_BASE_SILENT_SPECTRE;
+    case SP_ANGEL:
+        return TILEP_BASE_ANGEL;
+    case SP_PROFANE_SERVITOR:
+        return TILEP_BASE_PROFANE_SERVITOR;
+    case SP_DAB_DWARF:
+        return TILEP_BASE_DAB_DWARF;
+    case SP_CRYSTAL_DWARF:
+        return TILEP_BASE_CRYSTAL_DWARF;
     default:
         return TILEP_BASE_HUMAN;
     }
@@ -683,6 +714,9 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
 
     switch (sp)
     {
+        case SP_BOOMER:
+            hair = TILEP_HAIR_SHORT_WHITE;
+            break;
 #if TAG_MAJOR_VERSION == 34
         case SP_HIGH_ELF:
         case SP_SLUDGE_ELF:
@@ -692,6 +726,9 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_DEEP_ELF:
         case SP_EMBER_ELF:
         case SP_PROFOUND_ELF:
+        case SP_WEED_ELF:
+        case SP_SQUAT_ELF:
+        case SP_XENO_ELF:
             hair = TILEP_HAIR_ELF_WHITE;
             break;
         case SP_TROLL:
@@ -721,6 +758,9 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
             hair = TILEP_HAIR_PART2_RED;
             break;
         case SP_DEEP_DWARF:
+        case SP_UNFATHOMED_DWARF:
+        case SP_DAB_DWARF:
+        case SP_CRYSTAL_DWARF:
             hair  = TILEP_HAIR_SHORT_WHITE;
             beard = TILEP_BEARD_GARIBALDI_WHITE;
             break;
@@ -731,13 +771,25 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_MINOTAUR:
         case SP_DEMONSPAWN:
         case SP_HILL_ORC:
+        case SP_QUILL_ORC:
         case SP_KOBOLD:
         case SP_FORMICID:
         case SP_BARACHI:
         case SP_GNOLL:
+        case SP_ANCIENT_GNOLL:
         case SP_GARGOYLE:
         case SP_VINE_STALKER:
         case SP_FAERIE_DRAGON:
+        case SP_LEPRECHAUN:
+        case SP_PROTEAN:
+        case SP_BUNYIP:
+        case SP_ARGON:
+        case SP_BUTTERFLY:
+        case SP_UNIPODE:
+        case SP_SHAPESHIFTER:
+        case SP_SILENT_SPECTRE:
+        case SP_ANGEL:
+        case SP_PROFANE_SERVITOR:
             hair = 0;
             break;
         default:

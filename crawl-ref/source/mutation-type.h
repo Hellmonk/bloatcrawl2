@@ -71,6 +71,7 @@ enum mutation_type
     MUT_SLIPPERY,
     MUT_SILENT_AURA,
     MUT_HERMIT_SHELL,
+    MUT_TURTLE_SHELL,
 #endif
     MUT_ACUTE_VISION,
     MUT_AGILE,
@@ -287,6 +288,7 @@ enum mutation_type
     MUT_SLIPPERY,
     MUT_SILENT_AURA,
     MUT_HERMIT_SHELL,
+    MUT_TURTLE_SHELL,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,

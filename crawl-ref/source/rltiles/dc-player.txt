@@ -94,6 +94,20 @@ oni_m
 oni2_f
 oni2_m
 faerie_dragon FAERIE_DRAGON
+yeti_m YETI
+halfling_m GNOME
+leprechaun_m LEPRECHAUN
+protean_m PROTEAN
+bunyip_m BUNYIP
+argon_m ARGON
+butterfly BUTTERFLY
+unipode UNIPODE
+shapeshifter SHAPESHIFTER
+silent_spectre SILENT_SPECTRE
+angel ANGEL
+profane_servitor PROFANE_SERVITOR
+dwarf_m DAB_DWARF
+crystal_dwarf CRYSTAL_DWARF
 
 # draconians
 draconian_f DRACONIAN DRACONIAN_FIRST

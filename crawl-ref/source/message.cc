@@ -1958,7 +1958,10 @@ void canned_msg(canned_message_type which_message)
             mpr("You cannot move.");
             break;
         case MSG_YOU_DIE:
-            mpr_nojoin(MSGCH_PLAIN, "You die...");
+            if (you.has_mutation(MUT_HERMIT_SHELL))
+                mpr_nojoin(MSGCH_PLAIN, "Your journey is over little crab."); // gooncrawl
+            else
+                mpr_nojoin(MSGCH_PLAIN, "You die...");
             break;
         case MSG_GHOSTLY_OUTLINE:
             mpr("You see a ghostly outline there, and the spell fizzles.");
@@ -2171,6 +2174,8 @@ static void _replay_messages_core(formatted_scroller &hist)
         if (channel_message_history(msgs[i].channel))
         {
             string text = msgs[i].full_text();
+            if (!text.size())
+                continue;
             linebreak_string(text, cgetsize(GOTO_CRT).x - 1);
             vector<formatted_string> parts;
             formatted_string::parse_string_to_multiple(text, parts, 80);

@@ -3902,6 +3902,10 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
         case SP_HUMAN:
             return TILEG_SP_HUMAN;
         case SP_DEEP_ELF:
+        case SP_PROFOUND_ELF:
+        case SP_WEED_ELF:
+        case SP_SQUAT_ELF:
+        case SP_EMBER_ELF:
             return TILEG_SP_DEEP_ELF;
         case SP_HALFLING:
             return TILEG_SP_HALFLING;
@@ -3934,6 +3938,7 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
         case SP_MERFOLK:
             return TILEG_SP_MERFOLK;
         case SP_DEEP_DWARF:
+        case SP_UNFATHOMED_DWARF:
             return TILEG_SP_DEEP_DWARF;
         case SP_FELID:
             return TILEG_SP_FELID;
@@ -3948,7 +3953,40 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
         case SP_BARACHI:
             return TILEG_SP_BARACHI;
         case SP_GNOLL:
+        case SP_ANCIENT_GNOLL:
             return TILEG_SP_GNOLL;
+        case SP_YETI:
+            return TILEG_SP_YETI;
+        case SP_GNOME:
+            return TILEG_SP_GNOME;
+        case SP_LEPRECHAUN:
+            return TILEG_SP_LEPRECHAUN;
+        case SP_PROTEAN:
+            return TILEG_SP_PROTEAN;
+        case SP_BUNYIP:
+            return TILEG_SP_BUNYIP;
+        case SP_ARGON:
+            return TILEG_SP_ARGON;
+        case SP_BUTTERFLY:
+            return TILEG_SP_BUTTERFLY;
+        case SP_FAERIE_DRAGON:
+            return TILEG_SP_FAERIE_DRAGON;
+        case SP_UNIPODE:
+            return TILEG_SP_UNIPODE;
+        case SP_SHAPESHIFTER:
+            return TILEG_SP_SHAPESHIFTER;
+        case SP_SILENT_SPECTRE:
+            return TILEG_SP_SILENT_SPECTRE;
+        case SP_ANGEL:
+            return TILEG_SP_ANGEL;
+        case SP_PROFANE_SERVITOR:
+            return TILEG_SP_PROFANE_SERVITOR;
+        case SP_DAB_DWARF:
+            return TILEG_SP_DAB_DWARF;
+        case SP_CRYSTAL_DWARF:
+            return TILEG_SP_CRYSTAL_DWARF;
+        case SP_ONI:
+            return TILEG_SP_ONI;
         default:
             return TILEG_SP_HUMAN;
     }

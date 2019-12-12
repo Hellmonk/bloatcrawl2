@@ -1390,6 +1390,7 @@ static void tag_construct_char(writer &th)
     for (int i=0; i<NUM_SKILLS; i++)
         marshallByte(th, you.bol_xi_apts[i]);
     marshallBoolean(th, you.bol_xi_end_uses);
+    marshallByte(th, static_cast<int>(you.hermit_shell_size));
 }
 
 /// is a custom scoring mechanism being stored?
@@ -2326,6 +2327,7 @@ void tag_read_char(reader &th, uint8_t /*format*/, uint8_t major, uint8_t minor)
     for (int i=0; i<NUM_SKILLS; i++)
         you.bol_xi_apts[i] = unmarshallByte(th);
     you.bol_xi_end_uses = unmarshallBoolean(th);
+    you.hermit_shell_size = static_cast<size_type>(unmarshallByte(th));
 }
 
 #if TAG_MAJOR_VERSION == 34

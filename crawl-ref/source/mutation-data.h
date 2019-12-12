@@ -2147,10 +2147,10 @@ static const mutation_def mut_data[] =
   {"You feel toxic.",
    "",
    ""},
-   
+
   {"", "", ""},
 },
-   
+
 { MUT_LASER_BREATH, 0, 1, mutflag::good, false,
   "laser",
 
@@ -2214,7 +2214,17 @@ static const mutation_def mut_data[] =
 { MUT_HERMIT_SHELL, 0, 1, mutflag::good, true,
    "hermit shell",
 
-   {"You live in a shell that you carry on your back.", "", ""},
+   // Bonus details added in mutation.cc's mutation_desc
+   {"You live in a shell that you carry on your back. (AC +", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_TURTLE_SHELL, 0, 1, mutflag::good, true,
+   "turtle shell",
+
+   // Bonus details added in mutation.cc's mutation_desc
+   {"Your hard shell protects you from harm. (AC +", "", ""},
    {"", "", ""},
    {"", "", ""},
 },

@@ -189,6 +189,8 @@ size_type species_size(species_type species, size_part_type psize)
         else                // 401+ -- need 16 mutation levels at max XL/Fighting
             size = SIZE_GIANT;
     }
+    else if (you.has_mutation(MUT_HERMIT_SHELL))
+        return you.hermit_shell_size;
 
     if (psize == PSIZE_TORSO
         && bool(get_species_def(species).flags & SPF_SMALL_TORSO))
@@ -659,4 +661,9 @@ void update_shapeshifter_species()
 bool species_can_use_modified_undeadness(species_type sp)
 {
     return sp != SP_GARGOYLE && species_undead_type(sp) == US_ALIVE;
+}
+
+bool hermit_crab_can_escape()
+{
+    return species_size(you.species) > SIZE_TINY;
 }

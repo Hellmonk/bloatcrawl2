@@ -441,10 +441,13 @@ void bring_to_safety()
 // This includes ALL afflictions, unlike wizard/Xom revive.
 void revive()
 {
-    adjust_level(-1);
-    // Allow a spare after two levels (we just lost one); the exact value
-    // doesn't matter here.
-    you.attribute[ATTR_LIFE_GAINED] = 0;
+    if (you.species == SP_FELID)
+    {
+        adjust_level(-1);
+        // Allow a spare after two levels (we just lost one); the exact value
+        // doesn't matter here.
+        you.attribute[ATTR_LIFE_GAINED] = 0;
+    }
 
     you.disease = 0;
     you.magic_contamination = 0;
@@ -495,6 +498,9 @@ void revive()
         ouch(INSTANT_DEATH, KILLED_BY_DRAINING);
     }
 
-    mpr("You rejoin the land of the living...");
-    // included in default force_more_message
+    if (you.has_mutation(MUT_HERMIT_SHELL))
+        mpr("You scuttle off and find a new, smaller shell to live in...");
+    else
+        mpr("You rejoin the land of the living...");
+        // included in default force_more_message
 }

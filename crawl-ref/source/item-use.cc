@@ -428,7 +428,7 @@ bool can_wield(const item_def *weapon, bool say_reason,
         SAY(mpr("You can't wield that without your missing limb."));
         return false;
     }
-    
+
     if (you.species == SP_UNIPODE
             && you.hands_reqd(*weapon) == HANDS_TWO)
     {
@@ -875,7 +875,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             mpr("You can't wear that!");
         return false;
     }
-    
+
       if (you.species == SP_UNIPODE && slot != EQ_HELMET)
     {
         if (verbose)
@@ -889,7 +889,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             mpr("You don't understand the use of that!");
         return false;
     }
-    
+
     if(you.species == SP_FUNGOID && slot == EQ_BOOTS)
     {
         if (verbose)
@@ -920,6 +920,14 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     {
         if (verbose)
             mprf("Your exoskeleton prevents wearing that!");
+        return false;
+    }
+
+    if (you.has_mutation(MUT_HERMIT_SHELL)
+        && (slot == EQ_BODY_ARMOUR || slot == EQ_CLOAK))
+    {
+        if (verbose)
+            mprf("Your hermit shell prevents wearing that!");
         return false;
     }
 
@@ -976,7 +984,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
-    if  ((you.get_mutation_level(MUT_MISSING_HAND) || you.species == SP_UNIPODE) 
+    if  ((you.get_mutation_level(MUT_MISSING_HAND) || you.species == SP_UNIPODE)
             && is_shield(item))
     {
         if (verbose)

@@ -819,7 +819,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
 
     case EQ_WEAPON:
     case EQ_STAFF:
-        return you.species == SP_FELID || you.species == SP_BUTTERFLY ? MB_FALSE :
+        return (you.species == SP_FELID || you.species == SP_BUTTERFLY) ? MB_FALSE :
                you.body_size(PSIZE_TORSO, !temp) < SIZE_MEDIUM ? MB_MAYBE :
                                          MB_TRUE;
 
@@ -1973,7 +1973,7 @@ int player_spec_summ()
 int player_spec_poison()
 {
     int sp = 0;
-    
+
     sp += you.get_mutation_level(MUT_POISON_ENHANCER);
 
     // Staves
@@ -2896,6 +2896,43 @@ static void _felid_extra_life()
     }
 }
 
+static void _update_player_size(size_type old_size)
+{
+    const size_type new_size = species_size(you.species);
+    ASSERT(old_size != new_size);
+    const string verb = (int)new_size > (int)old_size ? "grow" : "shrink";
+    mprf("You %s from %s to %s.", verb.c_str(),
+         get_size_adj(old_size), get_size_adj(new_size));
+    for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
+    {
+        if (you_can_wear(static_cast<equipment_type>(i)) == MB_FALSE
+            && you.equip[i] != -1)
+        {
+            mprf("%s fall%s away!",
+                 you.inv[you.equip[i]].name(DESC_YOUR).c_str(),
+                 you.inv[you.equip[i]].quantity > 1 ? "" : "s");
+            // Unwear items without the usual processing.
+            you.equip[i] = -1;
+            you.melded.set(i, false);
+        }
+    }
+}
+
+static void _hermit_shell_upgrade()
+{
+    mpr("Checking hermit shel upgrade");
+    if (you.hermit_shell_size == NUM_SIZE_LEVELS - 1)
+        return;
+    mprf(MSGCH_INTRINSIC_GAIN, "You find a larger hermit shell and move into it.");
+    const size_type old_size = you.hermit_shell_size;
+    you.hermit_shell_size = static_cast<size_type>(
+            static_cast<int>(old_size) + 1);
+    _update_player_size(old_size);
+    you.redraw_armour_class = true;
+    you.redraw_evasion = true;
+
+}
+
 static void _januvian_aspect_change()
 {
     if (you.species == SP_JANUVIAN)
@@ -2937,22 +2974,8 @@ static void _gain_and_note_hp_mp()
 static void _update_protean_size(size_type oldsize)
 {
     const size_type size = species_size(you.species, PSIZE_BODY);
-    const string verb = (int)size > (int)oldsize ? "grow" : "shrink";
-    mprf("You %s from %s to %s.", verb.c_str(),
-         get_size_adj(oldsize), get_size_adj(size));
-    for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
-    {
-        if (you_can_wear(static_cast<equipment_type>(i)) == MB_FALSE
-            && you.equip[i] != -1)
-        {
-            mprf("%s fall%s away!",
-                 you.inv[you.equip[i]].name(DESC_YOUR).c_str(),
-                 you.inv[you.equip[i]].quantity > 1 ? "" : "s");
-            // Unwear items without the usual processing.
-            you.equip[i] = -1;
-            you.melded.set(i, false);
-        }
-    }
+    ASSERT(oldsize != size);
+    _update_player_size(oldsize);
     // You can grow more than one size in a single call to this function
     if (size >= SIZE_LARGE)
     {
@@ -3195,10 +3218,10 @@ void level_change(bool skip_attribute_increase)
             tiles.layout_statcol();
             redraw_screen();
 #endif
+            update_shapeshifter_species();
+
             if (!skip_attribute_increase)
                 species_stat_gain(you.species);
-
-            update_shapeshifter_species();
 
             switch (you.species)
             {
@@ -3401,6 +3424,9 @@ void level_change(bool skip_attribute_increase)
             mprf(MSGCH_INTRINSIC_GAIN, "Your chitinous plates grow further.");
             you.redraw_armour_class = true; // also redraws SH
         }
+        if (you.has_mutation(MUT_HERMIT_SHELL) && (you.experience_level % 8 == 0))
+            _hermit_shell_upgrade();
+
         if (!updated_maxhp)
             _gain_and_note_hp_mp();
 
@@ -3497,6 +3523,8 @@ void level_change(bool skip_attribute_increase)
             mpr("You gain enough energy for another flash.");
             you.argon_flashes_available++;
         }
+        if (you.has_mutation(MUT_HERMIT_SHELL) && you.max_level % 8 == 0)
+            _hermit_shell_upgrade();
     }
 
     you.redraw_title = true;
@@ -6317,6 +6345,22 @@ int sanguine_armour_bonus()
     return 300 + mut_lev * 300;
 }
 
+int hermit_shell_bonus()
+{
+    if (you.has_mutation(MUT_HERMIT_SHELL))
+        return static_cast<int>(you.hermit_shell_size) * 200;
+    else
+        return 0;
+}
+
+int turtle_shell_bonus()
+{
+    if (you.has_mutation(MUT_TURTLE_SHELL))
+        return (1 + you.experience_level / 3) * 100;
+    else
+        return 0;
+}
+
 /**
  * @return      The SH bonus * 200. (For scaling.)
  */
@@ -6512,6 +6556,8 @@ int player::armour_class(bool /*calc_unid*/) const
         AC -= 400 * you.props["corrosion_amount"].get_int();
 
     AC += sanguine_armour_bonus();
+
+    AC += turtle_shell_bonus();
 
     return AC / scale;
 }
@@ -7635,7 +7681,7 @@ bool player::can_safely_mutate(bool temp) const
 {
     if (!can_mutate())
         return false;
-    
+
     if (species == SP_ROBOT)
         return false;
 
@@ -7716,7 +7762,7 @@ bool player::polymorph(int pow, bool allow_immobile)
     for (int tries = 0; tries < 3; tries++)
     {
         f = forms[random2(forms.size())];
-        
+
         if (you.species == SP_FUNGOID)
             f = transformation::fungus;
 

@@ -675,7 +675,7 @@ string describe_mutations(bool drop_title)
                          num_tentacles.c_str()),
             !form_keeps_mutations());
     }
-    
+
     if (you.species == SP_UNIPODE)
     {
         result += _annotate_form_based("You are amphibious.",
@@ -1310,7 +1310,7 @@ bool physiology_mutation_conflict(mutation_type mutat)
 
     // Felids have innate claws, and unlike trolls/ghouls, there are no
     // increases for them. And octopodes have no hands.
-    if ((you.species == SP_FELID || you.species == SP_OCTOPODE 
+    if ((you.species == SP_FELID || you.species == SP_OCTOPODE
             || you.species == SP_BUTTERFLY || you.species == SP_UNIPODE)
          && mutat == MUT_CLAWS)
     {
@@ -2335,6 +2335,21 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     {
         ostringstream ostr;
         ostr << mdef.have[level - 1] << chitinous_shield_bonus() / 200 << " SH)";
+        result = ostr.str();
+    }
+    else if (mut == MUT_TURTLE_SHELL)
+    {
+        ostringstream ostr;
+        ostr << mdef.have[level - 1] << turtle_shell_bonus() / 100 << ")";
+        result = ostr.str();
+    }
+    else if (mut == MUT_HERMIT_SHELL)
+    {
+        ostringstream ostr;
+        ostr << mdef.have[level - 1] << hermit_shell_bonus() / 100 << ")";
+        ostr << "\nYour shell prevents wearing body armour and cloaks.";
+        if (hermit_crab_can_escape())
+            ostr << "\nYou can escape to a smaller shell if your shell is broken.";
         result = ostr.str();
     }
     else if (mut == MUT_UNBREATHING && you.has_mutation(MUT_BOL_XI))
