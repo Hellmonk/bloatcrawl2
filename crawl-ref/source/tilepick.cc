@@ -3991,6 +3991,10 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
             return TILEG_SP_HERMIT_CRAB;
         case SP_MOONOTAUR:
             return TILEG_SP_MOONOTAUR;
+        case SP_MAYFLYTAUR:
+            return TILEG_SP_MAYFLYTAUR;
+        case SP_ROBOT:
+            return TILEG_SP_ROBOT;
         default:
             return TILEG_SP_HUMAN;
     }

@@ -632,7 +632,6 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_UNFATHOMED_DWARF:
         return TILEP_BASE_DEEP_DWARF;
     case SP_GARGOYLE:
-    case SP_ROBOT:
         return TILEP_BASE_GARGOYLE;
     case SP_FELID:
         return TILEP_BASE_FELID;
@@ -684,6 +683,10 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_HERMIT_CRAB;
     case SP_MOONOTAUR:
         return TILEP_BASE_MOONOTAUR;
+    case SP_MAYFLYTAUR:
+        return TILEP_BASE_MAYFLYTAUR;
+    case SP_ROBOT:
+        return TILEP_BASE_ROBOT;
     default:
         return TILEP_BASE_HUMAN;
     }
@@ -796,6 +799,8 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_PROFANE_SERVITOR:
         case SP_HERMIT_CRAB:
         case SP_MOONOTAUR:
+        case SP_MAYFLYTAUR:
+        case SP_ROBOT:
             hair = 0;
             break;
         default:

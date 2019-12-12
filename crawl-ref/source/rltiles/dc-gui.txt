@@ -434,6 +434,8 @@ base/faerie_dragon SP_RECOMMENDED_FAERIE_DRAGON
 base/butterfly SP_RECOMMENDED_BUTTERFLY
 %start
 %compose base/oni_m
+%compose head/horns1
+%compose gloves/claws
 %compose body/animal_skin
 %finish SP_RECOMMENDED_ONI
 base/unipode SP_RECOMMENDED_UNIPODE
@@ -447,8 +449,16 @@ base/hermit_crab SP_RECOMMENDED_HERMIT_CRAB
 %start
 %compose base/moonotaur
 %compose body/animal_skin
-%compose head/horns2
 %finish SP_RECOMMENDED_MOONOTAUR
+%start
+%compose base/mayflytaur
+%compose body/animal_skin
+%compose hair/short_black
+%finish SP_RECOMMENDED_MAYFLYTAUR
+%start
+%compose base/robot
+%compose body/animal_skin
+%finish SP_RECOMMENDED_ROBOT
 %syn LAST_RECOMMENDED_SPECIES
 
 %sdir gui/backgrounds
@@ -498,4 +508,6 @@ enum:SP_RECOMMENDED_DAB_DWARF SP_DAB_DWARF
 enum:SP_RECOMMENDED_CRYSTAL_DWARF SP_CRYSTAL_DWARF
 enum:SP_RECOMMENDED_HERMIT_CRAB SP_HERMIT_CRAB
 enum:SP_RECOMMENDED_MOONOTAUR SP_MOONOTAUR
+enum:SP_RECOMMENDED_MAYFLYTAUR SP_MAYFLYTAUR
+enum:SP_RECOMMENDED_ROBOT SP_ROBOT
 %syn LAST_SPECIES
