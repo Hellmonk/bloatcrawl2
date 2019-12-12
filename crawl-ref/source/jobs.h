@@ -24,3 +24,6 @@ bool is_starting_job(job_type job);
 bool job_is_zealot(job_type job);
 bool job_is_good_god_zealot(job_type job);
 bool job_is_evil_god_zealot(job_type job);
+bool job_is_magic_god_zealot(job_type job);
+bool job_is_mage(job_type job);
+bool job_is_warrior_mage(job_type job);
