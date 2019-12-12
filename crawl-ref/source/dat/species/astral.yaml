@@ -3,7 +3,6 @@ monster: MONS_ANGEL
 name: "Astral"
 short_name: "As"
 difficulty: Advanced
-difficulty_priority: 70
 aptitudes:
   xp: 0
   hp: 2

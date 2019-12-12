@@ -4,7 +4,6 @@ name: Kitsune
 short_name: Ki
 genus: Fox
 difficulty: Intermediate
-# difficulty_priority: 40
 aptitudes:
   xp: 1
   hp: -1

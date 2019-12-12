@@ -3,7 +3,6 @@ monster: MONS_HUMAN
 name: "Januvian"
 short_name: Ja
 difficulty: Intermediate
-difficulty_priority: 10
 aptitudes:
   xp: 0
   hp: 0

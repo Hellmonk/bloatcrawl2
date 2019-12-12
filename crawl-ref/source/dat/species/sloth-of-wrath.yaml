@@ -4,7 +4,6 @@ name: "Sloth Of Wrath"
 short_name: SW
 genus: Sloth
 difficulty: Advanced
-# difficulty_priority: 10
 aptitudes:
   xp: 0
   hp: 1

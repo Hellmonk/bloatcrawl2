@@ -3,7 +3,6 @@ monster: MONS_EIDOLON
 name: Mirror Eidolon
 short_name: ME
 difficulty: Advanced
-# difficulty_priority: 40
 aptitudes:
   xp: -1
   hp: 2

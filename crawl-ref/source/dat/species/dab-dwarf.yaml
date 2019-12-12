@@ -5,7 +5,6 @@ short_name: "Da"
 adjective: "Dwarven"
 genus: "Dwarf"
 difficulty: Simple
-#difficulty_priority: 20
 aptitudes:
   xp: -1
   hp: 1

@@ -5,7 +5,6 @@ short_name: "PE"
 adjective: "Elven"
 genus: "Elf"
 difficulty: Advanced
-# difficulty_priority: 40
 species_flags:
   - elven
 aptitudes:
