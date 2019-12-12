@@ -607,6 +607,9 @@ void update_shapeshifter_species()
              || (sp == SP_MAYFLYTAUR && you.elapsed_time > 15000)
             );
 
+    if (sp == SP_JANUVIAN && coinflip())
+        sp = SP_JATWOVIAN;
+
     if (sp == SP_BASE_DRACONIAN && you.experience_level >= 7)
         sp = random_draconian_colour();
 

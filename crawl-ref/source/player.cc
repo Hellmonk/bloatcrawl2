@@ -2936,6 +2936,11 @@ static void _hermit_shell_upgrade()
 
 static void _januvian_aspect_change()
 {
+    // Hack to prevent shapeshifters shifting into one of these species
+    // and then immediately changing aspect.
+    if (you.shapeshifter_species)
+        return;
+
     if (you.species == SP_JANUVIAN)
     {
         you.species = static_cast<species_type>(SP_JATWOVIAN);
