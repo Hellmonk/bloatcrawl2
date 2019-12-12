@@ -2807,6 +2807,9 @@ void excommunication(bool voluntary, god_type new_god)
         if (you.species == SP_PROFANE_SERVITOR)
         {
             you.species = static_cast<species_type>(SP_ANGEL);
+#ifdef USE_TILE
+            init_player_doll();
+#endif
             redraw_screen();
         }
         break;
@@ -3704,7 +3707,13 @@ void join_religion(god_type which_god)
         (*join_effect)();
 
     if(you.species == SP_ANGEL && you_worship(GOD_YREDELEMNUL))
+    {
         you.species = static_cast<species_type>(SP_PROFANE_SERVITOR);
+#ifdef USE_TILE
+        init_player_doll();
+#endif
+        redraw_screen();
+    }
 
     // after join_effect() so that gozag's service fee is right for monks
     if (you.worshipped[you.religion] < 100)
