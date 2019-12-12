@@ -502,19 +502,7 @@ void change_species_to(species_type sp, bool rescale_skills)
         // All species allow exactly one amulet.
     }
 
-    // FIXME: this checks only for valid slots, not for suitability of the
-    // item in question. This is enough to make assertions happy, though.
-    for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
-        if (you_can_wear(static_cast<equipment_type>(i)) == MB_FALSE
-            && you.equip[i] != -1)
-        {
-            mprf("%s fall%s away.",
-                 you.inv[you.equip[i]].name(DESC_YOUR).c_str(),
-                 you.inv[you.equip[i]].quantity > 1 ? "" : "s");
-            // Unwear items without the usual processing.
-            you.equip[i] = -1;
-            you.melded.set(i, false);
-        }
+    update_player_size(old_size);
 
     // Sanitize skills.
     fixup_skills();

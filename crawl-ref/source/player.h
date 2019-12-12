@@ -1068,6 +1068,7 @@ int slaying_bonus(bool ranged = false);
 
 unsigned int exp_needed(int lev, int exp_apt = -99);
 bool will_gain_life(int lev);
+void update_player_size(size_type old_size);
 
 bool dur_expiring(duration_type dur);
 void display_char_status();

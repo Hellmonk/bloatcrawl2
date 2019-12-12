@@ -2896,10 +2896,11 @@ static void _felid_extra_life()
     }
 }
 
-static void _update_player_size(size_type old_size)
+void update_player_size(size_type old_size)
 {
-    const size_type new_size = species_size(you.species);
-    ASSERT(old_size != new_size);
+    const size_type new_size = player_size();
+    if (old_size == new_size)
+        return;
     const string verb = (int)new_size > (int)old_size ? "grow" : "shrink";
     mprf("You %s from %s to %s.", verb.c_str(),
          get_size_adj(old_size), get_size_adj(new_size));
@@ -2927,7 +2928,7 @@ static void _hermit_shell_upgrade()
     const size_type old_size = you.hermit_shell_size;
     you.hermit_shell_size = static_cast<size_type>(
             static_cast<int>(old_size) + 1);
-    _update_player_size(old_size);
+    update_player_size(old_size);
     you.redraw_armour_class = true;
     you.redraw_evasion = true;
 
@@ -2975,7 +2976,7 @@ static void _update_protean_size(size_type oldsize)
 {
     const size_type size = player_size();
     ASSERT(oldsize != size);
-    _update_player_size(oldsize);
+    update_player_size(oldsize);
     // You can grow more than one size in a single call to this function
     if (size >= SIZE_LARGE)
     {
