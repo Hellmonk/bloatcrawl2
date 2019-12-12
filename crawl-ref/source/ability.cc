@@ -352,7 +352,7 @@ static const ability_def Ability_List[] =
     { ABIL_ARGON_FLASH, "Argon Flash", 0, 0, 0, 0, {}, abflag::argon_flash },
 
     { ABIL_BOL_XI_END, "End", 0, 0, 0, 0, {fail_basis::bol_xi_end, 100}, abflag::pain },
-    
+
     { ABIL_LASER, "Mouth Laser",
         0, 0, 125, 0, {fail_basis::xl, 30, 1}, abflag::breath },
 
@@ -2192,7 +2192,7 @@ static spret _do_ability(const ability_def& abil, bool fail)
                           3 + random2(10) + random2(30 - you.experience_level));
         break;
     }
-    
+
     case ABIL_LASER:
     {
 	    int power = you.experience_level * 5;
@@ -2859,7 +2859,7 @@ static spret _do_ability(const ability_def& abil, bool fail)
     case ABIL_ELYVILON_LESSER_HEALING:
     case ABIL_ELYVILON_GREATER_HEALING:
     {
-        
+
         if(you.species == SP_UNFATHOMED_DWARF)
         {
             mpr("Unfathomable Dwarves cannot receive godly healing!");
@@ -3741,7 +3741,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.get_mutation_level(MUT_BLINK))
         _add_talent(talents, ABIL_BLINK, check_confused);
-    
+
     if(you.get_mutation_level(MUT_LASER_BREATH))
         _add_talent(talents, ABIL_LASER, check_confused);
 
