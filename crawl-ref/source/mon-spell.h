@@ -1698,6 +1698,13 @@ static const mon_spellbook mspell_list[] =
         { SPELL_SUMMON_HYDRA, 40, MON_SPELL_WIZARD },
       }
     },
+    
+    {  MST_GIAGGOSTUONO,
+      {
+       { SPELL_FORCE_LANCE, 30, MON_SPELL_NATURAL },
+       { SPELL_FLAMING_CLOUD, 30, MON_SPELL_NATURAL },
+      }
+    },
 
     // ('e') Elves.
     {  MST_DOWAN,

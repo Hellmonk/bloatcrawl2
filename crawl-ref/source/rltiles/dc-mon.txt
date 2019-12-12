@@ -610,6 +610,7 @@ wind_drake MONS_WIND_DRAKE
 ## Dragons ('D')
 %sdir mon/unique
 xtahua MONS_XTAHUA
+giaggostuono MONS_GIAGGOSTUONO
 %sdir mon/dragons
 wyvern MONS_WYVERN
 fire_dragon MONS_FIRE_DRAGON
@@ -1164,7 +1165,6 @@ error ERROR
 
 # Old monster tiles for use with the tile_player_tile option.
 %sdir mon/player
-giaggostuono MONS_GIAGGOSTUONO
 jormungandr MONS_JORMUNGANDR
 lamia MONS_LAMIA
 maud MONS_MAUD
