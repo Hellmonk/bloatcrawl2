@@ -40,6 +40,7 @@ static bool _banned_combination(job_type job, species_type species)
     case SP_DEMIGOD:
         return job_is_zealot(job) || job == JOB_MONK || job == JOB_RONIN;
     case SP_GNOLL:
+    case SP_ANCIENT_GNOLL:
         if (job == JOB_ARCHAEOLOGIST)
             return true;
         break;
