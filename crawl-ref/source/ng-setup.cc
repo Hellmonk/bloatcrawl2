@@ -194,9 +194,10 @@ item_def* newgame_make_item(object_class_type base,
         else
             eq_slot = you.equip[EQ_LEFT_RING] == -1 ? EQ_LEFT_RING : EQ_RIGHT_RING;
     }
-    if ((item.base_type == OBJ_WEAPONS && can_wield(&item, false, false)
-         || (item.base_type == OBJ_ARMOUR && can_wear_armour(item, false, false))
-         || item.base_type == OBJ_JEWELLERY)
+    if (((item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
+         && can_wield(&item, false, false)
+        || (item.base_type == OBJ_ARMOUR && can_wear_armour(item, false, false))
+        || item.base_type == OBJ_JEWELLERY)
         // and nothing already equipped
         && you.equip[eq_slot] == -1)
     {
