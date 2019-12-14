@@ -60,6 +60,8 @@ enum NOTE_TYPES
     NOTE_ANCESTOR_SPECIALIZATION, /* needs: ancestor specialization (string) */
 #endif
     NOTE_FOUND_UNRAND,          /* needs: item name (string) */
+    NOTE_VAPOROUS_RESISTANCE,   /* needs: vaporous resistance (string), level (int) */
+    NOTE_SHAPESHIFT,            /* needs: species (string) */
     NOTE_NUM_TYPES
 };
 

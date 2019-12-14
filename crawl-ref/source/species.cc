@@ -3,9 +3,11 @@
 
 #include "species.h"
 
+#include "hiscores.h"
 #include "item-prop.h"
 #include "message.h"
 #include "mutation.h"
+#include "notes.h"
 #include "output.h"
 #include "player.h"
 #include "player-stats.h"
@@ -621,11 +623,21 @@ void update_shapeshifter_species()
     if (sp == SP_BASE_DRACONIAN && you.experience_level >= 7)
         sp = random_draconian_colour();
 
+    const string sp_name = species_name(sp);
     mprf(MSGCH_INTRINSIC_GAIN,
         "Your form blurs as you shapeshift into a %s!",
-        species_name(sp).c_str());
-    more();
+        sp_name.c_str());
+    take_note(Note(NOTE_SHAPESHIFT, 0, 0, sp_name));
+    const string mile_text
+        = make_stringf("Shapeshifted into a %s", sp_name.c_str());
+    mark_milestone("shapeshifter.shift", mile_text);
+
     change_species_to(sp, false);
+#ifdef USE_TILE
+        init_player_doll();
+#endif
+    redraw_screen();
+    more();
 }
 
 // You can only modify the undeadness of species that are default alive. This

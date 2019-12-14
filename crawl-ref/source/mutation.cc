@@ -1532,9 +1532,12 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
     {
         if (god_gift)
             return false;
-        mpr("The mutagenic energy damages you!");
-        ouch(random_range(7, 17), KILLED_BY_DRAINING, MID_NOBODY, "mutagenic energy");
-        return false;
+        if (mutclass != MUTCLASS_INNATE)
+        {
+            mpr("The mutagenic energy damages you!");
+            ouch(random_range(7, 17), KILLED_BY_DRAINING, MID_NOBODY, "mutagenic energy");
+            return false;
+        }
     }
 
     // Undead bodies don't mutate, they fall apart. -- bwr

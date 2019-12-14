@@ -215,6 +215,15 @@ bool attribute_increase()
     }
 }
 
+void _note_vaporous_resistance(string type, int level)
+{
+    take_note(Note(NOTE_VAPOROUS_RESISTANCE, level, 0, type));
+    const string mile_text
+        = make_stringf("gained a level of %s resistance (total: %d).",
+                       type.c_str(), level);
+    mark_milestone("vaporous.resistance", mile_text);
+}
+
 bool pick_vaporous_resistance()
 {
     const bool can_increase_fire = you.vaporous_resistance_fire != 3;
@@ -303,6 +312,7 @@ bool pick_vaporous_resistance()
                 else
                     you.vaporous_resistance_fire++;
                 mprf("You feel %sresistant to fire damage.", you.vaporous_resistance_fire > 1 ? "more " : "");
+                _note_vaporous_resistance("fire", you.vaporous_resistance_fire);
                 return true;
             }
             case 'c':
@@ -313,6 +323,7 @@ bool pick_vaporous_resistance()
                 else
                     you.vaporous_resistance_cold++;
                 mprf("You feel %sresistant to cold damage.", you.vaporous_resistance_cold > 1 ? "more " : "");
+                _note_vaporous_resistance("cold", you.vaporous_resistance_cold);
                 return true;
             }
             case 'n':
@@ -323,6 +334,7 @@ bool pick_vaporous_resistance()
                 else
                     you.vaporous_resistance_neg++;
                 mprf("You feel %sresistant to negative energy.", you.vaporous_resistance_neg > 1 ? "more " : "");
+                _note_vaporous_resistance("negative energy", you.vaporous_resistance_neg);
                 return true;
             }
             // Valid: 0, 1
@@ -334,6 +346,7 @@ bool pick_vaporous_resistance()
                 else
                     you.vaporous_resistance_elec++;
                 mprf("You feel resistant to electricity.");
+                _note_vaporous_resistance("electric", you.vaporous_resistance_elec);
                 return true;
             }
             // Valid: 0, 1, 3
@@ -347,6 +360,7 @@ bool pick_vaporous_resistance()
                 else
                     you.vaporous_resistance_poison = 3;
                 mprf("You feel %s to poison.", you.vaporous_resistance_poison == 3 ? "immune" : "resistant");
+                _note_vaporous_resistance("poison", you.vaporous_resistance_poison);
                 return true;
             }
             default:

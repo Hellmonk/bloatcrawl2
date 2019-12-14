@@ -110,7 +110,10 @@ static bool _is_noteworthy(const Note& note)
         || note.type == NOTE_FEAT_MIMIC
         || note.type == NOTE_OFFERED_SPELL
         || note.type == NOTE_ANCESTOR_TYPE
-        || note.type == NOTE_FOUND_UNRAND)
+        || note.type == NOTE_FOUND_UNRAND
+        || note.type == NOTE_VAPOROUS_RESISTANCE
+        || note.type == NOTE_SHAPESHIFT
+        )
     {
         return true;
     }
@@ -167,7 +170,7 @@ static bool _is_noteworthy(const Note& note)
             break;
 
         default:
-            mpr("Buggy note passed: unknown note type");
+            mprf("Unhandled note type %d in _is_noteworthy", note.type);
             // Return now, rather than give a "Buggy note passed" message
             // for each note of the matching type in the note list.
             return true;
@@ -371,8 +374,15 @@ string Note::describe(bool when, bool where, bool what) const
           case NOTE_FOUND_UNRAND:
             result << "Found " << name;
             break;
+        case NOTE_VAPOROUS_RESISTANCE:
+            result << "Reached level " << first << " with " << name
+                   << " resistance.";
+            break;
+        case NOTE_SHAPESHIFT:
+            result << "Shapeshifted into a " << name << ".";
+            break;
         default:
-            result << "Buggy note description: unknown note type";
+            die("Unknown note type %d", type);
             break;
         }
     }

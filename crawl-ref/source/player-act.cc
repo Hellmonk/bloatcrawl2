@@ -29,6 +29,7 @@
 #include "message.h"
 #include "player-stats.h"
 #include "religion.h"
+#include "skills.h"
 #include "spl-damage.h"
 #include "state.h"
 #include "terrain.h"
@@ -352,6 +353,13 @@ bool player::can_wield(const item_def& item, bool ignore_curse,
         if (inv[equip[EQ_WEAPON]].cursed())
             return false;
     }
+
+    // Can you use the weapon's skill?
+    const skill_type sk = item_attack_skill(item);
+    const bool sk_useless = is_useless_skill(sk);
+    dprf("player::can_wield sk:%d sk_useless:%d", sk, sk_useless);
+    if (sk_useless)
+        return false;
 
     // Unassigned means unarmed combat.
     const bool two_handed = item.base_type == OBJ_UNASSIGNED
