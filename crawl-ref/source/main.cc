@@ -41,7 +41,6 @@
 #include "artefact.h"
 #include "art-enum.h"
 #include "beam.h"
-#include "bloodspatter.h"
 #include "branch.h"
 #include "butcher.h"
 #include "chardump.h"
@@ -2248,9 +2247,6 @@ void world_reacts()
         _update_still_winds();
     if (!crawl_state.game_is_arena())
         player_reacts_to_monsters();
-
-    if (you.shapeshifter_species && you.species == SP_SHAPESHIFTER)
-        bleed_onto_floor(you.pos(), MONS_PLAYER, 6, false, false);
 
     wu_jian_end_of_turn_effects();
 
