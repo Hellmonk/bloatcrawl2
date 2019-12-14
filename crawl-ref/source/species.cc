@@ -162,35 +162,14 @@ bool species_is_coloured_turtle(species_type species)
     return species_is_turtle(species) && species != SP_TURTLE;
 }
 
+bool species_is_demonic(species_type species)
+{
+    return bool(get_species_def(species).flags & SPF_DEMONIC);
+}
+
 size_type species_size(species_type species, size_part_type psize)
 {
-    size_type size = get_species_def(species).size;
-
-    if (you.get_mutation_level(MUT_PROTEAN_BODY))
-    {
-        // Sizes go: tiny(0) little small medium large big giant(6)
-        // Protean has +0% hp and gets +10hp per mutation level (non-innate).
-        // XL 1 Fighting 0 = 13hp
-        // XL 27 Fighting 0 = 156hp
-        // XL 27 Fighting 27 = 249hp
-        const int hp = you.hp_max;
-        if (hp <= 50) // 0-50
-            size = SIZE_TINY;
-        else if (hp <= 100) // 51-100
-            size = SIZE_LITTLE;
-        else if (hp <= 150) // 101-150
-            size = SIZE_SMALL;
-        else if (hp <= 200) // 150-200
-            size = SIZE_MEDIUM;
-        else if (hp <= 300) // 201-300 -- 100hp deltas from here
-            size = SIZE_LARGE;
-        else if (hp <= 400) // 301-400
-            size = SIZE_BIG;
-        else                // 401+ -- need 16 mutation levels at max XL/Fighting
-            size = SIZE_GIANT;
-    }
-    else if (you.has_mutation(MUT_HERMIT_SHELL))
-        return you.hermit_shell_size;
+    const size_type size = get_species_def(species).size;
 
     if (psize == PSIZE_TORSO
         && bool(get_species_def(species).flags & SPF_SMALL_TORSO))
@@ -456,6 +435,7 @@ void change_species_to(species_type sp, bool rescale_skills)
 {
     ASSERT(sp < NUM_SPECIES);
     const species_type old_sp = you.species;
+    const size_type old_size = player_size();
     bool had_racial_permanent_flight = you.racial_permanent_flight();
 
     // Re-scale skill-points.
@@ -527,19 +507,7 @@ void change_species_to(species_type sp, bool rescale_skills)
         // All species allow exactly one amulet.
     }
 
-    // FIXME: this checks only for valid slots, not for suitability of the
-    // item in question. This is enough to make assertions happy, though.
-    for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
-        if (you_can_wear(static_cast<equipment_type>(i)) == MB_FALSE
-            && you.equip[i] != -1)
-        {
-            mprf("%s fall%s away.",
-                 you.inv[you.equip[i]].name(DESC_YOUR).c_str(),
-                 you.inv[you.equip[i]].quantity > 1 ? "" : "s");
-            // Unwear items without the usual processing.
-            you.equip[i] = -1;
-            you.melded.set(i, false);
-        }
+    update_player_size(old_size);
 
     // Sanitize skills.
     fixup_skills();
@@ -644,6 +612,12 @@ void update_shapeshifter_species()
              || (sp == SP_MAYFLYTAUR && you.elapsed_time > 15000)
             );
 
+    if (sp == SP_JANUVIAN && coinflip())
+        sp = SP_JATWOVIAN;
+
+    if (sp == SP_ANGEL && you_worship(GOD_YREDELEMNUL))
+        sp = SP_PROFANE_SERVITOR;
+
     if (sp == SP_BASE_DRACONIAN && you.experience_level >= 7)
         sp = random_draconian_colour();
 
@@ -665,5 +639,5 @@ bool species_can_use_modified_undeadness(species_type sp)
 
 bool hermit_crab_can_escape()
 {
-    return species_size(you.species) > SIZE_TINY;
+    return player_size() > SIZE_TINY;
 }

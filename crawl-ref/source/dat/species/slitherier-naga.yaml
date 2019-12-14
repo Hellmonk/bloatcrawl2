@@ -3,7 +3,6 @@ monster: MONS_NAGA
 name: Slitherier Naga
 short_name: Sn
 difficulty: Advanced
-difficulty_priority: 60
 species_flags:
   - small_torso
 aptitudes:

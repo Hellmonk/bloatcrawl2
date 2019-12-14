@@ -55,6 +55,7 @@ enum ability_type
     // Barachim
     ABIL_HOP,
     ABIL_CHARM,
+    // Squat Elf
     ABIL_POWERSQUAT,
     // Argon
     ABIL_ARGON_FLASH,

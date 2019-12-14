@@ -330,6 +330,8 @@ def species_flags(flags):
             out.add("SPF_SMALL_TORSO")
         elif f == "turtle":
             out.add("SPF_TURTLE")
+        elif f == "demonic":
+            out.add("SPF_DEMONIC")
         else:
             raise ValueError("Unknown species flag %s" % f)
     if not out:

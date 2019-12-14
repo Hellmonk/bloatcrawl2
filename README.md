@@ -43,6 +43,8 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * The permanently baked **Weed Elves** aren't quite as smart or nimble as other elves, but they are still skilled at magic. They trail smoke wherever they go.
 * **Xeno Elves** are strange insectoid creatures from a distant land. Their magical efficiency is far better than most species, but drains when moving near enemies.
 * **Yeti** are large, seldom-seen creatures that live on frozen mountain peaks. Sufficiently mature Yeti passively freeze adjacent foes.
+* **Zodach** are the burnt-out remnants of a decayed celestial species. Nearby monsters are drawn in by their immense gravitas.
+
 
 ## New Backgrounds
 
@@ -55,7 +57,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Cavepeople** start with exceptional strength but, unfortunately, neolithic weapons.
 * Lots of people wish they could cast spells in heavy armour. **Chaincasters** do something about it.
 * **Dancers** have left their friends behind and entered the dungeon in service of Uskayaw. They have few combat skills but are quite good at evading attacks.
-* Pontiffs of Yredelemnul, **Death Bishops** carry a weapon of draining and use the pain spell in service of their evil god.
+* Pontiffs of **Yredelemnul**, Death Bishops carry an unholy staff and use the pain spell in service of their evil god.
 * **Deprived** start with nothing but a ration and almost no skills. Survival may prove... difficult.
 * **Disciples** follow the Wu Jian Council and begin the game with a good weapon.
 * **Doctor**: Medical professionals from the surface occasionally enter the dungeon. They follow the healer god Elyvilon.
@@ -92,3 +94,4 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Dab** at any time with the `p` key.
 * **Game Modifiers**: Select game modifiers when starting a new game. Play any species as a mummy. Remove rune locks. Etcetera.
 * Unleash the elemental power of sound with the **Air Horn** evocable.
+* Be careful in  Pandemonium lest you disturb **THE GIAGGOSTUONO**, a hecka big dinosaur thing that breathes fire and shoots lasers from its eyes. Its hard skin is nearly indestructible.

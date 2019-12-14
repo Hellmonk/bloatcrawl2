@@ -31,5 +31,6 @@ levelup_stat_frequency: 5
 mutations:
   1:
     MUT_SILENT_AURA: 1
+    MUT_GHOSTLY: 1
 recommended_jobs:
   - JOB_FIGHTER

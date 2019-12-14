@@ -1068,6 +1068,7 @@ int slaying_bonus(bool ranged = false);
 
 unsigned int exp_needed(int lev, int exp_apt = -99);
 bool will_gain_life(int lev);
+void update_player_size(size_type old_size);
 
 bool dur_expiring(duration_type dur);
 void display_char_status();
@@ -1187,3 +1188,4 @@ bool need_expiration_warning(coord_def p = you.pos());
 
 bool player_has_orb();
 bool player_on_orb_run();
+size_type player_size();

@@ -240,3 +240,38 @@ bool job_is_evil_god_zealot(job_type job)
             || job == JOB_DEATH_BISHOP || job == JOB_WITNESS
             || job == JOB_ABYSSAL_KNIGHT || job == JOB_NIGHT_KNIGHT);
 }
+
+bool job_is_magic_god_zealot(job_type job)
+{
+    return (job == JOB_LIBRARIAN || job == JOB_ANNIHILATOR);
+}
+
+bool job_is_mage(job_type job)
+{
+    return (job == JOB_WIZARD
+        || job == JOB_CONJURER
+        || job == JOB_SUMMONER
+        || job == JOB_NECROMANCER
+        || job == JOB_FIRE_ELEMENTALIST
+        || job == JOB_ICE_ELEMENTALIST
+        || job == JOB_AIR_ELEMENTALIST
+        || job == JOB_EARTH_ELEMENTALIST
+        || job == JOB_VENOM_MAGE
+        || job == JOB_PHILOSOPHER
+        || job == JOB_ASPIRANT
+        || job == JOB_OVERSEER
+    );
+}
+
+bool job_is_warrior_mage(job_type job)
+{
+    return (job == JOB_SKALD
+        || job == JOB_TRANSMUTER
+        || job == JOB_WARPER
+        || job == JOB_ARCANE_MARKSMAN
+        || job == JOB_ENCHANTER
+        || job == JOB_SOOTHSLAYER
+        || job == JOB_STALKER
+        || job == JOB_CHAINCASTER
+    );
+}

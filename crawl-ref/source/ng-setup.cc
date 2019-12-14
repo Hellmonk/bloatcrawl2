@@ -194,9 +194,10 @@ item_def* newgame_make_item(object_class_type base,
         else
             eq_slot = you.equip[EQ_LEFT_RING] == -1 ? EQ_LEFT_RING : EQ_RIGHT_RING;
     }
-    if ((item.base_type == OBJ_WEAPONS && can_wield(&item, false, false)
-         || (item.base_type == OBJ_ARMOUR && can_wear_armour(item, false, false))
-         || item.base_type == OBJ_JEWELLERY)
+    if (((item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
+         && can_wield(&item, false, false)
+        || (item.base_type == OBJ_ARMOUR && can_wear_armour(item, false, false))
+        || item.base_type == OBJ_JEWELLERY)
         // and nothing already equipped
         && you.equip[eq_slot] == -1)
     {
@@ -789,8 +790,6 @@ void give_items_skills(const newgame_def& ng)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_CHAOS);
     else if (you.char_class == JOB_WARRIOR)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, -2);
-    else if (you.char_class == JOB_DEATH_BISHOP)
-        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_DRAINING);
     else if (you.char_class == JOB_PALADIN)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1, SPWPN_HOLY_WRATH);
     else if (you.char_class == JOB_DISCIPLE)

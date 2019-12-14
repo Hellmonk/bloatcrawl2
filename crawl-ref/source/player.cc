@@ -462,7 +462,7 @@ static bool _slowed_by_water(dungeon_feature_type water)
     ASSERT(!you.can_water_walk());
     ASSERT(feat_is_water(water));
 
-    const auto size = species_size(you.species, PSIZE_BODY);
+    const size_type size = player_size();
     if (water == DNGN_SHALLOW_WATER)
         return size < SIZE_BIG;
     else if (water == DNGN_DEEP_WATER)
@@ -690,7 +690,7 @@ bool player_likes_water(bool permanently)
     {
         if (you.has_mutation(MUT_PROTEAN_BODY))
         {
-            const auto size = species_size(you.species, PSIZE_BODY);
+            const size_type size = player_size();
             if (size == SIZE_BIG || size == SIZE_GIANT)
                 return true;
         }
@@ -1766,6 +1766,10 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
                 return 3;
             break;
     }
+
+    // Demons are poison immune
+    if (you.holiness() & MH_DEMONIC)
+        return 3;
 
     if (you.is_nonliving(temp)
         || you.species == SP_MOONOTAUR
@@ -2896,10 +2900,11 @@ static void _felid_extra_life()
     }
 }
 
-static void _update_player_size(size_type old_size)
+void update_player_size(size_type old_size)
 {
-    const size_type new_size = species_size(you.species);
-    ASSERT(old_size != new_size);
+    const size_type new_size = player_size();
+    if (old_size == new_size)
+        return;
     const string verb = (int)new_size > (int)old_size ? "grow" : "shrink";
     mprf("You %s from %s to %s.", verb.c_str(),
          get_size_adj(old_size), get_size_adj(new_size));
@@ -2927,7 +2932,7 @@ static void _hermit_shell_upgrade()
     const size_type old_size = you.hermit_shell_size;
     you.hermit_shell_size = static_cast<size_type>(
             static_cast<int>(old_size) + 1);
-    _update_player_size(old_size);
+    update_player_size(old_size);
     you.redraw_armour_class = true;
     you.redraw_evasion = true;
 
@@ -2935,6 +2940,11 @@ static void _hermit_shell_upgrade()
 
 static void _januvian_aspect_change()
 {
+    // Hack to prevent shapeshifters shifting into one of these species
+    // and then immediately changing aspect.
+    if (you.shapeshifter_species)
+        return;
+
     if (you.species == SP_JANUVIAN)
     {
         you.species = static_cast<species_type>(SP_JATWOVIAN);
@@ -2973,9 +2983,9 @@ static void _gain_and_note_hp_mp()
 
 static void _update_protean_size(size_type oldsize)
 {
-    const size_type size = species_size(you.species, PSIZE_BODY);
+    const size_type size = player_size();
     ASSERT(oldsize != size);
-    _update_player_size(oldsize);
+    update_player_size(oldsize);
     // You can grow more than one size in a single call to this function
     if (size >= SIZE_LARGE)
     {
@@ -3016,7 +3026,7 @@ void calc_hp(bool scale, bool set)
     // We can reduce errors by a factor of 100 by using partial hp we have.
     int oldhp = you.hp;
     int old_max = you.hp_max;
-    size_type oldsize = species_size(you.species, PSIZE_TORSO);
+    size_type oldsize = player_size();
 
     you.hp_max = get_real_hp(true, true);
 
@@ -3041,7 +3051,7 @@ void calc_hp(bool scale, bool set)
         you.redraw_hit_points = true;
     }
     if (old_max != you.hp_max && you.get_mutation_level(MUT_PROTEAN_BODY)
-        && species_size(you.species, PSIZE_BODY) != oldsize)
+        && player_size() != oldsize)
     {
             _update_protean_size(oldsize);
     }
@@ -6671,6 +6681,9 @@ mon_holy_type player::holiness(bool temp) const
         holi |= MH_EVIL;
     }
 
+    if (species_is_demonic(you.species))
+        holi |= MH_DEMONIC;
+
     // possible XXX: Monsters get evil/unholy bits set on spell selection
     //  should players?
     return holi;
@@ -6678,8 +6691,11 @@ mon_holy_type player::holiness(bool temp) const
 
 bool player::undead_or_demonic() const
 {
-    // This is only for TSO-related stuff, so demonspawn and oni are included.
-    return undead_state() || species == SP_DEMONSPAWN;
+    return undead_state()
+        // Demonspawn and Oni are demonic enough for this check
+        || species == SP_DEMONSPAWN
+        || species == SP_ONI
+        || holiness() & MH_DEMONIC;
 }
 
 bool player::is_holy(bool /*check_spells*/) const
@@ -6750,7 +6766,7 @@ int player::res_water_drowning() const
     int rw = 0;
 
     if (is_unbreathing()
-        || species_size(you.species, PSIZE_BODY) == SIZE_GIANT
+        || player_size() == SIZE_GIANT
         || species_can_swim(species) && !form_changed_physiology()
         || form == transformation::ice_beast
         || form == transformation::hydra)
@@ -8860,4 +8876,35 @@ bool player::immune_to_hex(const spell_type hex) const
     default:
         return false;
     }
+}
+
+size_type player_size()
+{
+    if (you.get_mutation_level(MUT_PROTEAN_BODY))
+    {
+        // Sizes go: tiny(0) little small medium large big giant(6)
+        // Protean has +0% hp and gets +10hp per mutation level (non-innate).
+        // XL 1 Fighting 0 = 13hp
+        // XL 27 Fighting 0 = 156hp
+        // XL 27 Fighting 27 = 249hp
+        const int hp = you.hp_max;
+        if (hp <= 50) // 0-50
+            return SIZE_TINY;
+        else if (hp <= 100) // 51-100
+            return SIZE_LITTLE;
+        else if (hp <= 150) // 101-150
+            return SIZE_SMALL;
+        else if (hp <= 200) // 150-200
+            return SIZE_MEDIUM;
+        else if (hp <= 300) // 201-300 -- 100hp deltas from here
+            return SIZE_LARGE;
+        else if (hp <= 400) // 301-400
+            return SIZE_BIG;
+        else                // 401+ -- need 16 mutation levels at max XL/Fighting
+            return SIZE_GIANT;
+    }
+    else if (you.has_mutation(MUT_HERMIT_SHELL))
+        return you.hermit_shell_size;
+    else
+        return species_size(you.species);
 }

@@ -27,14 +27,20 @@ static bool _banned_combination(job_type job, species_type species)
             || job == JOB_HUNTER
             || job == JOB_ARCANE_MARKSMAN
             || job == JOB_NECKBEARD
-            || job == JOB_ARCHAEOLOGIST)
+            || job == JOB_ARCHAEOLOGIST
+            || job == JOB_SNIPER
+            || job == JOB_CAVEPERSON
+            || job == JOB_RONIN
+            || job == JOB_FENCER
+            || job == JOB_DERSERKER)
         {
             return true;
         }
         break;
     case SP_DEMIGOD:
-        return job_is_zealot(job);
+        return job_is_zealot(job) || job == JOB_MONK || job == JOB_RONIN;
     case SP_GNOLL:
+    case SP_ANCIENT_GNOLL:
         if (job == JOB_ARCHAEOLOGIST)
             return true;
         break;
@@ -43,14 +49,20 @@ static bool _banned_combination(job_type job, species_type species)
             return true;
         break;
     case SP_DEMONSPAWN:
+    case SP_ONI:
         return job_is_good_god_zealot(job);
     case SP_TURTLE:
         return job_is_evil_god_zealot(job);
     case SP_ROBOT:
         return job == JOB_TRANSMUTER;
+    case SP_SILENT_SPECTRE:
+        return job_is_mage(job) || job_is_warrior_mage(job) || job_is_magic_god_zealot(job);
     default:
         break;
     }
+
+    if (job_is_good_god_zealot(job) && species_is_demonic(species))
+        return true;
 
     if ((job == JOB_TRANSMUTER || job_is_good_god_zealot(job))
         && (species_undead_type(species) == US_UNDEAD
@@ -140,8 +152,8 @@ char_choice_restriction weapon_restriction(weapon_type wpn,
     {
         return CC_RESTRICTED;
     }
-    
-    if (ng.species == SP_UNIPODE 
+
+    if (ng.species == SP_UNIPODE
         && (wpn == WPN_QUARTERSTAFF || wpn == WPN_SHORTBOW))
     {
        return CC_BANNED;

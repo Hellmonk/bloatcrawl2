@@ -108,6 +108,10 @@ angel ANGEL
 profane_servitor PROFANE_SERVITOR
 dwarf_m DAB_DWARF
 crystal_dwarf CRYSTAL_DWARF
+hermit_crab HERMIT_CRAB
+moonotaur MOONOTAUR
+mayflytaur MAYFLYTAUR
+robot ROBOT
 
 # draconians
 draconian_f DRACONIAN DRACONIAN_FIRST

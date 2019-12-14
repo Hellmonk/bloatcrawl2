@@ -3,7 +3,6 @@ monster: MONS_MINOTAUR
 name: Moonotaur
 short_name: Mo
 difficulty: Advanced
-difficulty_priority: 90
 aptitudes:
   xp: -2
   hp: -9

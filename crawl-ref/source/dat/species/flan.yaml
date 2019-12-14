@@ -3,7 +3,6 @@ monster: MONS_JELLY
 name: "Flan"
 short_name: "Fl"
 difficulty: Simple
-# difficulty_priority: 40
 species_flags:
   - hairless
 aptitudes:

@@ -3,7 +3,6 @@ monster: MONS_HORNET
 name: "Mayflytaur"
 short_name: "Ma"
 difficulty: Advanced
-difficulty_priority: 70
 aptitudes:
   xp: 1
   hp: 2

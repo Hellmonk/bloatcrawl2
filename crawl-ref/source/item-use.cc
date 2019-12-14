@@ -939,6 +939,13 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
+    if (you.has_mutation(MUT_GHOSTLY) && slot == EQ_BOOTS)
+    {
+        if (verbose)
+            mpr("Your ghostly form cannot wear boots!");
+        return false;
+    }
+
     if (sub_type == ARM_NAGA_BARDING || sub_type == ARM_CENTAUR_BARDING)
     {
         if ((you.species == SP_NAGA || you.species == SP_SLITHERIER_NAGA)

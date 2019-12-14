@@ -632,7 +632,6 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_UNFATHOMED_DWARF:
         return TILEP_BASE_DEEP_DWARF;
     case SP_GARGOYLE:
-    case SP_ROBOT:
         return TILEP_BASE_GARGOYLE;
     case SP_FELID:
         return TILEP_BASE_FELID;
@@ -680,6 +679,14 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_DAB_DWARF;
     case SP_CRYSTAL_DWARF:
         return TILEP_BASE_CRYSTAL_DWARF;
+    case SP_HERMIT_CRAB:
+        return TILEP_BASE_HERMIT_CRAB;
+    case SP_MOONOTAUR:
+        return TILEP_BASE_MOONOTAUR;
+    case SP_MAYFLYTAUR:
+        return TILEP_BASE_MAYFLYTAUR;
+    case SP_ROBOT:
+        return TILEP_BASE_ROBOT;
     default:
         return TILEP_BASE_HUMAN;
     }
@@ -790,6 +797,10 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_SILENT_SPECTRE:
         case SP_ANGEL:
         case SP_PROFANE_SERVITOR:
+        case SP_HERMIT_CRAB:
+        case SP_MOONOTAUR:
+        case SP_MAYFLYTAUR:
+        case SP_ROBOT:
             hair = 0;
             break;
         default:
@@ -846,13 +857,13 @@ void tilep_job_default(int job, dolls_data *doll)
             parts[TILEP_PART_LEG]   = TILEP_LEG_PANTS_SHORT_DARKBROWN;
             parts[TILEP_PART_HELM]  = TILEP_HELM_CLOWN; // Xom
             break;
-            
+
         case JOB_SLIME_PRIEST:
             parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_GREEN;
             parts[TILEP_PART_ARM]   = TILEP_ARM_GLOVE_WHITE;
             parts[TILEP_PART_BOOTS] = TILEP_BOOTS_SHORT_BROWN;
             break;
-        
+
         case JOB_DEATH_BISHOP:
         case JOB_BLOOD_KNIGHT:
             parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_BLACK;
