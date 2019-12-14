@@ -308,14 +308,14 @@ static void _give_aspirant_book()
             break;
 
         case SK_ICE_MAGIC:
-            you.spell_library.set(coinflip() ? SPELL_THROW_ICICLE : SPELL_SUMMON_ICE_BEAST, true);
-            you.spell_library.set(coinflip() ? SPELL_BOLT_OF_COLD : SPELL_OZOCUBUS_REFRIGERATION, true);
+            you.spell_library.set(coinflip() ? SPELL_HAILSTORM : SPELL_SUMMON_ICE_BEAST, true);
+            you.spell_library.set(SPELL_OZOCUBUS_REFRIGERATION, true);
             you.spell_library.set(SPELL_GLACIATE, true);
             break;
 
         case SK_FIRE_MAGIC:
             you.spell_library.set(SPELL_STICKY_FLAME, true);
-            you.spell_library.set(SPELL_BOLT_OF_FIRE, true);
+            you.spell_library.set(SPELL_STARBURST, true);
             you.spell_library.set(SPELL_FIRE_STORM, true);
             break;
 
