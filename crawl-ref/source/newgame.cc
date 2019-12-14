@@ -769,15 +769,17 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     choice.trap_type = 0;
     choice.mod_exp = 0;
 
-    // Non-living or default-undead species cannot choose undead state
+    // Default-undead species or good god zealots cannot choose undead state
     bool can_choose_undead = species_can_use_modified_undeadness(ng.species)
         && !job_is_good_god_zealot(ng.job);
     if (!can_choose_undead)
         choice.undead_type = species_undead_type(ng.species);
 
     auto prompt_ui = make_shared<Text>();
-    prompt_ui->on_keydown_event([&](ui::KeyEvent ev) {
+    prompt_ui->on_hotkey_event([&](ui::KeyEvent ev) {
         int key = ev.key();
+        // printf("Got game modifier key %d\n", key);
+        // fflush(stdout);
 
         if (can_choose_undead && (key == 'u' || key == 'U'))
         {
@@ -879,9 +881,10 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
 
     // XXX: Is there some way to format these lines with less code?
     formatted_string undead_header;
-    undead_header.textcolour(can_choose_undead ? WHITE : DARKGRAY);
+    const COLOURS colour = can_choose_undead ? LIGHTGRAY : DARKGRAY;
+    undead_header.textcolour(colour);
     undead_header.cprintf("\n(U)");
-    undead_header.textcolour(can_choose_undead ? LIGHTGRAY : DARKGRAY);
+    undead_header.textcolour(colour);
     undead_header.cprintf("ndead status");
     box->add_child(make_shared<ui::Text>(undead_header));
     const string normal_str = "  Normal.";
@@ -889,16 +892,16 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     const string zombie_str = "  Zombie: -1 apts, rC+, rN+++, inhibited regen, chunk healing.";
     const string vampire_str = "  Vampire: batform (XL 3), exsanguinate/revive.";
     formatted_string undead_desc;
-    undead_desc.textcolour(can_choose_undead ? LIGHTGRAY : DARKGRAY);
+    undead_desc.textcolour(colour);
     undead_desc.cprintf(normal_str);
     undead_desc.cprintf("\n");
-    undead_desc.textcolour(can_choose_undead ? LIGHTGRAY : DARKGRAY);
+    undead_desc.textcolour(colour);
     undead_desc.cprintf(mummy_str);
     undead_desc.cprintf("\n");
-    undead_desc.textcolour(can_choose_undead ? LIGHTGRAY : DARKGRAY);
+    undead_desc.textcolour(colour);
     undead_desc.cprintf(zombie_str);
     undead_desc.cprintf("\n");
-    undead_desc.textcolour(can_choose_undead ? LIGHTGRAY : DARKGRAY);
+    undead_desc.textcolour(colour);
     undead_desc.cprintf(vampire_str);
     undead_desc.cprintf("\n");
     auto undead_choice = make_shared<ui::Text>(undead_desc);
@@ -944,6 +947,12 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     auto trap_choice = make_shared<ui::Text>(trap_choice_str);
     box->add_child(trap_choice);
 
+    formatted_string instructions_str;
+    instructions_str.textcolour(BROWN);
+    instructions_str.cprintf("\nEnter  - Start game\nEscape - Quit");
+    auto instructions = make_shared<ui::Text>(instructions_str);
+    box->add_child(instructions);
+
     auto popup = make_shared<ui::Popup>(box);
     ui::push_layout(move(popup));
     ui::set_focused_widget(prompt_ui.get());
@@ -985,16 +994,16 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
         switch (choice.mod_exp)
         {
             case 0:
-                skill_choice->set_highlight_pattern("normal", false);
+                exp_choice->set_highlight_pattern("normal", false);
                 break;
             case -1:
-                skill_choice->set_highlight_pattern("reduced", false);
+                exp_choice->set_highlight_pattern("reduced", false);
                 break;
             case -2:
-                skill_choice->set_highlight_pattern("halved", false);
+                exp_choice->set_highlight_pattern("halved", false);
                 break;
             case 1:
-                skill_choice->set_highlight_pattern("increased", false);
+                exp_choice->set_highlight_pattern("increased", false);
                 break;
         }
         switch (choice.trap_type)

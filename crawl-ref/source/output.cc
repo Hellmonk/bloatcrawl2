@@ -2215,27 +2215,28 @@ static formatted_string _get_modifiers()
     switch (you.skill_modifier)
     {
         case -1:
-            modifiers.push_back("Unskilled");
+            modifiers.push_back("-1 Apts");
             break;
         case 0:
             // nothing
             break;
         case 1:
-            modifiers.push_back("Skilled");
+            modifiers.push_back("+1 Apts");
             break;
     }
     switch (you.mod_exp)
     {
         case -2:
-            modifiers.push_back("Halved");
+            modifiers.push_back("x0.5 XP");
+            break;
         case -1:
-            modifiers.push_back("Reduced (x0.75)");
+            modifiers.push_back("x0.75 XP");
             break;
         case 0:
             // nothing
             break;
         case 1:
-            modifiers.push_back("Increased (x1.5)");
+            modifiers.push_back("x1.5 XP");
             break;
     }
     switch (you.trap_type)
