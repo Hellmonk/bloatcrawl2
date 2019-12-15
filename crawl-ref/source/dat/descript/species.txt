@@ -27,7 +27,7 @@ bodies. They never tip more than 10%.
 Bunyip
 
 Strange, black, oily creatures that live in billabongs. They swim well but
-cannot call on divine powers or wear any armour.
+cannot call on divine powers or wear armour.
 %%%%
 Butterfly
 
@@ -231,11 +231,6 @@ Troll
 Trolls are monstrous creatures with powerful claws, always hungering for raw
 meat. They regenerate health rapidly.
 %%%%
-Troll Two
-
-They're eating her! And then they're going to eat me!
-Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!
-%%%%
 Vine Stalker
 
 Frail symbionts, Vine Stalkers cannot regain health from potions.
@@ -303,8 +298,8 @@ Their shimmering scales repel attacks and their wings let them fly.
 %%%%
 Argon
 
-Argons are, unlike most other living beings, made of gas. Some think they
-originated on a far away star.
+Argons are, unlike most other living beings, made of gas. They can only gain
+resistances by levelling up.
 %%%%
 Irit
 
@@ -338,8 +333,8 @@ but they are still skilled at magic. They trail smoke wherever they go.
 %%%%
 Xeno Elf
 
-Strange insectoid creatures from a distant land. Their magical efficiency is
-far better than most species, but drains when moving near enemies.
+Strange insectoid elves from a distant land. Their magical efficiency is far
+better than most species, but their magic drains when moving near enemies.
 %%%%
 Zodach
 

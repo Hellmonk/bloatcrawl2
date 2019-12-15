@@ -10,9 +10,9 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 
 ## New Species
 
-* **Argons** are, unlike most other living beings, made of gas. Some think they originated on a far away star.
+* **Argons** are, unlike most other living beings, made of gas. They can only gain resistances by levelling up.
 * Strange beings from beyond the stars, **Astrals** cannot gain resistances to magic or the elements. Their attacks inflict powerful debuffs on beings from this world.
-* **Bunyips** are strange, black, oily creatures that live in billabongs. They swim well but cannot call on divine powers or wear any armour.
+* **Bunyips** are strange, black, oily creatures that live in billabongs. They swim well but cannot call on divine powers or wear armour.
 * **Dab Dwarves** have perfected the ancient art of dabbing. They can dab on multiple creatures at once and may even daze their foes with the power of their dab.
 * **Ember Elves** have depleted magical reserves, but regenerate magical power quickly. As they develop, their magic becomes more powerful but harder to control.
 * **Faerie Dragons** are attuned to magic and their spells cost fewer magic points. Their shimmering scales repel attacks and their wings let them fly.
@@ -36,12 +36,11 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Silent Spectres** are terrible spirits that bring an unearthly silence to the area around them, preventing spell casting, divine invocations and even reading scrolls.
 * **Slitherier Nagas** are offbrand Nagas, and about twice as much everything. Extremely healthy, extremely stealthy, extremely big, and excruciatingly slow.
 * Less dextrous than other elves, **Squat Elves** have mastered the art of the power squat. They use this ability to enhance their strength and intelligence.
-* **Troll Two**: They're eating her! And then they're going to eat me! Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!
 * **Turtles** are hard-shelled warriors trained in the arts of ninjutsu. They fight evil wherever it can be found and follow a strict honour code.
 * Deeper than deep, **Unfathomable Dwarves** cannot heal even through divine means. However, they have adapted to heal on kills and brew ambrosia potions from leftover life essence.
 * **Unipodes** are distantly related to Octopodes, but have a single tentacle instead of eight. They can only wear one ring and cannot use two-handed weapons.
 * The permanently baked **Weed Elves** aren't quite as smart or nimble as other elves, but they are still skilled at magic. They trail smoke wherever they go.
-* **Xeno Elves** are strange insectoid creatures from a distant land. Their magical efficiency is far better than most species, but drains when moving near enemies.
+* **Xeno Elves** are strange insectoid elves from a distant land. Their magical efficiency is far better than most species, but their magic drains when moving near enemies.
 * **Yeti** are large, seldom-seen creatures that live on frozen mountain peaks. Sufficiently mature Yeti passively freeze adjacent foes.
 * **Zodach** are the burnt-out remnants of a decayed celestial species. Nearby monsters are drawn in by their immense gravitas.
 
@@ -52,7 +51,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * Thoroughly inept at fighting but well dressed, **Archaeologists** enter the dungeon looking to cast light over the origins of ancient relics.
 * **Aspirants** are novices at magic who have acquired books of powerful magic. They hope to one day master the spells within.
 * When the revolution comes, some **Billionaires** flee the surface and enter the dungeon with a fraction of their hoarded wealth.
-* Servants of the demon god Makhleb, **Blood Knights** begin with moderate skill in  combat and quickly learn to harness Makhleb's destructive power.
+* Servants of the demon god Makhleb, **Blood Knights** begin with moderate skill in combat and quickly learn to harness Makhleb's destructive power.
 * **Bound** serve Ashenzari, the god of curses, and begin their journey partially bound with cursed equipment.
 * **Cavepeople** start with exceptional strength but, unfortunately, neolithic weapons.
 * Lots of people wish they could cast spells in heavy armour. **Chaincasters** do something about it.
