@@ -776,7 +776,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
         choice.undead_type = species_undead_type(ng.species);
 
     auto prompt_ui = make_shared<Text>();
-    prompt_ui->on_hotkey_event([&](ui::KeyEvent ev) {
+    prompt_ui->on_keydown_event([&](ui::KeyEvent ev) {
         int key = ev.key();
         // printf("Got game modifier key %d\n", key);
         // fflush(stdout);
@@ -798,7 +798,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                     choice.undead_type = US_ALIVE;
                     break;
             }
-            return done = false;
+            return true;
         }
         else if (key == 's' || key == 'S')
         {
@@ -814,7 +814,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                     choice.skilled_type = 0;
                     break;
             }
-            return done = false;
+            return true;
         }
         else if (key == 'e' || key == 'E')
         {
@@ -833,7 +833,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                     choice.mod_exp = 0;
                     break;
             }
-            return done = false;
+            return true;
         }
         else if (key == 't' || key == 'T')
         {
@@ -852,18 +852,19 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                     choice.trap_type = 0;
                     break;
             }
-            return done = false;
+            return true;
         }
         else if (key == 'x' || key == 'X')
         {
             choice.chaoskin = !choice.chaoskin;
-            return done = false;
+            return true;
         }
         else if (key == 'r' || key == 'R')
         {
             choice.no_locks = !choice.no_locks;
-            return done = false;
+            return true;
         }
+        // Enter
         else if (key == CONTROL('M'))
         {
             return done = true;
