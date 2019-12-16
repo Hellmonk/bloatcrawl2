@@ -4003,6 +4003,8 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
             return TILEG_SP_TURTLE;
         case SP_FUNGOID:
             return TILEG_SP_FUNGOID;
+        case SP_HEDGEHOG:
+            return TILEG_SP_HEDGEHOG;
         default:
             return TILEG_SP_HUMAN;
     }

@@ -114,6 +114,7 @@ mayflytaur MAYFLYTAUR
 robot ROBOT
 turtle TURTLE
 fungoid FUNGOID
+hedgehog HEDGEHOG
 
 # draconians
 draconian_f DRACONIAN DRACONIAN_FIRST

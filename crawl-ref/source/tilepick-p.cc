@@ -694,6 +694,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_TURTLE;
     case SP_FUNGOID:
         return TILEP_BASE_FUNGOID;
+    case SP_HEDGEHOG:
+        return TILEP_BASE_HEDGEHOG;
     default:
         return TILEP_BASE_HUMAN;
     }
@@ -814,6 +816,7 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_ORANGE_TURTLE:
         case SP_PURPLE_TURTLE:
         case SP_FUNGOID:
+        case SP_HEDGEHOG:
             hair = 0;
             break;
         default:
