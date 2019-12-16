@@ -113,6 +113,7 @@ moonotaur MOONOTAUR
 mayflytaur MAYFLYTAUR
 robot ROBOT
 turtle TURTLE
+fungoid FUNGOID
 
 # draconians
 draconian_f DRACONIAN DRACONIAN_FIRST

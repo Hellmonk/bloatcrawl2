@@ -4001,6 +4001,8 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
         case SP_ORANGE_TURTLE:
         case SP_PURPLE_TURTLE:
             return TILEG_SP_TURTLE;
+        case SP_FUNGOID:
+            return TILEG_SP_FUNGOID;
         default:
             return TILEG_SP_HUMAN;
     }
