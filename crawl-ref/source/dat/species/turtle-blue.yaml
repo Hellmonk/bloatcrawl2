@@ -10,6 +10,7 @@ aptitudes:
   hp: -1
   mp_mod: -1
   mr: 3
+  fighting: 0
   short_blades: -1
   long_blades: 1
   axes: -2

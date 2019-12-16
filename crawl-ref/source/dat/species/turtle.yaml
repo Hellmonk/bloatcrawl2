@@ -10,6 +10,7 @@ aptitudes:
   hp: -1
   mp_mod: -1
   mr: 3
+  fighting: 0
   short_blades: -1
   long_blades: -1
   axes: -2
@@ -20,7 +21,7 @@ aptitudes:
   slings: -2
   bows: -2
   crossbows: -2
-  armour: -2
+  armour: False
   shields: -3
   spellcasting: -1
   conjurations: -1
