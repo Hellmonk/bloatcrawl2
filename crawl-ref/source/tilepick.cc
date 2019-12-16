@@ -3995,6 +3995,12 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
             return TILEG_SP_MAYFLYTAUR;
         case SP_ROBOT:
             return TILEG_SP_ROBOT;
+        case SP_TURTLE:
+        case SP_RED_TURTLE:
+        case SP_BLUE_TURTLE:
+        case SP_ORANGE_TURTLE:
+        case SP_PURPLE_TURTLE:
+            return TILEG_SP_TURTLE;
         default:
             return TILEG_SP_HUMAN;
     }

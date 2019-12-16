@@ -687,6 +687,12 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_MAYFLYTAUR;
     case SP_ROBOT:
         return TILEP_BASE_ROBOT;
+    case SP_TURTLE:
+    case SP_RED_TURTLE:
+    case SP_BLUE_TURTLE:
+    case SP_ORANGE_TURTLE:
+    case SP_PURPLE_TURTLE:
+        return TILEP_BASE_TURTLE;
     default:
         return TILEP_BASE_HUMAN;
     }
@@ -801,6 +807,11 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_MOONOTAUR:
         case SP_MAYFLYTAUR:
         case SP_ROBOT:
+        case SP_TURTLE:
+        case SP_RED_TURTLE:
+        case SP_BLUE_TURTLE:
+        case SP_ORANGE_TURTLE:
+        case SP_PURPLE_TURTLE:
             hair = 0;
             break;
         default:
