@@ -2929,6 +2929,7 @@ static void _hermit_shell_upgrade()
     if (you.hermit_shell_size == NUM_SIZE_LEVELS - 1)
         return;
     mprf(MSGCH_INTRINSIC_GAIN, "You find a larger hermit shell and move into it.");
+    more();
     const size_type old_size = you.hermit_shell_size;
     you.hermit_shell_size = static_cast<size_type>(
             static_cast<int>(old_size) + 1);
@@ -3095,6 +3096,11 @@ static void _turtle_evolve()
 {
     you.species = random_turtle_colour();
 
+    mprf(MSGCH_INTRINSIC_GAIN,
+        "You find a %s bandana in your pocket and put it on.",
+        turtle_bandana_colour(you.species).c_str());
+    more();
+
     uint8_t saved_skills[NUM_SKILLS];
     for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
     {
@@ -3107,10 +3113,6 @@ static void _turtle_evolve()
 #ifdef USE_TILE
     init_player_doll();
 #endif
-
-    mprf(MSGCH_INTRINSIC_GAIN,
-        "You find a %s bandana in your pocket and put it on.",
-        turtle_bandana_colour(you.species).c_str());
 
     // Produce messages about skill increases/decreases. We
     // restore one skill level at a time so that at most the
