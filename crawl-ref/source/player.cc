@@ -3379,11 +3379,8 @@ void level_change(bool skip_attribute_increase)
 
             case SP_TURTLE:
             {
-                if (you.experience_level >= 6)
-                {
+                if (you.experience_level >= 5)
                     _turtle_evolve();
-                    updated_maxhp = true;
-                }
                 break;
             }
 
