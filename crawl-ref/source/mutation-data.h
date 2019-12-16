@@ -2223,8 +2223,8 @@ static const mutation_def mut_data[] =
 { MUT_TURTLE_SHELL, 0, 1, mutflag::good, true,
    "turtle shell",
 
-   // Bonus details added in mutation.cc's mutation_desc
-   {"Your hard shell protects you from harm. (AC +", "", ""},
+   // Description added as part of player::racial_ac
+   {"", "", ""},
    {"", "", ""},
    {"", "", ""},
 },

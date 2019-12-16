@@ -755,8 +755,11 @@ string describe_mutations(bool drop_title)
         mutation_type mut_type = static_cast<mutation_type>(i);
         if (you.has_innate_mutation(mut_type))
         {
-            result += mutation_desc(mut_type, -1, true,
+            const string desc = mutation_desc(mut_type, -1, true,
                 ((you.sacrifices[i] != 0) ? true : false));
+            if (desc == "")
+                continue;
+            result += desc;
             result += "\n";
         }
     }
@@ -783,7 +786,10 @@ string describe_mutations(bool drop_title)
         if (you.get_base_mutation_level(mut_type, false, false, true) > 0
             && !you.has_innate_mutation(mut_type) && !you.has_temporary_mutation(mut_type))
         {
-            result += mutation_desc(mut_type, -1, true);
+            const string desc = mutation_desc(mut_type, -1, true);
+            if (desc.empty())
+                continue;
+            result += desc;
             result += "\n";
         }
     }
@@ -794,7 +800,10 @@ string describe_mutations(bool drop_title)
         mutation_type mut_type = static_cast<mutation_type>(i);
         if (you.has_temporary_mutation(mut_type))
         {
-            result += mutation_desc(mut_type, -1, true);
+            const string desc = mutation_desc(mut_type, -1, true);
+            if (desc.empty())
+                continue;
+            result += desc;
             result += "\n";
         }
     }
@@ -2340,12 +2349,6 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         ostr << mdef.have[level - 1] << chitinous_shield_bonus() / 200 << " SH)";
         result = ostr.str();
     }
-    else if (mut == MUT_TURTLE_SHELL)
-    {
-        ostringstream ostr;
-        ostr << mdef.have[level - 1] << turtle_shell_bonus() / 100 << ")";
-        result = ostr.str();
-    }
     else if (mut == MUT_HERMIT_SHELL)
     {
         ostringstream ostr;
@@ -2369,6 +2372,10 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         result = "Your bite disrupts the magic of your enemies.";
     else if (result.empty() && level > 0)
         result = mdef.have[level - 1];
+
+    // If the mutation description doesn't exist, don't try and print anything.
+    if (result.empty())
+        return "";
 
     if (!ignore_player)
     {

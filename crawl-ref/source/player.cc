@@ -6363,14 +6363,6 @@ int hermit_shell_bonus()
         return 0;
 }
 
-int turtle_shell_bonus()
-{
-    if (you.has_mutation(MUT_TURTLE_SHELL))
-        return (1 + you.experience_level / 3) * 100;
-    else
-        return 0;
-}
-
 /**
  * @return      The SH bonus * 200. (For scaling.)
  */
@@ -6445,7 +6437,7 @@ int player::racial_ac(bool temp) const
     }
 
     if (species_is_turtle(species) && (!player_is_shapechanged() || !temp))
-        return 100 * (experience_level / 3); // max 9
+        return 100 + 100 * (experience_level / 3); // 1-10
 
     if (!(player_is_shapechanged() && temp))
     {
@@ -6566,8 +6558,6 @@ int player::armour_class(bool /*calc_unid*/) const
         AC -= 400 * you.props["corrosion_amount"].get_int();
 
     AC += sanguine_armour_bonus();
-
-    AC += turtle_shell_bonus();
 
     return AC / scale;
 }
