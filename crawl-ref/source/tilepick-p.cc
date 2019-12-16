@@ -1114,7 +1114,8 @@ void tilep_calc_flags(const dolls_data &doll, int flag[])
     {
         flag[TILEP_PART_HAIR] = TILEP_FLAG_HIDE;
     }
-    else if (is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_FELID))
+    else if (is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_FELID)
+             || is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_BUTTERFLY))
     {
         flag[TILEP_PART_CLOAK] = TILEP_FLAG_HIDE;
         flag[TILEP_PART_BOOTS] = TILEP_FLAG_HIDE;
@@ -1135,7 +1136,8 @@ void tilep_calc_flags(const dolls_data &doll, int flag[])
         flag[TILEP_PART_DRCWING]=TILEP_FLAG_HIDE;
         flag[TILEP_PART_DRCHEAD]=TILEP_FLAG_HIDE;
     }
-    else if (is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_OCTOPODE))
+    else if (is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_OCTOPODE)
+             || is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_UNIPODE))
     {
         flag[TILEP_PART_CLOAK] = TILEP_FLAG_HIDE;
         flag[TILEP_PART_BOOTS] = TILEP_FLAG_HIDE;
@@ -1150,6 +1152,19 @@ void tilep_calc_flags(const dolls_data &doll, int flag[])
         flag[TILEP_PART_DRCHEAD]=TILEP_FLAG_HIDE;
     }
     else if (is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_ONI))
+    {
+        flag[TILEP_PART_LEG]   = TILEP_FLAG_HIDE;
+        flag[TILEP_PART_HAIR]  = TILEP_FLAG_HIDE;
+        flag[TILEP_PART_BEARD] = TILEP_FLAG_HIDE;
+    }
+    else if (is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_FUNGOID)
+            || is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_LEPRECHAUN)
+            || is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_ANGEL)
+            || is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_PROFANE_SERVITOR)
+            || is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_ANGEL)
+            || is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_SILENT_SPECTRE)
+            || is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_SHAPESHIFTER))
+
     {
         flag[TILEP_PART_LEG]   = TILEP_FLAG_HIDE;
         flag[TILEP_PART_HAIR]  = TILEP_FLAG_HIDE;
