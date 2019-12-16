@@ -370,6 +370,7 @@ static void _post_init(bool newc)
             you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = true;
             // deliberate fall-through
         case SP_FAERIE_DRAGON:
+        case SP_ASTRAL:
             you.attribute[ATTR_PERM_FLIGHT] = 1;
             float_player();
             break;

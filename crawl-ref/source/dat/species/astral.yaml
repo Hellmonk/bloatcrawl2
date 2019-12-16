@@ -32,11 +32,11 @@ mutations:
     MUT_CLARITY: 1
     MUT_ACUTE_VISION: 1
 fake_mutations:
-  - long: You can't gain resistances
+  - long: You can't gain resistances.
     short: No resists
-  - long: Your melee attacks strip magic resistance
+  - long: Your melee attacks strip magic resistance.
     short: Vuln melee
-  - long: You have innate wizardry
+  - long: You have innate wizardry.
     short: Wiz
 recommended_jobs:
   - JOB_SUMMONER
