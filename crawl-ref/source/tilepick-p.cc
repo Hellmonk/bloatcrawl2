@@ -575,7 +575,6 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     switch (sp)
     {
     case SP_HUMAN:
-    case SP_BOOMER:
         return TILEP_BASE_HUMAN;
 #if TAG_MAJOR_VERSION == 34
     case SP_HIGH_ELF:
@@ -696,6 +695,10 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_FUNGOID;
     case SP_HEDGEHOG:
         return TILEP_BASE_HEDGEHOG;
+    case SP_ZODACH:
+        return TILEP_BASE_ZODACH;
+    case SP_BOOMER:
+        return TILEP_BASE_BOOMER;
     default:
         return TILEP_BASE_HUMAN;
     }
@@ -819,6 +822,7 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_HEDGEHOG:
             hair = 0;
             break;
+        case SP_ZODACH:
         default:
             // nothing to do
             break;

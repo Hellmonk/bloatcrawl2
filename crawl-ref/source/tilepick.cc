@@ -3890,6 +3890,34 @@ static tileidx_t _tileidx_player_job_base(const job_type job)
             return TILEG_JOB_DEPRIVED;
         case JOB_PHILOSOPHER:
             return TILEG_JOB_PHILOSOPHER;
+        case JOB_ARCHAEOLOGIST:
+            return TILEG_JOB_ARCHAEOLOGIST;
+        case JOB_ASPIRANT:
+            return TILEG_JOB_ASPIRANT;
+        case JOB_BILLIONAIRE:
+            return TILEG_JOB_BILLIONAIRE;
+        case JOB_NECKBEARD:
+            return TILEG_JOB_NECKBEARD;
+        case JOB_CHAINCASTER:
+            return TILEG_JOB_CHAINCASTER;
+        case JOB_SNIPER:
+            return TILEG_JOB_SNIPER;
+        case JOB_SOOTHSLAYER:
+            return TILEG_JOB_SOOTHSLAYER;
+        case JOB_STALKER:
+            return TILEG_JOB_STALKER;
+        case JOB_RONIN:
+            return TILEG_JOB_RONIN;
+        case JOB_OVERSEER:
+            return TILEG_JOB_OVERSEER;
+        case JOB_GONGER:
+            return TILEG_JOB_GONGER;
+        case JOB_MISFORTUNATE:
+            return TILEG_JOB_MISFORTUNATE;
+        case JOB_DERSERKER:
+            return TILEG_JOB_DERSERKER;
+        case JOB_ALCHEMIST:
+            return TILEG_JOB_ALCHEMIST;
         default:
             return TILEG_ERROR;
     }
@@ -4005,6 +4033,10 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
             return TILEG_SP_FUNGOID;
         case SP_HEDGEHOG:
             return TILEG_SP_HEDGEHOG;
+        case SP_ZODACH:
+            return TILEG_SP_ZODACH;
+        case SP_BOOMER:
+            return TILEG_SP_BOOMER;
         default:
             return TILEG_SP_HUMAN;
     }

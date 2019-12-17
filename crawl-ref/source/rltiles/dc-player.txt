@@ -115,6 +115,8 @@ robot ROBOT
 turtle TURTLE
 fungoid FUNGOID
 hedgehog HEDGEHOG
+zodach ZODACH
+human_m BOOMER
 
 # draconians
 draconian_f DRACONIAN DRACONIAN_FIRST
