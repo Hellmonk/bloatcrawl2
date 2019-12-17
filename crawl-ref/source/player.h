@@ -126,7 +126,6 @@ public:
     // ---------------
     // Game modifiers
     // ---------------
-    int skill_modifier;
     undead_state_type undead_modifier;
     bool chaoskin;
     bool no_locks;

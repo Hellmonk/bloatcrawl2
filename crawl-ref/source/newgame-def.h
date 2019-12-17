@@ -41,7 +41,6 @@ struct newgame_def
 
     // Game variants
     undead_state_type undead_type;
-    int skilled_type;
     bool chaoskin; // Xom acts on you always
     bool no_locks; // disable rune locks
     int trap_type; // types of traps that are enabled/disabled

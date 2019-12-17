@@ -2212,18 +2212,6 @@ static formatted_string _get_modifiers()
             // nothing
             break;
     }
-    switch (you.skill_modifier)
-    {
-        case -1:
-            modifiers.push_back("-1 Apts");
-            break;
-        case 0:
-            // nothing
-            break;
-        case 1:
-            modifiers.push_back("+1 Apts");
-            break;
-    }
     switch (you.mod_exp)
     {
         case -2:
@@ -2755,7 +2743,7 @@ string mutation_overview()
             make_stringf("constrict %d", you.has_tentacles(false)),
             !form_keeps_mutations()));
     }
-    
+
     if (you.species == SP_UNIPODE)
     {
         mutations.push_back(_annotate_form_based("amphibious",

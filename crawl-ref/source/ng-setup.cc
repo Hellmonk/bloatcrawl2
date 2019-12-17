@@ -1006,7 +1006,6 @@ static void _setup_generic(const newgame_def& ng)
     const undead_state_type species_undead = species_undead_type(ng.species);
     you.undead_modifier = (species_undead == US_ALIVE) ? ng.undead_type : species_undead;
 
-    you.skill_modifier = ng.skilled_type;
     you.chaoskin = ng.chaoskin;
     you.no_locks = ng.no_locks;
     you.trap_type = ng.trap_type;

@@ -1971,8 +1971,7 @@ int species_apt(skill_type skill, species_type species)
 
     return max(UNUSABLE_SKILL, _spec_skills[species][skill]
                                - you.get_mutation_level(MUT_UNSKILLED)
-                               + undead_modifier
-                               + you.skill_modifier);
+                               + undead_modifier);
 }
 
 float species_apt_factor(skill_type sk, species_type sp)

@@ -1373,7 +1373,6 @@ static void tag_construct_char(writer &th)
 
     marshallByte(th, you.explore);
 
-    marshallByte(th, you.skill_modifier);
     marshallByte(th, static_cast<int>(you.undead_modifier));
     marshallBoolean(th, you.chaoskin);
     marshallBoolean(th, you.no_locks);
@@ -2310,7 +2309,6 @@ void tag_read_char(reader &th, uint8_t /*format*/, uint8_t major, uint8_t minor)
     if (major > 34 || major == 34 && minor >= 130)
         you.explore = unmarshallBoolean(th);
 
-    you.skill_modifier = unmarshallByte(th);
     you.undead_modifier = static_cast<undead_state_type>(unmarshallByte(th));
     you.chaoskin = unmarshallBoolean(th);
     you.no_locks = unmarshallBoolean(th);

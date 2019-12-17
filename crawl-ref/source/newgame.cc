@@ -763,7 +763,6 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
 
     // Set modifier defaults
     choice.undead_type = US_ALIVE;
-    choice.skilled_type = 0;
     choice.chaoskin = false;
     choice.no_locks = false;
     choice.trap_type = 0;
@@ -796,22 +795,6 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                     break;
                 case US_SEMI_UNDEAD:
                     choice.undead_type = US_ALIVE;
-                    break;
-            }
-            return true;
-        }
-        else if (key == 's' || key == 'S')
-        {
-            switch (choice.skilled_type)
-            {
-                case 0:
-                    choice.skilled_type = -1;
-                    break;
-                case -1:
-                    choice.skilled_type = 1;
-                    break;
-                case 1:
-                    choice.skilled_type = 0;
                     break;
             }
             return true;
@@ -908,14 +891,6 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     auto undead_choice = make_shared<ui::Text>(undead_desc);
     box->add_child(undead_choice);
 
-    formatted_string skill_choice_str;
-    skill_choice_str.textcolour(WHITE);
-    skill_choice_str.cprintf("\n(S)");
-    skill_choice_str.textcolour(LIGHTGRAY);
-    skill_choice_str.cprintf("kill: normal | unskilled (-1 apt) | skilled (+1 apt)");
-    auto skill_choice = make_shared<ui::Text>(skill_choice_str);
-    box->add_child(skill_choice);
-
     formatted_string exp_choice_str;
     exp_choice_str.textcolour(WHITE);
     exp_choice_str.cprintf("\n(E)");
@@ -977,19 +952,6 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                 break;
             case US_SEMI_UNDEAD:
                 undead_choice->set_highlight_pattern(vampire_str, false);
-                break;
-        }
-        switch (choice.skilled_type)
-        {
-            case 0:
-                skill_choice->set_highlight_pattern("normal", false);
-                break;
-            case -1:
-                skill_choice->set_highlight_pattern("unskilled", false);
-                break;
-            case 1:
-                // Note the space so we don't match "unSKILLED"
-                skill_choice->set_highlight_pattern(" skilled ", false);
                 break;
         }
         switch (choice.mod_exp)
@@ -1232,7 +1194,6 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     ng.seed = choice.seed;
     ng.pregenerate = choice.pregenerate;
     ng.undead_type = choice.undead_type;
-    ng.skilled_type = choice.skilled_type;
     ng.chaoskin = choice.chaoskin;
     ng.no_locks = choice.no_locks;
     ng.trap_type = choice.trap_type;
