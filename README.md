@@ -34,7 +34,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * ![Robot tile](crawl-ref/source/rltiles/player/base/robot.png) **Robots** are metallic humanoids crafted by Dwarves. They break equipment when uninstalling it and have a poor grasp of religion, but can shoot lasers.
 * ![Shapeshifter tile](crawl-ref/source/rltiles/player/base/shapeshifter.png) **Shapeshifters** imitate monsters around them to an uncanny degree. They cannot control their shifting, and are only rarely seen in their true form.
 * ![Silent Spectre tile](crawl-ref/source/rltiles/player/base/silent_spectre.png) **Silent Spectres** are terrible spirits that bring an unearthly silence to the area around them, preventing spell casting, divine invocations and even reading scrolls.
-* **Slitherier Nagas** are offbrand Nagas, and about twice as much everything. Extremely healthy, extremely stealthy, extremely big, and excruciatingly slow.
+* ![Slitherier Naga tile](crawl-ref/source/rltiles/player/base/naga_m.png) **Slitherier Nagas** are offbrand Nagas, and about twice as much everything. Extremely healthy, extremely stealthy, extremely big, and excruciatingly slow.
 * Less dextrous than other elves, **Squat Elves** have mastered the art of the power squat. They use this ability to enhance their strength and intelligence.
 * ![Turtle tile](crawl-ref/source/rltiles/player/base/turtle.png) **Turtles** are hard-shelled warriors trained in the arts of ninjutsu. They fight evil wherever it can be found and follow a strict honour code.
 * Deeper than deep, **Unfathomable Dwarves** cannot heal even through divine means. However, they have adapted to heal on kills and brew ambrosia potions from leftover life essence.
@@ -96,5 +96,5 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 
 * **Dab** at any time with the `p` key.
 * **Game Modifiers**: Select game modifiers when starting a new game. Play any species as a mummy. Remove rune locks. Etcetera.
-* Unleash the elemental power of sound with the **Air Horn** evocable.
+* ![Air Horn tile](crawl-ref/source/rltiles/item/misc/misc_air_horn.png) Unleash the elemental power of sound with the **Air Horn** evocable.
 * Be careful in  Pandemonium lest you disturb **THE GIAGGOSTUONO**, a hecka big dinosaur thing that breathes fire and shoots lasers from its eyes. Its hard skin is nearly indestructible.
