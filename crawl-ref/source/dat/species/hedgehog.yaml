@@ -54,6 +54,10 @@ recommended_jobs:
   - JOB_MONK
   - JOB_AIR_ELEMENTALIST
   - JOB_WARPER
+  - JOB_RONIN
+  - JOB_NECKBEARD
+  - JOB_DERSERKER
+  - JOB_SOOTHSLAYER
 recommended_weapons:
   - SK_SHORT_BLADES
   - SK_LONG_BLADES

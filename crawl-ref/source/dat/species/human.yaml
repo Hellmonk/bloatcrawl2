@@ -21,4 +21,6 @@ recommended_jobs:
   - JOB_NECROMANCER
   - JOB_FIRE_ELEMENTALIST
   - JOB_ICE_ELEMENTALIST
+  - JOB_DEPRIVED
+  - JOB_UNDERSTUDY
 create_enum: false

@@ -53,6 +53,8 @@ recommended_jobs:
   - JOB_GLADIATOR
   - JOB_CONJURER
   - JOB_FIRE_ELEMENTALIST
+  - JOB_CHAINCASTER
+  - JOB_ANNIHILATOR
 recommended_weapons:
   - SK_STAVES
   - SK_LONG_BLADES

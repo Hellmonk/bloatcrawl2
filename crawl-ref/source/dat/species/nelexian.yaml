@@ -49,3 +49,6 @@ fake_mutations:
 recommended_jobs:
   - JOB_ARTIFICER
   - JOB_WANDERER
+  - JOB_GAMBLER
+  - JOB_CHAOS_KNIGHT
+  - JOB_DERSERKER

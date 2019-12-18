@@ -48,6 +48,7 @@ recommended_jobs:
   - JOB_ABYSSAL_KNIGHT
   - JOB_NECROMANCER
   - JOB_FIRE_ELEMENTALIST
+  - JOB_WITNESS
 recommended_weapons:
   - SK_MACES_FLAILS
   - SK_LONG_BLADES

@@ -46,6 +46,9 @@ recommended_jobs:
   - JOB_BERSERKER
   - JOB_ABYSSAL_KNIGHT
   - JOB_SKALD
+  - JOB_SNIPER
+  - JOB_STALKER
+  - JOB_UNDERSTUDY # joke
 recommended_weapons:
   - SK_SHORT_BLADES
   - SK_LONG_BLADES

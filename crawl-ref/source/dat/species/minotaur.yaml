@@ -58,4 +58,7 @@ recommended_jobs:
   - JOB_HUNTER
   - JOB_BERSERKER
   - JOB_ABYSSAL_KNIGHT
+  - JOB_DERSERKER
+  - JOB_CHAINCASTER
+  - JOB_NECKBEARD
 create_enum: false

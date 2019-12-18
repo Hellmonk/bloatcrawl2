@@ -53,6 +53,10 @@ mutations:
 recommended_jobs:
   - JOB_HUNTER
   - JOB_ARCANE_MARKSMAN
+  - JOB_SNIPER
+  - JOB_WARRIOR
+  - JOB_DISCIPLE
+  - JOB_UNCLE
 fake_mutations:
   - long: Your evasion becomes bonus slaying
     short: no evasion; bonus slaying

@@ -25,3 +25,8 @@ levelup_stat_frequency: 4
 recommended_jobs:
   - JOB_FIGHTER
   - JOB_CHAOS_KNIGHT
+  - JOB_FENCER
+  - JOB_ZINJA # easter egg
+  - JOB_SOOTHSLAYER
+  - JOB_SKALD
+  - JOB_WARRIOR

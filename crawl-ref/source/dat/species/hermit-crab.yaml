@@ -17,6 +17,9 @@ mutations:
   1:
     MUT_HERMIT_SHELL: 1
 recommended_jobs:
-  - JOB_FIGHTER
+  - JOB_GARDENER
+  - JOB_TORPOR_KNIGHT
+  - JOB_GONGER
+  - JOB_PHILOSOPHER
 walking_verb: Scuttl
 altar_action: rest your weary claws in front of

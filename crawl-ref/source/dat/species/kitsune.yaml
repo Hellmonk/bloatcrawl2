@@ -53,6 +53,8 @@ recommended_jobs:
   - JOB_WIZARD
   - JOB_TRANSMUTER
   - JOB_EARTH_ELEMENTALIST
+  - JOB_LIBRARIAN
+  - JOB_INHERITOR
 recommended_weapons:
   - SK_UNARMED_COMBAT
   - SK_BOWS

@@ -57,6 +57,8 @@ recommended_jobs:
   - JOB_NECROMANCER
   - JOB_ENCHANTER
   - JOB_CONJURER
+  - JOB_OVERSEER
+  - JOB_ALCHEMIST
 recommended_weapons:
   - SK_LONG_BLADES
   - SK_POLEARMS

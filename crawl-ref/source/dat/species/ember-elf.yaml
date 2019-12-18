@@ -62,17 +62,11 @@ fake_mutations:
   - long: Your magical reserves refill quickly
     short: fast mp regen
 recommended_jobs:
-  - JOB_WIZARD
-  - JOB_CONJURER
-  - JOB_SUMMONER
-  - JOB_NECROMANCER
-  - JOB_FIRE_ELEMENTALIST
-  - JOB_ICE_ELEMENTALIST
-  - JOB_AIR_ELEMENTALIST
-  - JOB_EARTH_ELEMENTALIST
-  - JOB_VENOM_MAGE
-  - JOB_ARTIFICER
   - JOB_ANNIHILATOR
+  - JOB_ASPIRANT
+  - JOB_LIBRARIAN
+  - JOB_CONJURER
+  - JOB_FIRE_ELEMENTALIST
 recommended_weapons:
   - SK_LONG_BLADES
   - SK_STAVES

@@ -43,6 +43,9 @@ recommended_jobs:
   - JOB_ICE_ELEMENTALIST
   - JOB_FIRE_ELEMENTALIST
   - JOB_NECROMANCER
+  - JOB_PHILOSOPHER
+  - JOB_ASPIRANT
+  - JOB_BOUND
 recommended_weapons:
   - SK_MACES_FLAILS
   - SK_STAVES

@@ -46,9 +46,9 @@ mutations:
   1:
     MUT_TURTLE_SHELL: 1
 recommended_jobs:
-  - JOB_ASSASSIN
   - JOB_GLADIATOR
   - JOB_SKALD
   - JOB_ZINJA
   - JOB_PALADIN
   - JOB_DOCTOR
+  - JOB_UNDERSTUDY

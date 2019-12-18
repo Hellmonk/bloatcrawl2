@@ -62,3 +62,8 @@ recommended_jobs:
   - JOB_SUMMONER
   - JOB_FIRE_ELEMENTALIST
   - JOB_AIR_ELEMENTALIST
+  - JOB_DEATH_BISHOP # easter egg
+  - JOB_PALADIN
+  - JOB_ZINJA
+  - JOB_DOCTOR
+  - JOB_UNDERSTUDY # joke

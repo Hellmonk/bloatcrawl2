@@ -62,6 +62,9 @@ fake_mutations:
 recommended_jobs:
   - JOB_AIR_ELEMENTALIST
   - JOB_ASSASSIN
+  - JOB_DEPRIVED
+  - JOB_INHERITOR
+  - JOB_CHAOS_KNIGHT # joke
 recommended_weapons:
   - SK_UNARMED_COMBAT
 walking_verb: Flutter

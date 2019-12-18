@@ -59,4 +59,7 @@ recommended_jobs:
   - JOB_HUNTER
   - JOB_WARPER
   - JOB_ARCANE_MARKSMAN
+  - JOB_SNIPER
+  - JOB_BILLIONAIRE
+  - JOB_WARRIOR
 create_enum: false

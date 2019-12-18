@@ -44,15 +44,15 @@ int: 11
 dex: 4
 levelup_stat_frequency: 4
 levelup_stats:
-   - str
-   - int
+  - str
+  - int
 mutations:
   1:
     MUT_NEGATIVE_ENERGY_RESISTANCE: 3
     MUT_UNBREATHING: 1
     MUT_TORMENT_RESISTANCE: 1
     MUT_ROT_IMMUNITY: 1
-  5: 
+  5:
     MUT_LASER_BREATH: 1
 fake_mutations:
   - long: You break items when uninstalling them.
@@ -65,3 +65,6 @@ recommended_jobs:
   - JOB_FIGHTER
   - JOB_GLADIATOR
   - JOB_ARTIFICER
+  - JOB_WARRIOR
+  - JOB_DISCIPLE
+  - JOB_METEOROLOGIST

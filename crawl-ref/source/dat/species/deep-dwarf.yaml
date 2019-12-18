@@ -68,6 +68,8 @@ recommended_jobs:
   - JOB_BERSERKER
   - JOB_NECROMANCER
   - JOB_EARTH_ELEMENTALIST
+  - JOB_BLOOD_KNIGHT
+  - JOB_GONGER
 recommended_weapons:
   - SK_MACES_FLAILS
   - SK_AXES

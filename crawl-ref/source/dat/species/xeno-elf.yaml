@@ -52,6 +52,10 @@ levelup_stats:
   - int
 recommended_jobs:
   - JOB_SKALD
+  - JOB_CONJURER
+  - JOB_BERSERKER
+  - JOB_WARPER
+  - JOB_ASPIRANT
 recommended_weapons:
   - SK_AXES
 mutations:

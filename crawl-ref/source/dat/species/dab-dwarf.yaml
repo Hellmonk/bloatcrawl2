@@ -54,6 +54,7 @@ recommended_jobs:
   - JOB_BERSERKER
   - JOB_WARPER
   - JOB_TRANSMUTER
+  - JOB_ENTOMOLOGIST
 recommended_weapons:
   - SK_AXES
   - SK_THROWING

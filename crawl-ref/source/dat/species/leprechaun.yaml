@@ -46,3 +46,7 @@ recommended_jobs:
   - JOB_SKALD
   - JOB_WARPER
   - JOB_WIZARD
+  - JOB_BILLIONAIRE # lore
+  - JOB_MERCHANT
+  - JOB_SNIPER
+  - JOB_FENCER

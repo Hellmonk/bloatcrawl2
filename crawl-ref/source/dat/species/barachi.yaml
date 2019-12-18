@@ -57,4 +57,8 @@ recommended_jobs:
   - JOB_SKALD
   - JOB_SUMMONER
   - JOB_ICE_ELEMENTALIST
+  - JOB_RONIN
+  - JOB_NECKBEARD
+  - JOB_DISCIPLE
+  - JOB_SOOTHSLAYER
 create_enum: false

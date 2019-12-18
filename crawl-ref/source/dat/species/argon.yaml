@@ -32,4 +32,6 @@ fake_mutations:
   - long: You can blind everyone in sight with a flash of light.
 recommended_jobs:
   - JOB_WANDERER
-create_enum: true
+  - JOB_WARPER
+  - JOB_TORPOR_KNIGHT # ???
+  - JOB_GAMBLER # ???

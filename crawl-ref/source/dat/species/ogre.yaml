@@ -52,6 +52,9 @@ recommended_jobs:
   - JOB_ARCANE_MARKSMAN
   - JOB_WIZARD
   - JOB_FIRE_ELEMENTALIST
+  - JOB_SNIPER
+  - JOB_UNCLE
+  - JOB_INHERITOR # ???
 recommended_weapons:
   - SK_MACES_FLAILS
   - SK_POLEARMS

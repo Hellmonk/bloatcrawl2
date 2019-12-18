@@ -62,6 +62,8 @@ recommended_jobs:
   - JOB_WARPER
   - JOB_EARTH_ELEMENTALIST
   - JOB_WIZARD
+  - JOB_DEPRIVED
+  - JOB_MISFORTUNATE
 recommended_weapons:
   - SK_MACES_FLAILS
   - SK_UNARMED_COMBAT
