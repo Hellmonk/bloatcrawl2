@@ -22,5 +22,4 @@ mutations:
     MUT_DEFORMED: 1
     MUT_SCREAM: 1
 recommended_jobs:
-  - JOB_BILLIONAIRE
   - JOB_UNCLE
