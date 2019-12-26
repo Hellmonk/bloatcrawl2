@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <cmath>
 
-#include "act-iter.h"
 #include "areas.h"
 #include "bloodspatter.h"
 #include "branch.h"
@@ -19,27 +18,20 @@
 #include "coordit.h"
 #include "delay.h"
 #include "describe.h"
-#include "directn.h"
 #include "dungeon.h"
 #include "english.h"
-#include "exercise.h"
 #include "god-passive.h" // passive_t::avoid_traps
 #include "hints.h"
 #include "item-prop.h"
 #include "items.h"
 #include "libutil.h"
 #include "mapmark.h"
-#include "map-knowledge.h"
 #include "mon-enum.h"
 #include "mon-tentacle.h"
 #include "mon-util.h"
-#include "mgen-enum.h"
 #include "message.h"
 #include "mon-place.h"
-#include "mon-transit.h"
 #include "nearby-danger.h"
-#include "output.h"
-#include "prompt.h"
 #include "random.h"
 #include "religion.h"
 #include "shout.h"
@@ -51,7 +43,6 @@
 #include "teleport.h"
 #include "terrain.h"
 #include "travel.h"
-#include "view.h"
 #include "xom.h"
 
 bool trap_def::active() const

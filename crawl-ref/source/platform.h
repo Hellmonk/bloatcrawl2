@@ -68,6 +68,11 @@
 * PROCESSOR DETECTION *
 * ------------------- */
 
+// Some of these macros (Example: TARGET_CPU_ARM) might be #defined by
+// catch2-tests/catch.hpp. This shouldn't affect compilation for crawl
+// proper, but this might be the culprit if you're getting weird
+// platform.h errors when trying to compile catch2-tests
+
 /* Carbon defines this for us on Mac, apparently... */
 #if defined (TARGET_CPU_PPC)
 #define PROCESSOR_DETECTED
@@ -212,13 +217,6 @@
 #endif
 
 #if !defined (OS_DETECTED)
-#if defined (TARGET_CPU_ARM)
-#define OS_DETECTED
-#define TARGET_OS_NDSFIRMWARE
-#endif
-#endif
-
-#if !defined (OS_DETECTED)
 #if defined (MSDOS) || defined (__DOS__) || defined (__DJGPP__)
 #define OS_DETECTED
 #define TARGET_OS_DOS
@@ -264,6 +262,13 @@
 #if defined (__hurd__)
 #define OS_DETECTED
 #define TARGET_OS_HURD
+#endif
+#endif
+
+#if !defined (OS_DETECTED)
+#if defined (TARGET_CPU_ARM)
+#define OS_DETECTED
+#define TARGET_OS_NDSFIRMWARE
 #endif
 #endif
 

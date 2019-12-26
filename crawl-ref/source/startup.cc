@@ -16,7 +16,6 @@
 #include "database.h"
 #include "dbg-maps.h"
 #include "dbg-objstat.h"
-#include "dgn-overview.h"
 #include "dungeon.h"
 #include "end.h"
 #include "exclude.h"
@@ -33,11 +32,10 @@
 #include "loading-screen.h"
 #include "macro.h"
 #include "maps.h"
+#include "mgen-data.h"
 #include "menu.h"
 #include "outer-menu.h"
 #include "message.h"
-#include "misc.h"
-#include "mgen-data.h"
 #include "mon-cast.h"
 #include "mon-death.h"
 #include "mon-place.h"
@@ -47,7 +45,6 @@
 #include "ng-setup.h"
 #include "notes.h"
 #include "output.h"
-#include "place.h"
 #include "player-save-info.h"
 #include "shopping.h"
 #include "skills.h"
@@ -840,9 +837,15 @@ void UIStartupMenu::on_show()
             changed_name = true;
         }
 
+        if (keyn == ' ' && first_action)
+        {
+            first_action = false;
+            input_string = "";
+            changed_name = true;
+        }
         // handle the non-action keys by hand to poll input
         // Only consider alphanumeric keys and -_ .
-        if (iswalnum(keyn) || keyn == '-' || keyn == '.'
+        else if (iswalnum(keyn) || keyn == '-' || keyn == '.'
             || keyn == '_' || keyn == ' ')
         {
             first_action = false;

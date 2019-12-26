@@ -8,7 +8,6 @@
 
 #include "fineff.h"
 
-#include "act-iter.h"
 #include "bloodspatter.h"
 #include "coordit.h"
 #include "dactions.h"
@@ -32,7 +31,6 @@
 #include "terrain.h"
 #include "transform.h"
 #include "view.h"
-#include "viewchar.h"
 
 /*static*/ void final_effect::schedule(final_effect *eff)
 {

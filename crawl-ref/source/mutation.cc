@@ -15,8 +15,6 @@
 #include <sstream>
 
 #include "ability.h"
-#include "act-iter.h"
-#include "butcher.h"
 #include "cio.h"
 #include "coordit.h"
 #include "dactions.h"
@@ -32,14 +30,12 @@
 #include "libutil.h"
 #include "menu.h"
 #include "message.h"
-#include "mon-death.h"
 #include "mon-place.h"
 #include "notes.h"
 #include "output.h"
 #include "player-equip.h" // lose_permafly_source
 #include "player-stats.h"
 #include "religion.h"
-#include "scroller.h"
 #include "skills.h"
 #include "species.h"
 #include "state.h"
@@ -47,7 +43,6 @@
 #include "transform.h"
 #include "undead-mutations.h"
 #include "unicode.h"
-#include "viewchar.h"
 #include "xom.h"
 
 using namespace ui;

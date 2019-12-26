@@ -460,7 +460,7 @@ tileidx_t tilep_equ_boots(const item_def &item)
 
 tileidx_t tileidx_player()
 {
-    int ch = TILEP_PLAYER;
+    tileidx_t ch = TILEP_PLAYER;
 
     // Handle shapechange first
     switch (you.form)
@@ -528,7 +528,16 @@ tileidx_t tileidx_player()
     }
 
     if (you.duration[DUR_POISONING])
-        ch |= TILE_FLAG_POISON;
+    {
+        int pois_perc = (you.hp <= 0) ? 100
+                                  : ((you.hp - max(0, poison_survival())) * 100 / you.hp);
+        if (pois_perc >= 100)
+            ch |= TILE_FLAG_MAX_POISON;
+        else if (pois_perc >= 35)
+            ch |= TILE_FLAG_MORE_POISON;
+        else
+            ch |= TILE_FLAG_POISON;
+    }
 
     return ch;
 }

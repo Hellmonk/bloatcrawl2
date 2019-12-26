@@ -20,7 +20,6 @@
 #include "env.h"
 #include "exercise.h"
 #include "fight.h"
-#include "god-abil.h"
 #include "god-conduct.h"
 #include "god-passive.h" // passive_t::shadow_attacks
 #include "hints.h"
@@ -41,7 +40,6 @@
 #include "showsymb.h"
 #include "skills.h"
 #include "sound.h"
-#include "spl-summoning.h"
 #include "state.h"
 #include "stringutil.h"
 #include "terrain.h"

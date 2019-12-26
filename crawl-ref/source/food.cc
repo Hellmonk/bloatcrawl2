@@ -13,13 +13,11 @@
 #include <cstring>
 #include <sstream>
 
-#include "butcher.h"
 #include "chardump.h"
 #include "database.h"
 #include "delay.h"
 #include "env.h"
 #include "god-abil.h"
-#include "god-conduct.h"
 #include "hints.h"
 #include "invent.h"
 #include "item-prop.h"
@@ -33,7 +31,6 @@
 #include "nearby-danger.h"
 #include "notes.h"
 #include "options.h"
-#include "output.h"
 #include "religion.h"
 #include "rot.h"
 #include "state.h"

@@ -10,28 +10,22 @@
 #include <cmath>
 
 #include "areas.h"
-#include "art-enum.h"
 #include "coordit.h" // radius_iterator
 #include "env.h"
-#include "god-conduct.h"
 #include "god-passive.h"
 #include "hints.h"
 #include "items.h" // stack_iterator
 #include "libutil.h"
-#include "macro.h"
 #include "message.h"
 #include "output.h"
 #include "prompt.h"
 #include "religion.h"
-#include "showsymb.h"
-#include "spl-transloc.h"
 #include "spl-util.h"
 #include "stringutil.h"
 #include "terrain.h"
 #include "transform.h"
 #include "tilepick.h"
 #include "view.h"
-#include "viewchar.h"
 
 spret cast_deaths_door(int pow, bool fail)
 {
@@ -196,7 +190,7 @@ spret cast_song_of_slaying(int pow, bool fail)
     if (you.duration[DUR_SONG_OF_SLAYING])
         mpr("You start a new song!");
     else
-        mpr("You start singing a song of slaying.");
+        mpr("You start singing a sleighing song.");
 
     you.set_duration(DUR_SONG_OF_SLAYING, 20 + random2avg(pow, 2));
 

@@ -15,7 +15,6 @@
 #include "database.h"
 #include "dgn-overview.h"
 #include "dungeon.h"
-#include "exclude.h"
 #include "fineff.h"
 #include "god-passive.h"
 #include "hints.h"
@@ -35,7 +34,6 @@
 #include "stringutil.h"
 #include "terrain.h"
 #include "traps.h"
-#include "view.h"
 
 static void _guess_invis_foe_pos(monster* mon)
 {
