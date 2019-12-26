@@ -211,7 +211,7 @@ bool attribute_increase()
     }
 }
 
-void _note_vaporous_resistance(string type, int level)
+static void _note_vaporous_resistance(string type, int level)
 {
     take_note(Note(NOTE_VAPOROUS_RESISTANCE, level, 0, type));
     const string mile_text

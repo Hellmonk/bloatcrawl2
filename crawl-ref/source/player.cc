@@ -3417,9 +3417,9 @@ void level_change(bool skip_attribute_increase)
         const bool turtle = species_is_turtle(you.species);
         if ((draconian || turtle) && !(you.experience_level % 3))
         {
-            const auto msg = draconian ? "Your scales feel tougher."
-                                       : "Your shell feels tougher.";
-            mprf(MSGCH_INTRINSIC_GAIN, msg);
+            mprf(MSGCH_INTRINSIC_GAIN,
+                 draconian ? "Your scales feel tougher."
+                           : "Your shell feels tougher.");
             you.redraw_armour_class = true;
         }
         else if(you.species == SP_CRYSTAL_DWARF)
