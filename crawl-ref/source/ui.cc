@@ -606,6 +606,7 @@ void Text::set_text(const formatted_string &fs)
     _queue_allocation();
 }
 
+#ifdef USE_TILE_WEB
 void Text::sync_load_state(const JsonNode *json)
 {
     const auto value = json_find_member(json, "widget_value");
@@ -615,6 +616,7 @@ void Text::sync_load_state(const JsonNode *json)
         return;
     value_from_json = value->string_;
 }
+#endif
 
 #ifdef USE_TILE_LOCAL
 void Text::set_font(FontWrapper *font)

@@ -687,7 +687,9 @@ public:
     {
         set_text(formatted_string(text));
     }
+#ifdef USE_TILE_WEB
     void sync_load_state(const JsonNode *json) override;
+#endif
 
     const formatted_string& get_text() const
     {
