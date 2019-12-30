@@ -813,6 +813,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     undead_desc.cprintf("\n");
     auto undead_choice = make_shared<ui::Text>(undead_desc);
     undead_choice->set_highlight_pattern(normal_str, false);
+    undead_choice->set_sync_id("undead");
     box->add_child(undead_choice);
 
     formatted_string exp_choice_str;
@@ -822,6 +823,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     exp_choice_str.cprintf("xp: normal | reduced (x0.75) | halved (x0.5) | increased (x1.5)");
     auto exp_choice = make_shared<ui::Text>(exp_choice_str);
     exp_choice->set_highlight_pattern("normal", false);
+    exp_choice->set_sync_id("experience");
     box->add_child(exp_choice);
 
     formatted_string chaoskin_choice_str;
@@ -831,6 +833,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     chaoskin_choice_str.cprintf("om's attention: disabled | enabled");
     auto chaoskin_choice = make_shared<ui::Text>(chaoskin_choice_str);
     chaoskin_choice->set_highlight_pattern("disabled", false);
+    chaoskin_choice->set_sync_id("chaoskin");
     box->add_child(chaoskin_choice);
 
     formatted_string runelock_choice_str;
@@ -840,6 +843,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     runelock_choice_str.cprintf("une locks: enabled | disabled");
     auto runelock_choice = make_shared<ui::Text>(runelock_choice_str);
     runelock_choice->set_highlight_pattern("enabled", false);
+    runelock_choice->set_sync_id("runelocks");
     box->add_child(runelock_choice);
 
     formatted_string trap_choice_str;
@@ -849,6 +853,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     trap_choice_str.cprintf("raps: normal | none | floor only | random only");
     auto trap_choice = make_shared<ui::Text>(trap_choice_str);
     trap_choice->set_highlight_pattern("normal", false);
+    trap_choice->set_sync_id("traps");
     box->add_child(trap_choice);
 
     auto begin_label = make_shared<ui::Text>();
@@ -963,6 +968,48 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     ui::run_layout(move(popup), done, prompt_ui);
 #ifdef USE_TILE_WEB
     tiles.pop_ui_layout();
+
+    auto undead_tile_choice = undead_choice->value_from_json;
+    if (undead_tile_choice == "mummy")
+        choice.undead_type = US_UNDEAD;
+    else if (undead_tile_choice == "zombie")
+        choice.undead_type = US_HUNGRY_DEAD;
+    else if (undead_tile_choice == "vampire")
+        choice.undead_type = US_SEMI_UNDEAD;
+    else
+        choice.undead_type = US_ALIVE;
+
+    auto exp_tile_choice = exp_choice->value_from_json;
+    if (exp_tile_choice == "reduced")
+        choice.mod_exp = -1;
+    if (exp_tile_choice == "halved")
+        choice.mod_exp = -2;
+    if (exp_tile_choice == "increased")
+        choice.mod_exp = 1;
+    else
+        choice.mod_exp = 0;
+
+    auto chaoskin_tile_choice = chaoskin_choice->value_from_json;
+    if (chaoskin_tile_choice == "enabled")
+        choice.chaoskin = true;
+    else
+        choice.chaoskin = false;
+
+    auto runelock_tile_choice = runelock_choice->value_from_json;
+    if (runelock_tile_choice == "disabled")
+        choice.no_locks = true;
+    else
+        choice.no_locks = false;
+
+    auto trap_tile_choice = trap_choice->value_from_json;
+    if (trap_tile_choice == "none")
+        choice.trap_type = 1;
+    if (trap_tile_choice == "floor")
+        choice.trap_type = 2;
+    if (trap_tile_choice == "random")
+        choice.trap_type = 3;
+    else
+        choice.trap_type = 0;
 #endif
 
     if (cancel || crawl_state.seen_hups)

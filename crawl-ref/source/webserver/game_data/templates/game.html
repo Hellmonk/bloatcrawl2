@@ -344,6 +344,90 @@
             </button>
         </div>
     </div>
+    <div class="game-modifiers">
+        <div class="header fg3">Game Modifiers</div>
+        <div class="body fg7">
+            <div class="game-modifier-undead">
+                <p>(U)ndead status</p>
+                <label>
+                    <input type="radio" name="undead" value="normal" data-sync-id="undead" checked>
+                    <span>Normal</span>
+                </label>
+                <label>
+                    <input type="radio" name="undead" value="mummy" data-sync-id="undead">
+                    <span>Mummy: -2 apts, rF-, rC+, rN+++, Necro enhancer (XL 13 & 26), foodless</span>
+                </label>
+                <label>
+                    <input type="radio" name="undead" value="zombie" data-sync-id="undead">
+                    <span>Zombie: -1 apts, rC+, rN+++, inhibited regen, chunk healing</span>
+                </label>
+                <label>
+                    <input type="radio" name="undead" value="vampire" data-sync-id="undead">
+                    <span>Vampire: batform (XL 3), exsanguinate/revive</span>
+                </label>
+            </div>
+            <div class="game-modifier-experience">
+                <p>(E)xperience</p>
+                <label>
+                    <input type="radio" name="experience" value="normal" data-sync-id="experience" checked>
+                    <span>Normal</span>
+                </label>
+                <label>
+                    <input type="radio" name="experience" value="reduced" data-sync-id="experience">
+                    <span>Reduced</span>
+                </label>
+                <label>
+                    <input type="radio" name="experience" value="halved" data-sync-id="experience">
+                    <span>Halved</span>
+                </label>
+                <label>
+                    <input type="radio" name="experience" value="increased" data-sync-id="experience">
+                    <span>Increased</span>
+                </label>
+            </div>
+            <div class="game-modifier-chaoskin">
+                <p>(X)om's Attention</p>
+                <label>
+                    <input type="radio" name="chaoskin" value="disabled" data-sync-id="chaoskin" checked>
+                    <span>Disabled</span>
+                </label>
+                <label>
+                    <input type="radio" name="chaoskin" value="enabled" data-sync-id="chaoskin">
+                    <span>Enabled</span>
+                </label>
+            </div>
+            <div class="game-modifier-runelocks">
+                <p>(R)une Locks</p>
+                <label>
+                    <input type="radio" name="runelocks" value="disabled" data-sync-id="runelocks" checked>
+                    <span>Disabled</span>
+                </label>
+                <label>
+                    <input type="radio" name="runelocks" value="enabled" data-sync-id="runelocks">
+                    <span>Enabled</span>
+                </label>
+            </div>
+            <div class="game-modifier-traps">
+                <p>(T)raps</p>
+                <label>
+                    <input type="radio" name="traps" value="normal" data-sync-id="traps" checked>
+                    <span>Normal</span>
+                </label>
+                <label>
+                    <input type="radio" name="traps" value="none" data-sync-id="traps">
+                    <span>None</span>
+                </label>
+                <label>
+                    <input type="radio" name="traps" value="floor" data-sync-id="traps">
+                    <span>Floor only</span>
+                </label>
+                <label>
+                    <input type="radio" name="traps" value="random" data-sync-id="traps">
+                    <span>Random only</span>
+                </label>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="ui-stack"></div>
