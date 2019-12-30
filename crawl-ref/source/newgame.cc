@@ -777,94 +777,15 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
         choice.undead_type = species_undead_type(ng.species);
 
     auto prompt_ui = make_shared<Text>();
-    prompt_ui->on_keydown_event([&](ui::KeyEvent ev) {
-        int key = ev.key();
-        // printf("Got game modifier key %d\n", key);
-        // fflush(stdout);
-
-        if (can_choose_undead && (key == 'u' || key == 'U'))
-        {
-            switch (choice.undead_type)
-            {
-                case US_ALIVE:
-                    choice.undead_type = US_UNDEAD;
-                    break;
-                case US_UNDEAD:
-                    choice.undead_type = US_HUNGRY_DEAD;
-                    break;
-                case US_HUNGRY_DEAD:
-                    choice.undead_type = US_SEMI_UNDEAD;
-                    break;
-                case US_SEMI_UNDEAD:
-                    choice.undead_type = US_ALIVE;
-                    break;
-            }
-            return true;
-        }
-        else if (key == 'e' || key == 'E')
-        {
-            switch (choice.mod_exp)
-            {
-                case 0:
-                    choice.mod_exp = -1;
-                    break;
-                case -1:
-                    choice.mod_exp = -2;
-                    break;
-                case -2:
-                    choice.mod_exp = 1;
-                    break;
-                case 1:
-                    choice.mod_exp = 0;
-                    break;
-            }
-            return true;
-        }
-        else if (key == 't' || key == 'T')
-        {
-            switch (choice.trap_type)
-            {
-                case 0:
-                    choice.trap_type = 1;
-                    break;
-                case 1:
-                    choice.trap_type = 2;
-                    break;
-                case 2:
-                    choice.trap_type = 3;
-                    break;
-                case 3:
-                    choice.trap_type = 0;
-                    break;
-            }
-            return true;
-        }
-        else if (key == 'x' || key == 'X')
-        {
-            choice.chaoskin = !choice.chaoskin;
-            return true;
-        }
-        else if (key == 'r' || key == 'R')
-        {
-            choice.no_locks = !choice.no_locks;
-            return true;
-        }
-        // Enter
-        else if (key == CONTROL('M'))
-        {
-            return done = true;
-        }
-        else if (key != -1)
-        {
-            if (key_is_escape(key))
-                return done = cancel = true;
-        }
-        return true;
-    });
-
     auto box = make_shared<ui::Box>(ui::Widget::VERT);
-    box->add_child(prompt_ui);
+    auto popup = make_shared<ui::Popup>(box);
 
+    formatted_string prompt;
+    prompt.textcolour(CYAN);
+    prompt.cprintf("Game Modifiers\n");
+    prompt_ui->set_text(prompt);
+
+    box->add_child(prompt_ui);
     // XXX: Is there some way to format these lines with less code?
     formatted_string undead_header;
     const COLOURS colour = can_choose_undead ? LIGHTGRAY : DARKGRAY;
@@ -891,6 +812,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     undead_desc.cprintf(vampire_str);
     undead_desc.cprintf("\n");
     auto undead_choice = make_shared<ui::Text>(undead_desc);
+    undead_choice->set_highlight_pattern(normal_str, false);
     box->add_child(undead_choice);
 
     formatted_string exp_choice_str;
@@ -899,6 +821,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     exp_choice_str.textcolour(LIGHTGRAY);
     exp_choice_str.cprintf("xp: normal | reduced (x0.75) | halved (x0.5) | increased (x1.5)");
     auto exp_choice = make_shared<ui::Text>(exp_choice_str);
+    exp_choice->set_highlight_pattern("normal", false);
     box->add_child(exp_choice);
 
     formatted_string chaoskin_choice_str;
@@ -907,6 +830,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     chaoskin_choice_str.textcolour(LIGHTGRAY);
     chaoskin_choice_str.cprintf("om's attention: disabled | enabled");
     auto chaoskin_choice = make_shared<ui::Text>(chaoskin_choice_str);
+    chaoskin_choice->set_highlight_pattern("disabled", false);
     box->add_child(chaoskin_choice);
 
     formatted_string runelock_choice_str;
@@ -915,6 +839,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     runelock_choice_str.textcolour(LIGHTGRAY);
     runelock_choice_str.cprintf("une locks: enabled | disabled");
     auto runelock_choice = make_shared<ui::Text>(runelock_choice_str);
+    runelock_choice->set_highlight_pattern("enabled", false);
     box->add_child(runelock_choice);
 
     formatted_string trap_choice_str;
@@ -923,74 +848,122 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     trap_choice_str.textcolour(LIGHTGRAY);
     trap_choice_str.cprintf("raps: normal | none | floor only | random only");
     auto trap_choice = make_shared<ui::Text>(trap_choice_str);
+    trap_choice->set_highlight_pattern("normal", false);
     box->add_child(trap_choice);
 
-    formatted_string instructions_str;
-    instructions_str.textcolour(BROWN);
-    instructions_str.cprintf("\nEnter  - Start game\nEscape - Quit");
-    auto instructions = make_shared<ui::Text>(instructions_str);
-    box->add_child(instructions);
-
-    auto popup = make_shared<ui::Popup>(box);
-    ui::push_layout(move(popup));
-    ui::set_focused_widget(prompt_ui.get());
-    while (!done && !crawl_state.seen_hups)
+    auto begin_label = make_shared<ui::Text>();
+    begin_label->set_text(formatted_string("[Enter] Begin!", BROWN));
+    begin_label->set_margin_for_sdl(4,8);
+    begin_label->set_margin_for_crt(0, 2, 0, 0);
+    auto begin_btn = make_shared<MenuButton>();
+    begin_btn->set_child(begin_label);
+    begin_btn->set_sync_id("btn-begin");
+    begin_btn->hotkey = CK_ENTER;
+    begin_btn->on_activate_event(
+        [&done](const ActivateEvent&)
     {
-        formatted_string prompt;
-        prompt.textcolour(CYAN);
-        prompt.cprintf("Game Modifiers\n");
-        prompt_ui->set_text(prompt);
+        return done = true;
+    });
+    box->add_child(begin_btn);
 
-        switch (choice.undead_type)
+    prompt_ui->on_keydown_event([&](const ui::KeyEvent& ev) {
+        const auto key = ev.key();
+        if (can_choose_undead && (key == 'u' || key == 'U'))
         {
-            case US_ALIVE:
-                undead_choice->set_highlight_pattern(normal_str, false);
-                break;
-            case US_UNDEAD:
-                undead_choice->set_highlight_pattern(mummy_str, false);
-                break;
-            case US_HUNGRY_DEAD:
-                undead_choice->set_highlight_pattern(zombie_str, false);
-                break;
-            case US_SEMI_UNDEAD:
-                undead_choice->set_highlight_pattern(vampire_str, false);
-                break;
+            switch (choice.undead_type)
+            {
+                case US_ALIVE:
+                    choice.undead_type = US_UNDEAD;
+                    undead_choice->set_highlight_pattern(mummy_str, false);
+                    break;
+                case US_UNDEAD:
+                    choice.undead_type = US_HUNGRY_DEAD;
+                    undead_choice->set_highlight_pattern(zombie_str, false);
+                    break;
+                case US_HUNGRY_DEAD:
+                    choice.undead_type = US_SEMI_UNDEAD;
+                    undead_choice->set_highlight_pattern(vampire_str, false);
+                    break;
+                case US_SEMI_UNDEAD:
+                    choice.undead_type = US_ALIVE;
+                    undead_choice->set_highlight_pattern(normal_str, false);
+                    break;
+            }
+            return true;
         }
-        switch (choice.mod_exp)
+        else if (key == 'e' || key == 'E')
         {
-            case 0:
-                exp_choice->set_highlight_pattern("normal", false);
-                break;
-            case -1:
-                exp_choice->set_highlight_pattern("reduced", false);
-                break;
-            case -2:
-                exp_choice->set_highlight_pattern("halved", false);
-                break;
-            case 1:
-                exp_choice->set_highlight_pattern("increased", false);
-                break;
+            switch (choice.mod_exp)
+            {
+                case 0:
+                    choice.mod_exp = -1;
+                    exp_choice->set_highlight_pattern("reduced", false);
+                    break;
+                case -1:
+                    choice.mod_exp = -2;
+                    exp_choice->set_highlight_pattern("halved", false);
+                    break;
+                case -2:
+                    choice.mod_exp = 1;
+                    exp_choice->set_highlight_pattern("increased", false);
+                    break;
+                case 1:
+                    choice.mod_exp = 0;
+                    exp_choice->set_highlight_pattern("normal", false);
+                    break;
+            }
+            return true;
         }
-        switch (choice.trap_type)
+        else if (key == 't' || key == 'T')
         {
-            case 0:
-                trap_choice->set_highlight_pattern("normal", false);
-                break;
-            case 1:
-                trap_choice->set_highlight_pattern("none", false);
-                break;
-            case 2:
-                trap_choice->set_highlight_pattern("floor only", false);
-                break;
-            case 3:
-                trap_choice->set_highlight_pattern("random only", false);
-                break;
+            switch (choice.trap_type)
+            {
+                case 0:
+                    choice.trap_type = 1;
+                    trap_choice->set_highlight_pattern("none", false);
+                    break;
+                case 1:
+                    choice.trap_type = 2;
+                    trap_choice->set_highlight_pattern("floor only", false);
+                    break;
+                case 2:
+                    choice.trap_type = 3;
+                    trap_choice->set_highlight_pattern("random only", false);
+                    break;
+                case 3:
+                    choice.trap_type = 0;
+                    trap_choice->set_highlight_pattern("normal", false);
+                    break;
+            }
+            return true;
         }
-        chaoskin_choice->set_highlight_pattern(choice.chaoskin ? "enabled" : "disabled", false);
-        runelock_choice->set_highlight_pattern(choice.no_locks ? "disabled" : "enabled", false);
-        ui::pump_events();
-    }
-    ui::pop_layout();
+        else if (key == 'x' || key == 'X')
+        {
+            choice.chaoskin = !choice.chaoskin;
+            chaoskin_choice->set_highlight_pattern(choice.chaoskin ? "enabled" : "disabled", false);
+            return true;
+        }
+        else if (key == 'r' || key == 'R')
+        {
+            choice.no_locks = !choice.no_locks;
+            runelock_choice->set_highlight_pattern(choice.no_locks ? "disabled" : "enabled", false);
+            return true;
+        }
+        else if (key_is_escape(key))
+            return done = cancel = true;
+        return false;
+    });
+
+#ifdef USE_TILE_WEB
+    tiles.json_open_object();
+    tiles.json_write_string("title", "TITLE game modifier TITLE");
+    tiles.push_ui_layout("game-modifiers", 0);
+#endif
+
+    ui::run_layout(move(popup), done, prompt_ui);
+#ifdef USE_TILE_WEB
+    tiles.pop_ui_layout();
+#endif
 
     if (cancel || crawl_state.seen_hups)
         game_ended(game_exit::abort);
