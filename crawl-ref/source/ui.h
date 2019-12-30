@@ -687,6 +687,7 @@ public:
     {
         set_text(formatted_string(text));
     }
+    void sync_load_state(const JsonNode *json) override;
 
     const formatted_string& get_text() const
     {
@@ -719,6 +720,8 @@ public:
         ellipsize = _ellipsize;
         _invalidate_sizereq();
     }
+
+    string value_from_json;
 
 protected:
     void wrap_text_to_size(int width, int height);

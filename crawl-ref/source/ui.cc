@@ -606,6 +606,16 @@ void Text::set_text(const formatted_string &fs)
     _queue_allocation();
 }
 
+void Text::sync_load_state(const JsonNode *json)
+{
+    const auto value = json_find_member(json, "widget_value");
+    if (!value)
+        return;
+    if (value->tag != JSON_STRING)
+        return;
+    value_from_json = value->string_;
+}
+
 #ifdef USE_TILE_LOCAL
 void Text::set_font(FontWrapper *font)
 {

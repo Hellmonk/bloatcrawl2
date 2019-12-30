@@ -370,6 +370,7 @@ function ($, comm, client, options, focus_trap) {
             return;
         state.generation_id = +$target_popup.attr("data-generation-id");
         state.widget_id = $(elem).attr("data-sync-id") || null;
+        state.widget_value = $(elem).attr("value") || null;
         comm.send_message("ui_state_sync", state);
     }
 

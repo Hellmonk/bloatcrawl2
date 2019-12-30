@@ -1264,6 +1264,9 @@ body {
     display: -ms-flexbox;
     display: flex;
 }
+#ui-stack input[type=radio] {
+    margin-right: 15px;
+}
 #ui-stack input[type=checkbox] {
     width: 20px;
     height: 20px;
