@@ -13,6 +13,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * ![Argon tile](crawl-ref/source/rltiles/player/base/argon_m.png) **Argons** are, unlike most other living beings, made of gas. They can only gain resistances by levelling up.
 * Strange beings from beyond the stars, **Astrals** cannot gain resistances to magic or the elements. Their attacks inflict powerful debuffs on beings from this world.
 * ![Bunyip tile](crawl-ref/source/rltiles/player/base/bunyip_m.png) **Bunyips** are strange, black, oily creatures that live in billabongs. They swim well but cannot call on divine powers or wear armour.
+* ![Butterfly tile](crawl-ref/source/rltiles/player/base/butterfly.png) Cute **Butterflies** will stop at nothing to obtain the Orb. Monsters turn neutral when they first see you.
 * **Dab Dwarves** have perfected the ancient art of dabbing. They can dab on multiple creatures at once and may even daze their foes with the power of their dab.
 * **Ember Elves** have depleted magical reserves, but regenerate magical power quickly. As they develop, their magic becomes more powerful but harder to control.
 * ![Faerie Dragon tile](crawl-ref/source/rltiles/player/base/faerie_dragon.png) **Faerie Dragons** are attuned to magic and their spells cost fewer magic points. Their shimmering scales repel attacks and their wings let them fly.
