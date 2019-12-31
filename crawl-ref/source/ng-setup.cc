@@ -1010,8 +1010,7 @@ static void _setup_generic(const newgame_def& ng)
     you.trap_type = ng.trap_type;
     you.mod_exp = ng.mod_exp;
 
-    if (ng.species == SP_SHAPESHIFTER)
-        you.shapeshifter_species = true;
+    you.shapeshifter_species = ng.species == SP_SHAPESHIFTER;
 
     // Only relevant for Argons, but saved for every species
     you.vaporous_resistance_fire = 0;
