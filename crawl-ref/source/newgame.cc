@@ -964,8 +964,10 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
 
 #ifdef USE_TILE_WEB
     tiles.json_open_object();
-    tiles.json_write_string("title", "TITLE game modifier TITLE");
-    tiles.push_ui_layout("game-modifiers", 0);
+    if (can_choose_undead)
+        tiles.push_ui_layout("game-modifiers", 0);
+    else
+        tiles.push_ui_layout("game-modifiers-no-undead", 0);
 #endif
 
     ui::run_layout(move(popup), done);

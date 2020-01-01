@@ -881,6 +881,11 @@ function ($, comm, client, ui, enums, cr, util, scroller, main, gui, player) {
         return $popup;
     }
 
+    function game_modifiers_no_undead() {
+        var $popup = $(".templates > .game-modifiers-no-undead").clone();
+        return $popup;
+    }
+
     var ui_handlers = {
         "describe-generic" : describe_generic,
         "describe-feature-wide" : describe_feature_wide,
@@ -899,6 +904,7 @@ function ($, comm, client, ui, enums, cr, util, scroller, main, gui, player) {
         "newgame-random-combo": newgame_random_combo,
         "game-over" : game_over,
         "game-modifiers": game_modifiers,
+        "game-modifiers-no-undead": game_modifiers_no_undead,
     };
 
     function register_ui_handlers(dict)
