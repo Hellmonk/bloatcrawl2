@@ -2332,7 +2332,9 @@ void prompt_inscribe_item()
 
 void drink(item_def* potion)
 {
-    if (you_foodless() && you.undead_state() != US_SEMI_UNDEAD)
+    if (you_foodless()
+        && you.undead_state() != US_SEMI_UNDEAD
+        && !you.has_mutation(MUT_BOL_XI))
     {
         mpr("You can't drink.");
         return;
