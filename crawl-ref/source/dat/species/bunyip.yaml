@@ -9,12 +9,12 @@ aptitudes:
   mp_mod: 0
   mr: 7
   fighting: 0
-  short_blades: -2
+  short_blades: 0
   long_blades: -3
   axes: -2
   maces_and_flails: -2
   polearms: -1
-  staves: -1
+  staves: -2
   throwing: False
   slings: False
   bows: False
@@ -23,18 +23,18 @@ aptitudes:
   dodging: 0
   stealth: 4
   unarmed_combat: 0
-  spellcasting: 0
-  conjurations: -1
-  hexes: 1
-  charms: -1
-  necromancy: 1
-  translocations: 1
-  transmutations: 1
-  fire_magic: -2
-  ice_magic: 0
-  air_magic: 0
-  earth_magic: 1
-  poison_magic: 1
+  spellcasting: 1
+  conjurations: 0
+  hexes: 2
+  charms: 0
+  necromancy: 2
+  translocations: 2
+  transmutations: 2
+  fire_magic: -1
+  ice_magic: 1
+  air_magic: 1
+  earth_magic: 2
+  poison_magic: 2
   invocations: False
   evocations: -5
 size: large
@@ -49,12 +49,12 @@ mutations:
     MUT_PASSIVE_WORSHIP: 1
     MUT_SLIPPERY: 1
 recommended_jobs:
-  - JOB_AIR_ELEMENTALIST
+  - JOB_EARTH_ELEMENTALIST
   - JOB_HERMIT
   - JOB_ANNIHILATOR
   - JOB_OVERSEER
-  - JOB_SUMMONER
   - JOB_ENCHANTER
+  - JOB_TRANSMUTER
   - JOB_VENOM_MAGE
   - JOB_STALKER
 recommended_weapons:
