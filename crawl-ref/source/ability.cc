@@ -2013,13 +2013,21 @@ static spret _do_ability(const ability_def& abil, bool fail)
             return spret::abort;
 
     case ABIL_CHARM:
+    {
         if(you.duration[DUR_EXHAUSTED])
         {
             mpr("You're too exhausted to charm anything!");
             return spret::abort;
         }
+        string message = random_choose_weighted(
+            20, "You attempt to charm your audience.",
+            1, "You wiggle your ears.",
+            1, "You flick your tail invitingly."
+        );
+        mpr(message.c_str());
         you.increase_duration(DUR_EXHAUSTED, 25 - you.experience_level / 2 + random2(8));
         return mass_enchantment(ENCH_CHARM, 10 + you.experience_level * 4);
+    }
 
     case ABIL_POWERSQUAT:
         if(you.duration[DUR_SQUAT])
