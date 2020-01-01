@@ -419,6 +419,12 @@ static void _bol_xi_shuffle(int /*time_delta*/)
 {
     if (!you.has_mutation(MUT_BOL_XI))
         return;
+    if (!(you.attribute[ATTR_BOL_XI_SHUFFLE_XP] * random_range(1, 10))
+          > (int)exp_needed(you.experience_level + 1))
+    {
+        return;
+    }
+    you.attribute[ATTR_BOL_XI_SHUFFLE_XP] = 0;
     bol_xi_aptitude_shuffle();
     bol_xi_stat_shuffle();;
     mark_milestone("bol_xi.resistance", "Bol Xi aptitudes/attributes shift.");
@@ -469,7 +475,7 @@ static struct timed_effect timed_effects[] =
 #if TAG_MAJOR_VERSION == 34
     { nullptr,                         0,     0, false },
 #endif
-    { _bol_xi_shuffle,              5000, 10000, false },
+    { _bol_xi_shuffle,             10000, 20000, false },
 };
 
 // Do various time related actions...

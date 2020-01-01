@@ -2829,6 +2829,8 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
 
     // evolution mutation timer
     you.attribute[ATTR_EVOL_XP] += exp_gained;
+    if (you.has_mutation(MUT_BOL_XI))
+        you.attribute[ATTR_BOL_XI_SHUFFLE_XP] += exp_gained;
 
     // modified experience due to sprint inflation
     unsigned int skill_xp = exp_gained;
