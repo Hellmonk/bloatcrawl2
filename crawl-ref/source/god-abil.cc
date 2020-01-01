@@ -3676,7 +3676,7 @@ static mutation_type _random_valid_sacrifice(const vector<mutation_type> &muts)
         // No potion heal doesn't affect mummies since they can't quaff potions
         if (mut == MUT_NO_POTION_HEAL && you.undead_state() == US_UNDEAD)
             continue;
-        
+
         // Ancient Gnolls can't get stat-changing mutations
         if ((mut == MUT_DOPEY || mut == MUT_WEAK || mut == MUT_CLUMSY)
             && you.species == SP_ANCIENT_GNOLL)
@@ -3992,6 +3992,11 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
             {
                 // this is virtually useless, aside from zot_tub
                 piety_gain = 1;
+            }
+            else if (you.species == SP_ZODACH)
+            {
+                // Lightning Spire & Malign Gateway are still useful, perhaps others
+                piety_gain /= 3;
             }
             else if (you.get_mutation_level(MUT_NO_SUMMONING_MAGIC)
                 || you.get_mutation_level(MUT_NO_ARTIFICE))
