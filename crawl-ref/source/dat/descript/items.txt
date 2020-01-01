@@ -6,6 +6,10 @@ much protection as the armour made from the scales of some larger dragons, it is
 somewhat lighter and less encumbering. It is also remarkably smooth, letting
 corrosive slime flow off it like water.
 %%%%
+air horn
+
+BE-BE-BE-BE-BEOWWWWWWWWWWWWWWW.
+%%%%
 amulet of faith
 
 A talisman crafted to call the attention of the gods to its wearer. This divine
@@ -65,6 +69,11 @@ amulet of the acrobat
 An amulet that allows the user to tumble and roll to evade the blows of their
 enemies, but only while moving and waiting. While taking other actions the
 amulet conveys no benefits. In order to function, it must first attune itself to the wearer's body at full health.
+%%%%
+ancient crate
+
+A mysterious crate unearthed during an exotic excavation. No mundane methods have
+proven capable of opening it. Exploring the dungeon may help reveal its secrets.
 %%%%
 animal skin
 
@@ -390,6 +399,11 @@ A flail with long spikes and a heavy head.
 double sword
 
 A magical weapon with two razor-sharp blades.
+%%%%
+dusty tome
+
+A manuscript written in an undecipherable language. It was found buried, together
+with an equally mystifying crate.
 %%%%
 eggplant
 
