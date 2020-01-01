@@ -1483,7 +1483,7 @@ endif
 	$(COPY) ../CREDITS.txt $(datadir_fp)/docs/
 	$(COPY_R) ../settings/* $(datadir_fp)/settings/
 ifeq ($(GAME),crawl.exe)
-	sed -i 's/$$/\r/' `find $(datadir_fp) -iname '*.txt' -or -iname '*.des'`
+	$(SED) -i 's/$$/\r/' `find $(datadir_fp) -iname '*.txt' -or -iname '*.des'`
 endif
 ifdef TILES
 	mkdir -p $(datadir_fp)/dat/tiles
