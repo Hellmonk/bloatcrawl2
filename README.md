@@ -2,6 +2,12 @@
 
 Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) ([github](https://github.com/crawl/crawl)). If you aren't familiar with the base game this fork probably won't make any sense.
 
+Play online:
+* [CPO (Australia)](https://crawl.project357.org/)
+* [CKO (NYC, USA)](https://crawl.kelbi.org/)
+
+[Or download an offline build for Windows/macOS.](https://github.com/Hellmonk/bloatcrawl2/releases)
+
 ## Contents
 
 1. [New Species](#new-species)
