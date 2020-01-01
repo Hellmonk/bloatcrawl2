@@ -145,7 +145,9 @@ item_def* newgame_make_item(object_class_type base,
     {
         make_item_unrandart(item, -force_ego);
         // Duplicate of logic below
-        if (you.equip[get_item_slot(item)] == -1)
+        if (you.equip[get_item_slot(item)] == -1
+            && (item.base_type != OBJ_ARMOUR
+                || can_wear_armour(item, false, false)))
         {
             you.equip[get_item_slot(item)] = slot;
         }
