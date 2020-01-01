@@ -5,6 +5,7 @@
 
 #include "hiscores.h"
 #include "item-prop.h"
+#include "item-use.h"
 #include "message.h"
 #include "mutation.h"
 #include "notes.h"
@@ -502,12 +503,33 @@ void change_species_to(species_type sp, bool rescale_skills)
 
     update_vision_range(); // for Ba, and for DS with Nightstalker
 
+    // Equipment fixups
     if ((old_sp == SP_OCTOPODE) != (sp == SP_OCTOPODE))
     {
         _swap_equip(EQ_LEFT_RING, EQ_RING_ONE);
         _swap_equip(EQ_RIGHT_RING, EQ_RING_TWO);
         // All species allow exactly one amulet.
     }
+    for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
+    {
+        if (you.equip[i] == -1)
+            continue;
+        auto item = you.inv[you.equip[i]];
+        if (you_can_wear(static_cast<equipment_type>(i)) == MB_FALSE
+            || (item.base_type == OBJ_ARMOUR && !can_wear_armour(item, false, false))
+            || ((item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
+                && !can_wield(&item, false, false))
+           )
+        {
+            mprf("%s fall%s away!",
+                 item.name(DESC_YOUR).c_str(),
+                 item.quantity > 1 ? "" : "s");
+            // Unwear items without the usual processing.
+            you.equip[i] = -1;
+            you.melded.set(i, false);
+        }
+    }
+
 
     update_player_size(old_size);
 
