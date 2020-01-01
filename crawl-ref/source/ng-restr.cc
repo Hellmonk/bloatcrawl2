@@ -18,6 +18,39 @@
 
 static bool _banned_combination(job_type job, species_type species)
 {
+    if (job_is_good_god_zealot(job) && species_is_demonic(species))
+        return true;
+
+    auto undead = species_undead_type(species);
+    if (job == JOB_TRANSMUTER
+        && (undead == US_UNDEAD || undead == US_HUNGRY_DEAD
+            || undead == US_GHOST))
+    {
+        return true;
+    }
+    if (job_is_good_god_zealot(job) && undead != US_ALIVE)
+        return true;
+
+    // Cavemen [...] can be humans, dwarves or gnomes.
+    if (job == JOB_CAVEPERSON
+        && !(species == SP_HUMAN || species == SP_DEMIGOD
+             || species == SP_BOOMER
+             || species == SP_DEEP_DWARF || species == SP_DAB_DWARF
+             || species == SP_CRYSTAL_DWARF || species == SP_UNFATHOMED_DWARF
+             || species == SP_GNOME
+             ))
+    {
+        return true;
+    }
+
+    const size_type size = species_size(species);
+    if (job == JOB_FENCER && (size < SIZE_SMALL || size > SIZE_MEDIUM)
+        // Protean can start as Fencer since they grow over time
+        && species != SP_PROTEAN)
+    {
+        return true;
+    }
+
     switch (species)
     {
     case SP_FELID:
@@ -60,38 +93,6 @@ static bool _banned_combination(job_type job, species_type species)
         return job == JOB_RONIN || job == JOB_MONK;
     default:
         break;
-    }
-
-    if (job_is_good_god_zealot(job) && species_is_demonic(species))
-        return true;
-
-    auto undead = species_undead_type(species);
-    if (job == JOB_TRANSMUTER
-        && (undead == US_UNDEAD || undead == US_HUNGRY_DEAD
-            || undead == US_GHOST))
-    {
-        return true;
-    }
-    if (job_is_good_god_zealot(job) && undead != US_ALIVE)
-        return true;
-
-    // Cavemen [...] can be humans, dwarves or gnomes.
-    if (job == JOB_CAVEPERSON
-        && !(species == SP_HUMAN || species == SP_DEMIGOD
-             || species == SP_DEEP_DWARF || species == SP_DAB_DWARF
-             || species == SP_CRYSTAL_DWARF || species == SP_UNFATHOMED_DWARF
-             || species == SP_GNOME
-             ))
-    {
-        return true;
-    }
-
-    const size_type size = species_size(species);
-    if (job == JOB_FENCER && (size < SIZE_SMALL || size > SIZE_MEDIUM)
-        // Protean can start as Fencer since they grow over time
-        && species != SP_PROTEAN)
-    {
-        return true;
     }
 
     return false;
