@@ -485,6 +485,15 @@ void change_species_to(species_type sp, bool rescale_skills)
         else
             you.innate_mutation[i] -= prev_muts[i];
     }
+    // re-add Ru sacrifices
+    for (int i = 0; i < NUM_MUTATIONS; ++i)
+    {
+        if (you.sacrifices[i] > 0)
+        {
+            you.innate_mutation[i] += you.sacrifices[i];
+            you.mutation[i] = max(you.mutation[i], you.innate_mutation[i]);
+        }
+    }
 
     if (sp == SP_DEMONSPAWN)
     {
