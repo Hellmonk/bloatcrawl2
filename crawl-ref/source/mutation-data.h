@@ -2019,7 +2019,7 @@ static const mutation_def mut_data[] =
    {"You feel less sensitive!", "", ""},
 },
 
-{ MUT_PROTEAN_BODY, 0, 1, mutflag::good, true,
+{ MUT_PROTEAN_BODY, 0, 1, mutflag::good, false,
    "protean body",
 
    // Bonus details added in mutation.cc's mutation_desc
@@ -2046,7 +2046,7 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-{ MUT_FAERIE_WINGS, 0, 1, mutflag::good, false,
+{ MUT_FAERIE_WINGS, 0, 1, mutflag::good, true,
    "faerie wings",
 
    {"You can fly.\n"
@@ -2063,7 +2063,7 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-{ MUT_FAERIE_SCALES, 0, 1, mutflag::good, false,
+{ MUT_FAERIE_SCALES, 0, 1, mutflag::good, true,
    "faerie magic",
 
    {"You are covered in bright scales. (AC+6, SH+6, Stealth-)", "", ""},
@@ -2071,7 +2071,7 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-{ MUT_VAPOROUS_BODY, 0, 1, mutflag::good, false,
+{ MUT_VAPOROUS_BODY, 0, 1, mutflag::good, true,
   "vaporous body",
 
   {"Your body is vaporous (+2 AC, +2 EV).", "", ""},
@@ -2096,7 +2096,7 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-{ MUT_BOL_XI, 0, 1, mutflag::good, true,
+{ MUT_BOL_XI, 0, 1, mutflag::good, false,
    "stranger",
 
    {"We are not of this world.", "", ""},
@@ -2121,7 +2121,7 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-{ MUT_MANAFEET, 0, 1, mutflag::good, true,
+{ MUT_MANAFEET, 0, 1, mutflag::good, false,
    "mana feet",
 
    {"You lose magic when moving in sight of enemies.", "", ""},
@@ -2129,7 +2129,7 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-{ MUT_EFFICIENT_MAGIC, 0, 1, mutflag::good, true,
+{ MUT_EFFICIENT_MAGIC, 0, 1, mutflag::good, false,
    "efficient magic",
 
    {"Your spell casting costs are reduced by half (rounded up).", "", ""},
@@ -2187,7 +2187,7 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-{ MUT_PASSIVE_WORSHIP, 0, 1, mutflag::good, true,
+{ MUT_PASSIVE_WORSHIP, 0, 1, mutflag::good, false,
    "passive worship",
 
    {"You cannot invoke divine powers.", "", ""},
@@ -2203,7 +2203,7 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-{ MUT_SILENT_AURA, 0, 1, mutflag::good, true,
+{ MUT_SILENT_AURA, 0, 1, mutflag::good, false,
    "silence aura",
 
    {"You are surrounded by an aura of silence.", "", ""},
@@ -2229,7 +2229,7 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-{ MUT_GHOSTLY, 0, 1, mutflag::good, true,
+{ MUT_GHOSTLY, 0, 1, mutflag::good, false,
    "ghostly",
 
    {"Your ghostly form has no feet.", "", ""},
