@@ -419,8 +419,8 @@ static void _bol_xi_shuffle(int /*time_delta*/)
 {
     if (!you.has_mutation(MUT_BOL_XI))
         return;
-    if (!(you.attribute[ATTR_BOL_XI_SHUFFLE_XP] * random_range(1, 10))
-          > (int)exp_needed(you.experience_level + 1))
+    if (!((you.attribute[ATTR_BOL_XI_SHUFFLE_XP] * random_range(1, 10))
+           > (int)exp_needed(you.experience_level + 1)))
     {
         return;
     }
