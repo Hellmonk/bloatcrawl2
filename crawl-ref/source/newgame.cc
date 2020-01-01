@@ -871,7 +871,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     });
     box->add_child(begin_btn);
 
-    prompt_ui->on_keydown_event([&](const ui::KeyEvent& ev) {
+    prompt_ui->on_hotkey_event([&](const ui::KeyEvent& ev) {
         const auto key = ev.key();
         if (can_choose_undead && (key == 'u' || key == 'U'))
         {
@@ -965,7 +965,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     tiles.push_ui_layout("game-modifiers", 0);
 #endif
 
-    ui::run_layout(move(popup), done, prompt_ui);
+    ui::run_layout(move(popup), done);
 #ifdef USE_TILE_WEB
     tiles.pop_ui_layout();
 
