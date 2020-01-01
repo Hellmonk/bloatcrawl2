@@ -779,6 +779,8 @@ void MiscastEffect::_conjuration(int severity)
                 all_msg = "You smell something strange.";
             else if (you.undead_state() == US_UNDEAD)
                 you_msg = "Your bandages flutter.";
+            else
+                you_msg = "You feel unusual.";
             break;
         case 10:
         {
@@ -1599,6 +1601,8 @@ void MiscastEffect::_necromancy(int severity)
                 all_msg = "You smell decay.";
             else if (you.undead_state() == US_UNDEAD)
                 you_msg = "Your bandages flutter.";
+            else
+                you_msg = "You feel unusual.";
             break;
         case 1:
             if (neither_end_silenced())
@@ -1691,6 +1695,8 @@ void MiscastEffect::_necromancy(int severity)
                 // Monster messages needed.
                 you_msg = "Your bandages flutter.";
             }
+            else
+                you_msg = "You feel unusual.";
             break;
         }
         if (!did_msg)
@@ -1865,6 +1871,8 @@ void MiscastEffect::_transmutation(int severity)
                 all_msg = "You smell something strange.";
             else if (you.undead_state() == US_UNDEAD)
                 you_msg = "Your bandages flutter.";
+            else
+                you_msg = "You feel unusual.";
             break;
         case 10:
         {
@@ -2048,6 +2056,8 @@ void MiscastEffect::_fire(int severity)
                 all_msg = "You smell smoke.";
             else if (you.undead_state() == US_UNDEAD)
                 you_msg = "Your bandages flutter.";
+            else
+                you_msg = "You feel unusual.";
             break;
         case 5:
             you_msg = "Heat runs through your body.";
@@ -2593,6 +2603,8 @@ void MiscastEffect::_air(int severity)
                 all_msg = "You smell ozone.";
             else if (you.undead_state() == US_UNDEAD)
                 you_msg = "Your bandages flutter.";
+            else
+                you_msg = "You feel unusual.";
             break;
         case 5:
             // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
@@ -2609,6 +2621,8 @@ void MiscastEffect::_air(int severity)
                 all_msg = "You smell something musty.";
             else if (you.undead_state() == US_UNDEAD)
                 you_msg = "Your bandages flutter.";
+            else
+                you_msg = "You feel unusual.";
             break;
         case 7:
             you_msg      = "There is a short, sharp shower of sparks.";

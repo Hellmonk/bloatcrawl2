@@ -485,8 +485,11 @@ tileidx_t tileidx_player()
 #endif
     case transformation::fungus:    ch = TILEP_TRAN_MUSHROOM;  break;
     case transformation::shadow:    ch = TILEP_TRAN_SHADOW;    break;
-    case transformation::hydra:     ch = tileidx_mon_clamp(TILEP_MONS_HYDRA,
-                                                           you.heads() - 1);
+    case transformation::hydra:     ch = tileidx_mon_clamp(
+                                            you.undead_state() == US_GHOST
+                                                ? TILEP_MONS_SPECTRAL_HYDRA
+                                                : TILEP_MONS_HYDRA,
+                                            you.heads() - 1);
                                     break;
     case transformation::dragon:
     {
@@ -501,7 +504,9 @@ tileidx_t tileidx_player()
         case SP_WHITE_DRACONIAN:   ch = TILEP_TRAN_DRAGON_WHITE;   break;
         case SP_RED_DRACONIAN:     ch = TILEP_TRAN_DRAGON_RED;     break;
         case SP_FAERIE_DRAGON:     ch = TILEP_TRAN_DRAGON_FAERIE;  break;
-        default:                   ch = TILEP_TRAN_DRAGON;         break;
+        default:                   ch = you.undead_state() == US_GHOST
+                                            ? TILEP_MONS_SPECTRAL_DRAGON
+                                            : TILEP_TRAN_DRAGON; break;
         }
         break;
     }
@@ -678,6 +683,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_SHAPESHIFTER;
     case SP_SILENT_SPECTRE:
         return TILEP_BASE_SILENT_SPECTRE;
+    case SP_MIRROR_EIDOLON:
+        return TILEP_BASE_MIRROR_EIDOLON;
     case SP_ANGEL:
         return TILEP_BASE_ANGEL;
     case SP_PROFANE_SERVITOR:
@@ -816,6 +823,7 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_UNIPODE:
         case SP_SHAPESHIFTER:
         case SP_SILENT_SPECTRE:
+        case SP_MIRROR_EIDOLON:
         case SP_ANGEL:
         case SP_PROFANE_SERVITOR:
         case SP_HERMIT_CRAB:
@@ -1185,6 +1193,11 @@ void tilep_calc_flags(const dolls_data &doll, int flag[])
         flag[TILEP_PART_LEG]   = TILEP_FLAG_HIDE;
         flag[TILEP_PART_HAIR]  = TILEP_FLAG_HIDE;
         flag[TILEP_PART_BEARD] = TILEP_FLAG_HIDE;
+    }
+    else if (is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_MIRROR_EIDOLON))
+    {
+        flag[TILEP_PART_LEG]   = TILEP_FLAG_HIDE;
+        flag[TILEP_PART_BODY]  = TILEP_FLAG_HIDE;
     }
 
     if (doll.parts[TILEP_PART_ARM] == TILEP_ARM_OCTOPODE_SPIKE

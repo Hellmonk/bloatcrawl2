@@ -493,7 +493,7 @@ static string _hand_name_singular()
 
     if (you.species == SP_FELID)
         return "paw";
-    
+
     if (you.species == SP_BUTTERFLY)
         return "leg";
 
@@ -558,7 +558,7 @@ static string _foot_name_singular(bool *can_plural)
 
     if (you.species == SP_FELID)
         return "paw";
-    
+
     if (you.species == SP_BUTTERFLY)
         return "leg";
 
@@ -609,6 +609,8 @@ string player::arm_name(bool plural, bool *can_plural) const
         adj = "feathered";
     else if (you.undead_state() == US_UNDEAD)
         adj = "bandage-wrapped";
+    else if (you.undead_state() == US_GHOST)
+        adj = "ghostly";
     else if (you.species == SP_ROBOT)
         adj = "metal";
     else if (species == SP_OCTOPODE || species == SP_UNIPODE)

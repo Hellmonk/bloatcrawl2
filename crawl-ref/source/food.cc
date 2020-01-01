@@ -118,6 +118,7 @@ bool you_foodless(bool temp)
 {
     return you.undead_state(temp) == US_UNDEAD
         || you.undead_state(temp) == US_SEMI_UNDEAD
+        || you.undead_state(temp) == US_GHOST
         || you.has_mutation(MUT_BOL_XI)
         || you.species == SP_ROBOT;
 }

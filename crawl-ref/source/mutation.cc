@@ -737,7 +737,8 @@ string describe_mutations(bool drop_title)
     {
         if ((entry.mummy && undead_state == US_UNDEAD)
             || (entry.zombie && undead_state == US_HUNGRY_DEAD)
-            || (entry.vampire && undead_state == US_SEMI_UNDEAD))
+            || (entry.vampire && undead_state == US_SEMI_UNDEAD)
+            || (entry.ghost && undead_state == US_GHOST))
         {
             result += mutation_desc(entry.mutation, entry.level) + "\n";
         }

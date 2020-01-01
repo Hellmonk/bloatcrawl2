@@ -1550,6 +1550,7 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
         switch (you.undead_state())
         {
             case US_ALIVE:
+            case US_GHOST:
                 break;
             case US_UNDEAD:
             case US_HUNGRY_DEAD:
@@ -1709,6 +1710,7 @@ bool player_res_torment(bool random)
     {
         case US_UNDEAD:
         case US_HUNGRY_DEAD:
+        case US_GHOST:
         {
             return true;
         }
@@ -1760,6 +1762,7 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
             break;
         case US_HUNGRY_DEAD: //ghouls
         case US_UNDEAD: // mummies & lichform
+        case US_GHOST:
             return 3;
         case US_SEMI_UNDEAD: // vampire
             if (!you.vampire_alive) // XXX: && temp?
@@ -2067,6 +2070,7 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
     {
         case US_UNDEAD:
         case US_HUNGRY_DEAD:
+        case US_GHOST:
             pl += 3;
             break;
         case US_SEMI_UNDEAD:
@@ -6798,6 +6802,7 @@ int player::res_rotting(bool temp) const
         return 0; // no permanent resistance
 
     case US_UNDEAD:
+    case US_GHOST:
         return 3; // full immunity
     }
 }
@@ -7692,8 +7697,17 @@ bool player::can_safely_mutate(bool temp) const
     if (species == SP_ROBOT)
         return false;
 
-    return undead_state(temp) == US_ALIVE
-           || undead_state(temp) == US_SEMI_UNDEAD;
+    undead_state_type undead = undead_state(temp);
+    switch (undead)
+    {
+        case US_ALIVE:
+        case US_SEMI_UNDEAD:
+            return true;
+        case US_UNDEAD:
+        case US_HUNGRY_DEAD:
+        case US_GHOST:
+            return false;
+    }
 }
 
 // Is the player too undead to bleed, rage, or polymorph?
@@ -7827,7 +7841,7 @@ bool player::can_throw_large_rocks() const
 
 bool player::can_smell() const
 {
-    return you.undead_state() != US_UNDEAD;
+    return you.undead_state() != US_UNDEAD && you.undead_state() != US_GHOST;
 }
 
 bool player::can_sleep(bool holi_only) const

@@ -1268,12 +1268,21 @@ static void _redraw_title()
     const bool undead_optional = species_can_use_modified_undeadness(you.species);
     if (undead_optional)
     {
-        if (undead == US_UNDEAD)
-            species = make_stringf("%s Mummy", species.c_str());
-        if (undead == US_HUNGRY_DEAD && you.species != SP_MIRROR_EIDOLON) // ugh
-            species = make_stringf("Zombie %s", species.c_str());
-        if (undead == US_SEMI_UNDEAD)
-            species = make_stringf("Vampire %s", species.c_str());
+        switch (undead)
+        {
+            case US_UNDEAD:
+                species = make_stringf("%s Mummy", species.c_str());
+                break;
+            case US_HUNGRY_DEAD:
+                species = make_stringf("Zombie %s", species.c_str());
+                break;
+            case US_SEMI_UNDEAD:
+                species = make_stringf("Vampire %s", species.c_str());
+                break;
+            case US_GHOST:
+            case US_ALIVE:
+                break;
+        }
     }
     NOWRAP_EOL_CPRINTF("%s", species.c_str());
 
@@ -2207,6 +2216,7 @@ static formatted_string _get_modifiers()
             modifiers.push_back("Vampire");
             break;
         case US_ALIVE:
+        case US_GHOST:
             // nothing
             break;
     }
@@ -2763,7 +2773,8 @@ string mutation_overview()
     {
         if ((entry.mummy && undead_state == US_UNDEAD)
             || (entry.zombie && undead_state == US_HUNGRY_DEAD)
-            || (entry.vampire && undead_state == US_SEMI_UNDEAD))
+            || (entry.vampire && undead_state == US_SEMI_UNDEAD)
+            || (entry.ghost && undead_state == US_GHOST))
         {
             mutations.emplace_back(
                 make_stringf("%s %d",

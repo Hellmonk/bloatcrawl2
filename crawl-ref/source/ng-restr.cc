@@ -63,12 +63,15 @@ static bool _banned_combination(job_type job, species_type species)
     if (job_is_good_god_zealot(job) && species_is_demonic(species))
         return true;
 
-    if ((job == JOB_TRANSMUTER || job_is_good_god_zealot(job))
-        && (species_undead_type(species) == US_UNDEAD
-           || species_undead_type(species) == US_HUNGRY_DEAD))
+    auto undead = species_undead_type(species);
+    if (job == JOB_TRANSMUTER
+        && (undead == US_UNDEAD || undead == US_HUNGRY_DEAD
+            || undead == US_GHOST))
     {
         return true;
     }
+    if (job_is_good_god_zealot(job) && undead != US_ALIVE)
+        return true;
 
     // Cavemen [...] can be humans, dwarves or gnomes.
     if (job == JOB_CAVEPERSON

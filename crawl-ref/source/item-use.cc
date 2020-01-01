@@ -934,10 +934,10 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
-    if (you.has_mutation(MUT_GHOSTLY) && slot == EQ_BOOTS)
+    if (slot == EQ_BOOTS && !species_has_feet(you.species))
     {
         if (verbose)
-            mpr("Your ghostly form cannot wear boots!");
+            mpr("You have no feet!");
         return false;
     }
 
@@ -2332,9 +2332,7 @@ void prompt_inscribe_item()
 
 void drink(item_def* potion)
 {
-    if (you_foodless()
-        && you.undead_state() != US_SEMI_UNDEAD
-        && !you.has_mutation(MUT_BOL_XI))
+    if (you.undead_state() == US_UNDEAD || you.species == SP_ROBOT)
     {
         mpr("You can't drink.");
         return;

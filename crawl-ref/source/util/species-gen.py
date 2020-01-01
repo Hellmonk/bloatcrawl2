@@ -234,7 +234,7 @@ ALL_APTITUDES = (
     "invocations",
     "evocations",
 )
-UNDEAD_TYPES = ("US_ALIVE", "US_HUNGRY_DEAD", "US_UNDEAD", "US_SEMI_UNDEAD")
+UNDEAD_TYPES = ("US_ALIVE", "US_HUNGRY_DEAD", "US_UNDEAD", "US_SEMI_UNDEAD", "US_GHOST")
 SIZES = (
     "SIZE_TINY",
     "SIZE_LITTLE",
@@ -332,6 +332,8 @@ def species_flags(flags):
             out.add("SPF_TURTLE")
         elif f == "demonic":
             out.add("SPF_DEMONIC")
+        elif f == "no feet":
+            out.add("SPF_NO_FEET")
         else:
             raise ValueError("Unknown species flag %s" % f)
     if not out:

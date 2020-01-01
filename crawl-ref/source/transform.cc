@@ -1453,10 +1453,10 @@ static bool _transformation_is_safe(transformation which_trans,
  */
 bool check_form_stat_safety(transformation new_form, bool quiet)
 {
-    
+
     if (you.species == SP_ANCIENT_GNOLL)
         return true;
-    
+
     const int str_mod = get_form(new_form)->str_mod - get_form()->str_mod;
     const int dex_mod = get_form(new_form)->dex_mod - get_form()->dex_mod;
 
@@ -1544,6 +1544,9 @@ undead_form_reason lifeless_prevents_form(transformation which_trans,
 
     if (which_trans == transformation::shadow)
         return UFR_GOOD; // even the undead can use dith's shadow form
+
+    if (you.undead_state() == US_GHOST)
+        return UFR_GOOD; // ghosts are able to transform
 
     if (you.undead_state() != US_SEMI_UNDEAD)
         return UFR_TOO_DEAD; // ghouls & mummies can't become anything else

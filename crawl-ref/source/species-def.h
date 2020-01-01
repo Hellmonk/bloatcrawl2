@@ -15,6 +15,7 @@ enum species_flag
     SPF_SMALL_TORSO = 1 << 4, /// Torso is smaller than body
     SPF_TURTLE      = 1 << 5, /// If this species is a turtle subspecies
     SPF_DEMONIC     = 1 << 6, /// If this species is demonic
+    SPF_NO_FEET     = 1 << 7, /// If this species has no feet
 };
 DEF_BITFIELD(species_flags, species_flag);
 

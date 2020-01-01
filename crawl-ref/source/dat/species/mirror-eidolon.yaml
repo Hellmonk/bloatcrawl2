@@ -39,7 +39,7 @@ aptitudes:
   poison_magic: 1
   invocations: -1
   evocations: -2
-undead_type: US_HUNGRY_DEAD
+undead_type: US_GHOST
 str: 7
 int: 8
 dex: 7
@@ -47,10 +47,9 @@ levelup_stat_frequency: 5
 levelup_stats: default
 mutations:
   1:
-    MUT_NO_REGENERATION: 1
-    MUT_UNBREATHING: 1
     MUT_FADING: 1
     MUT_HARVEST_ENERGY: 1
+    MUT_NO_REGENERATION: 1
 recommended_jobs:
   - JOB_FIGHTER
   - JOB_METEOROLOGIST

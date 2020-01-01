@@ -4002,6 +4002,8 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
             return TILEG_SP_SHAPESHIFTER;
         case SP_SILENT_SPECTRE:
             return TILEG_SP_SILENT_SPECTRE;
+        case SP_MIRROR_EIDOLON:
+            return TILEG_SP_MIRROR_EIDOLON;
         case SP_ANGEL:
             return TILEG_SP_ANGEL;
         case SP_PROFANE_SERVITOR:

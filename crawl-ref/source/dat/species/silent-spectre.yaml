@@ -4,6 +4,8 @@ name: Silent Spectre
 adjective: Spectral
 genus: Spectre
 difficulty: Advanced
+species_flags:
+  - no feet
 aptitudes:
   xp: -1
   hp: -2
@@ -23,7 +25,7 @@ aptitudes:
   earth_magic: False
   poison_magic: False
   invocations: False
-undead_type: US_UNDEAD
+undead_type: US_GHOST
 str: 6
 int: 2
 dex: 6
@@ -31,7 +33,6 @@ levelup_stat_frequency: 5
 mutations:
   1:
     MUT_SILENT_AURA: 1
-    MUT_GHOSTLY: 1
 recommended_jobs:
   - JOB_WANDERER
   - JOB_BILLIONAIRE # lore

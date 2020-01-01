@@ -13,6 +13,7 @@ bool species_is_elven(species_type species);
 bool species_is_draconian(species_type species);
 bool species_is_orcish(species_type species);
 bool species_has_hair(species_type species);
+bool species_has_feet(species_type species);
 bool species_is_turtle(species_type species);
 bool species_is_coloured_turtle(species_type species);
 bool species_is_demonic(species_type species);

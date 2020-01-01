@@ -2229,10 +2229,11 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-{ MUT_GHOSTLY, 0, 1, mutflag::good, false,
+// "Fake" mutation -- added for players who are US_GHOST
+{ MUT_GHOST, 0, 1, mutflag::good, false,
    "ghostly",
 
-   {"Your ghostly form has no feet.", "", ""},
+   {"You are a spectral ghost.", "", ""},
    {"", "", ""},
    {"", "", ""},
 },

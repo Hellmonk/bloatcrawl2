@@ -104,6 +104,7 @@ butterfly BUTTERFLY
 unipode UNIPODE
 shapeshifter SHAPESHIFTER
 silent_spectre SILENT_SPECTRE
+mirror_eidolon MIRROR_EIDOLON
 angel ANGEL
 profane_servitor PROFANE_SERVITOR
 dwarf_m DAB_DWARF

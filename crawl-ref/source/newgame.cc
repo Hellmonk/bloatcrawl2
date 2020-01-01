@@ -893,6 +893,9 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                     choice.undead_type = US_ALIVE;
                     undead_choice->set_highlight_pattern(normal_str, false);
                     break;
+                case US_GHOST:
+                    die("Somehow selected US_GHOST during game modifier selection?!");
+                    break;
             }
             return true;
         }

@@ -155,6 +155,11 @@ bool species_has_hair(species_type species)
     return !bool(get_species_def(species).flags & (SPF_NO_HAIR | SPF_DRACONIAN));
 }
 
+bool species_has_feet(species_type species)
+{
+    return !bool(get_species_def(species).flags & SPF_NO_FEET);
+}
+
 bool species_is_turtle(species_type species)
 {
     return bool(get_species_def(species).flags & SPF_TURTLE);

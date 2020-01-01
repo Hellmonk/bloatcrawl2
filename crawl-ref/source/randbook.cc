@@ -974,12 +974,15 @@ void make_book_kiku_gift(item_def &book, bool first)
     // spell, to complement Receive Corpses.
     if (first)
     {
+        undead_state_type undead = you.undead_state();
         bool can_bleed = you.species != SP_GARGOYLE
             && you.species != SP_ROBOT
-            && you.undead_state() != US_HUNGRY_DEAD
-            && you.undead_state() != US_UNDEAD;
+            && undead != US_HUNGRY_DEAD
+            && undead != US_UNDEAD
+            && undead != US_GHOST;
         bool can_regen = you.species != SP_DEEP_DWARF
-            && you.undead_state() != US_UNDEAD;
+            && undead != US_UNDEAD
+            && undead != US_GHOST;
 
         chosen_spells[0] = SPELL_PAIN;
         chosen_spells[1] = SPELL_CORPSE_ROT;

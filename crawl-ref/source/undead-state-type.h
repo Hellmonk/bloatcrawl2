@@ -6,4 +6,5 @@ enum undead_state_type                // you.is_undead
     US_HUNGRY_DEAD,     // Ghouls
     US_UNDEAD,          // Mummies
     US_SEMI_UNDEAD,     // Vampires
+    US_GHOST,           // Mirror Eidola
 };

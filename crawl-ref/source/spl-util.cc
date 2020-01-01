@@ -1173,7 +1173,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "your undead flesh cannot be transformed.";
         }
-        if (temp && you.is_lifeless_undead())
+        if (temp && you.undead_state() == US_SEMI_UNDEAD && !you.vampire_alive)
             return "your current blood level is not sufficient.";
         if (you.species == SP_PROTEAN)
             return "your gelatinous body cannot transform.";
@@ -1184,8 +1184,11 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_REGENERATION:
         if (you.species == SP_DEEP_DWARF)
             return "you can't regenerate without divine aid.";
-        if (you.undead_state(temp) == US_UNDEAD)
+        if (you.undead_state(temp) == US_UNDEAD
+            || you.undead_state(temp) == US_GHOST)
+        {
             return "you're too dead to regenerate.";
+        }
         break;
 
     case SPELL_EXCRUCIATING_WOUNDS:
@@ -1251,6 +1254,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             || you.species == SP_ROBOT
             || you.undead_state() == US_HUNGRY_DEAD
             || you.undead_state() == US_UNDEAD
+            || you.undead_state() == US_GHOST
             || (temp && !form_can_bleed(you.form)))
         {
             return "you have no blood to sublime.";
