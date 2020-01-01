@@ -1415,7 +1415,8 @@ int player_spell_levels()
 bool player_likes_chunks(bool permanently)
 {
     return you.gourmand(true, !permanently)
-           || you.get_mutation_level(MUT_CARNIVOROUS) > 0;
+           || you.get_mutation_level(MUT_CARNIVOROUS) > 0
+           || you.undead_modifier == US_HUNGRY_DEAD;
 }
 
 // If temp is set to false, temporary sources or resistance won't be counted.
