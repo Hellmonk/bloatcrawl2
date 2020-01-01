@@ -873,6 +873,22 @@ player_info::player_info()
     position = coord_def(-1, -1);
 }
 
+static string _undead_type_string_for_player()
+{
+    const undead_state_type undead = you.undead_state();
+    const bool undead_optional = species_can_use_modified_undeadness(you.species);
+    if (undead_optional)
+    {
+        if (undead == US_UNDEAD)
+            return "Mummy";
+        if (undead == US_HUNGRY_DEAD)
+            return "Zombie";
+        if (undead == US_SEMI_UNDEAD)
+            return "Vampire";
+    }
+    return "";
+}
+
 /**
  * Send the player properties to the webserver. Any player properties that
  * must be available to the WebTiles client must be sent here through an
@@ -895,6 +911,8 @@ void TilesFramework::_send_player(bool force_full)
     _update_int(force_full, c.wizard, you.wizard, "wizard");
     _update_string(force_full, c.species, species_name(you.species),
                    "species");
+    _update_int(force_full, c.shapeshifter, you.shapeshifter_species, "shapeshifter");
+    _update_string(force_full, c.undead_type, _undead_type_string_for_player(), "undead_type");
     string god = "";
     if (you_worship(GOD_JIYVA))
         god = god_name_jiyva(true);

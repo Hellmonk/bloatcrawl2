@@ -320,6 +320,19 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_" + name).addClass("colour_" + colour);
     }
 
+    function species_god_string(player)
+    {
+        var s = "";
+        s += player.species;
+        if (player.shapeshifter && player.species != "Shapeshifter")
+        s += "-shaped Shapeshifter";
+        if (player.undead_type)
+            s += " " + player.undead_type
+        if (player.god != "")
+            s += " of " + player.god;
+        return s;
+    }
+
     var simple_stats = ["hp", "hp_max", "mp", "mp_max", "xl", "progress"];
     /**
      * Update the stats pane area based on the player's current properties.
@@ -334,9 +347,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
         if ($("#stats").attr("data-species") != player.species)
             $("#stats").attr("data-species", player.species);
 
-        var species_god = player.species;
-        if (player.god != "")
-            species_god += " of " + player.god;
+        var species_god = species_god_string(player);
         if (player.god == "Xom")
         {
             if (player.piety_rank >=0)
