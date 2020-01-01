@@ -88,7 +88,7 @@ static const armour_def Armour_prop[] =
     { ARM_ANIMAL_SKIN,          "animal skin",            2,   0,     3,
         EQ_BODY_ARMOUR, SIZE_SMALL, SIZE_BIG, true, ARMF_NO_FLAGS, 333 },
     { ARM_ROBE,                 "robe",                   2,   0,     7,
-        EQ_BODY_ARMOUR, SIZE_SMALL, SIZE_BIG, true, ARMF_NO_FLAGS, 1000 },
+        EQ_BODY_ARMOUR, SIZE_TINY, SIZE_BIG, true, ARMF_NO_FLAGS, 1000 },
     { ARM_LEATHER_ARMOUR,       "leather armour",         3,  -40,   20,
         EQ_BODY_ARMOUR, SIZE_SMALL,  SIZE_MEDIUM, true },
 
