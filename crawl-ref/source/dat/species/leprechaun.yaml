@@ -42,6 +42,9 @@ levelup_stat_frequency: 5
 levelup_stats:
   - int
   - dex
+mutations:
+  1:
+    MUT_LUCKY: 1
 recommended_jobs:
   - JOB_SKALD
   - JOB_WARPER
