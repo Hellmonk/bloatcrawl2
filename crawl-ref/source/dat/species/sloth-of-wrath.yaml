@@ -49,9 +49,9 @@ mutations:
     MUT_SHAGGY_FUR: 1
     MUT_SLOW: 1
 fake_mutations:
-  - long: Those struck by your attacks sometimes go berserk
+  - long: Those struck by your attacks sometimes go berserk.
     short: berserk enemies
-  - long: You sometimes enrage those around you
+  - long: You sometimes enrage those around you.
     short: rage aura
 recommended_jobs:
   - JOB_ENCHANTER
