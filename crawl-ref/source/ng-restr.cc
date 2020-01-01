@@ -84,6 +84,14 @@ static bool _banned_combination(job_type job, species_type species)
         return true;
     }
 
+    const size_type size = species_size(species);
+    if (job == JOB_FENCER && (size < SIZE_SMALL || size > SIZE_MEDIUM)
+        // Protean can start as Fencer since they grow over time
+        && species != SP_PROTEAN)
+    {
+        return true;
+    }
+
     return false;
 }
 
