@@ -2306,6 +2306,7 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
 
     case KILLED_BY_FADING:
         desc += terse? "fading" : "Faded out of existence";
+        break;
 
     case KILLED_BY_WIZMODE:
         desc += terse? "wizmode" : "Entered wizard mode";
