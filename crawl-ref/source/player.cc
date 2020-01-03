@@ -2931,7 +2931,6 @@ void update_player_size(size_type old_size)
 
 static void _hermit_shell_upgrade()
 {
-    mpr("Checking hermit shel upgrade");
     if (you.hermit_shell_size == NUM_SIZE_LEVELS - 1)
         return;
     mprf(MSGCH_INTRINSIC_GAIN, "You find a larger hermit shell and move into it.");
