@@ -9,6 +9,7 @@ aptitudes:
   hp: 0
   mp_mod: 0
   mr: 3
+  armour: False
 str: 8
 int: 8
 dex: 8
