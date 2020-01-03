@@ -116,7 +116,8 @@ void butterfly_convert(monster* mons)
 {
     if(you.species == SP_BUTTERFLY
         && !mons->neutral()
-        && !testbits(mons->flags, MF_ATT_CHANGE_ATTEMPT))
+        && !testbits(mons->flags, MF_ATT_CHANGE_ATTEMPT)
+        && hepliaklqana_ancestor() != mons->mid)
     {
         mons->flags |= MF_ATT_CHANGE_ATTEMPT;
         mons->attitude = ATT_NEUTRAL;
