@@ -7698,16 +7698,10 @@ bool player::can_safely_mutate(bool temp) const
         return false;
 
     undead_state_type undead = undead_state(temp);
-    switch (undead)
-    {
-        case US_ALIVE:
-        case US_SEMI_UNDEAD:
-            return true;
-        case US_UNDEAD:
-        case US_HUNGRY_DEAD:
-        case US_GHOST:
-            return false;
-    }
+    if (undead == US_UNDEAD || undead == US_HUNGRY_DEAD || undead == US_GHOST)
+        return false;
+
+    return true;
 }
 
 // Is the player too undead to bleed, rage, or polymorph?
