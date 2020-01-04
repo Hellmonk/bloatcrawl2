@@ -84,9 +84,10 @@ MAKEFLAGS += -rR # This only works for recursive makes, i.e. contribs ...
 
 .PHONY: all test install clean clean-contrib clean-rltiles clean-android \
         clean-catch2 clean-plug-and-play-tests \
+		clean-coverage clean-coverage-full \
         distclean debug debug-lite profile package-source source \
         build-windows package-windows docs greet api api-dev android FORCE \
-        monster just-compile-catch2-tests catch2-tests plug-and-play-tests
+        monster catch2-tests plug-and-play-tests
 
 include Makefile.obj
 
@@ -118,7 +119,7 @@ ifdef FORCE_SSE
 CFOTHERS += -mfpmath=sse -msse2
 endif
 
-CFWARN := 
+CFWARN :=
 CFWARN_L := -Wall -Wformat-security -Wundef
 
 # Exceptions:
@@ -256,7 +257,7 @@ ifeq ($(uname_S),Darwin)
 		BUILD_SDL2 = YesPlease
 		BUILD_SDL2IMAGE = YesPlease
 		ifdef SOUND
-			ifndef WIN32 
+			ifndef WIN32
 				BUILD_SDL2MIXER = YesPlease
 			endif
 		endif
@@ -288,7 +289,7 @@ ifdef BUILD_ALL
 
 	BUILD_PCRE = YesPlease
 	ifdef SOUND
-		ifndef WIN32 
+		ifndef WIN32
 			BUILD_SDL2MIXER = YesPlease
 		endif
 	endif
@@ -721,7 +722,7 @@ SDL2_LDFLAGS := $(shell $(PKGCONFIG) sdl2 --libs-only-L) $(shell $(PKGCONFIG) sd
 endif
 
 ifdef SOUND
-ifndef WIN32 
+ifndef WIN32
 LIBS += -lSDL2_mixer
 endif
 endif
@@ -784,6 +785,7 @@ ifneq (,$(filter debug,$(MAKECMDGOALS)))
 	FULLDEBUG=YesPlease
 	DEBUG=YesPlease
 	NO_OPTIMIZE=YesPlease
+	COVERAGE=YesPlease
 endif
 
 # Debug-Lite
@@ -791,6 +793,7 @@ endif
 ifneq (,$(filter debug-lite,$(MAKECMDGOALS)))
 	DEBUG=YesPlease
 	NO_OPTIMIZE=YesPlease
+	COVERAGE=YesPlease
 endif
 
 # Profile
@@ -798,10 +801,26 @@ endif
 ifneq (,$(filter profile,$(MAKECMDGOALS)))
 	FULLDEBUG=YesPlease
 	DEBUG=YesPlease
+	COVERAGE=YesPlease
+endif
+
+# Unit tests
+ifneq (,$(filter catch2-tests,$(MAKECMDGOALS)))
+	COVERAGE=YesPlease
 endif
 
 ifdef HURRY
 	NO_OPTIMIZE=YesPlease
+endif
+
+ifdef COVERAGE
+    # GCC
+    ifeq ($(shell $(GXX) -v 2>&1|grep clang),)
+		CFOPTIMIZE_L = -fprofile-arcs -ftest-coverage
+    else
+    # Clang
+		CFOPTIMIZE_L = -fprofile-instr-generate -fcoverage-mapping
+    endif
 endif
 
 ifdef FULLDEBUG
@@ -1012,7 +1031,7 @@ endif
 
 ifdef BUILD_PCRE
 DEFINES += -DREGEX_PCRE
-else 
+else
   ifdef USE_PCRE
   DEFINES += -DREGEX_PCRE
   LIBS += -lpcre
@@ -1080,14 +1099,6 @@ ifndef V
         QUIET_HOSTCC      = @echo '   ' HOSTCC $@;
         QUIET_PNGCRUSH    = @echo '   ' $(PNGCRUSH_LABEL) $@;
         QUIET_ADVPNG      = @echo '   ' ADVPNG $@;
-
-        # The following is just QUIET_LINK with a hard coded string
-        # replacing $@. The point of this is to fix a text bug where
-        # compiling catch2-tests would say
-        # "LINK just-compile-catch2-tests" when
-        # "LINK catch2-tests-executable" is more informative.
-
-        QUIET_CATCH2_LINK = @echo '   ' LINK catch2-tests-executable;
         export V
 endif
 endif
@@ -1534,7 +1545,7 @@ ifeq ($(USE_DGAMELAUNCH),)
 endif
 
 clean: clean-rltiles clean-webserver clean-android clean-monster clean-catch2 \
-       clean-plug-and-play-tests
+       clean-plug-and-play-tests clean-coverage-full
 	+$(MAKE) -C $(UTIL) clean
 	$(RM) $(GAME) $(GAME).exe $(GENERATED_FILES) $(EXTRA_OBJECTS) libw32c.o\
 	    libunix.o $(ALL_OBJECTS) $(ALL_OBJECTS:.o=.d) *.ixx  \
@@ -1586,8 +1597,8 @@ install-monster: monster
 	  echo 'Monster database of master branch on crawl.develz.org updated to: $(VERSION)' >>~/source/announcements.log;\
 	fi
 
-just-compile-catch2-tests: $(CATCH2_TEST_OBJECTS) $(CONTRIB_LIBS) dat/dlua/tags.lua
-	+$(QUIET_CATCH2_LINK)$(CXX) $(LDFLAGS) $(CATCH2_TEST_OBJECTS) -o catch2-tests-executable $(LIBS)
+catch2-tests-executable: $(CATCH2_TEST_OBJECTS) $(CONTRIB_LIBS) dat/dlua/tags.lua
+	+$(QUIET_LINK)$(CXX) $(LDFLAGS) $(CATCH2_TEST_OBJECTS) -o catch2-tests-executable $(LIBS)
 
 CATCH2_PNP_OBJECTS = $(OBJECTS) catch2-tests/test_plug_and_play.o \
                      catch2-tests/test_main.o $(EXTRA_OBJECTS)
@@ -1595,8 +1606,16 @@ CATCH2_PNP_OBJECTS = $(OBJECTS) catch2-tests/test_plug_and_play.o \
 plug-and-play-tests: $(CATCH2_PNP_OBJECTS) $(CONTRIB_LIBS) dat/dlua/tags.lua
 	+$(QUIET_LINK)$(CXX) $(LDFLAGS) $(CATCH2_PNP_OBJECTS) -o $@ $(LIBS)
 
-catch2-tests: just-compile-catch2-tests
+catch2-tests: catch2-tests-executable
 	./catch2-tests-executable
+
+clean-coverage-full: clean-coverage
+	find . -type f -name '*.gcno' -delete
+
+clean-coverage:
+	$(RM) default.profraw default.profdata coverage.info coverage.profdata
+	find . -type f \( -name '*.gcda' -or -name '*.gcov' \) -delete
+	$(RM) -r coverage-html-report
 
 clean-catch2:
 	$(RM) catch2-tests-executable catch2-tests-executable.exe

@@ -264,7 +264,7 @@ bool fill_status_info(int status, status_info& inf)
         break;
 
     case STATUS_REGENERATION:
-        // DUR_REGENERATION + some vampire and non-healing stuff
+        // DUR_TROGS_HAND + some vampire and non-healing stuff
         _describe_regen(inf);
         break;
 
@@ -835,26 +835,19 @@ static void _describe_glow(status_info& inf)
 
 static void _describe_regen(status_info& inf)
 {
-    const bool regen = (you.duration[DUR_REGENERATION] > 0
-                        || you.duration[DUR_TROGS_HAND] > 0);
+    const bool trogs_hand = you.duration[DUR_TROGS_HAND] > 0;
     const bool no_heal = !player_regenerates_hp();
 
-    if (regen)
+    if (trogs_hand)
     {
-        if (you.duration[DUR_REGENERATION] > you.duration[DUR_TROGS_HAND])
-            inf.light_colour = _dur_colour(BLUE, dur_expiring(DUR_REGENERATION));
-        else
-            inf.light_colour = _dur_colour(BLUE, dur_expiring(DUR_TROGS_HAND));
+        inf.light_colour = _dur_colour(BLUE, dur_expiring(DUR_TROGS_HAND));
         inf.light_text   = "Regen";
-        if (you.duration[DUR_TROGS_HAND])
-            inf.light_text += " MR++";
-        else if (no_heal)
-            inf.light_colour = DARKGREY;
+        inf.light_text += " MR++";
     }
 
-    if ((you.disease && !regen) || no_heal)
+    if (no_heal || (you.disease && !trogs_hand))
        inf.short_text = "non-regenerating";
-    else if (regen)
+    else if (trogs_hand)
     {
         if (you.disease)
         {
@@ -866,7 +859,7 @@ static void _describe_regen(status_info& inf)
             inf.short_text = "regenerating";
             inf.long_text  = "You are regenerating.";
         }
-        _mark_expiring(inf, dur_expiring(DUR_REGENERATION));
+        _mark_expiring(inf, dur_expiring(DUR_TROGS_HAND));
     }
     else if (you.undead_modifier == US_SEMI_UNDEAD && you.vampire_alive)
     {

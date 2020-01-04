@@ -27,3 +27,10 @@ bool job_is_evil_god_zealot(job_type job);
 bool job_is_magic_god_zealot(job_type job);
 bool job_is_mage(job_type job);
 bool job_is_warrior_mage(job_type job);
+
+bool job_is_removed(job_type job);
+
+static inline bool job_type_valid(job_type job)
+{
+    return 0 <= job && job < NUM_JOBS;
+}

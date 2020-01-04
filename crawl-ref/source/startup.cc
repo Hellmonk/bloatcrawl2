@@ -87,6 +87,8 @@ static void _initialize()
 
     rng::seed(); // don't use any chosen seed yet
 
+    clua.init_libraries();
+
     init_char_table(Options.char_set);
     init_show_table();
     init_monster_symbols();
@@ -321,6 +323,13 @@ static void _post_init(bool newc)
 
     // Start timer on session.
     you.last_keypress_time = chrono::system_clock::now();
+
+    // XXX: now that the player is loaded, do a layout.
+    // This is necessary to ensure that the message window is positioned, in
+    // case there are any early game warning messages to be logged.
+#ifdef USE_TILE
+    tiles.resize();
+#endif
 
 #ifdef CLUA_BINDINGS
     clua.runhook("chk_startgame", "b", newc);

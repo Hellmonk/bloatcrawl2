@@ -79,3 +79,23 @@ string turtle_bandana_colour(species_type sp);
 void update_shapeshifter_species();
 bool species_can_use_modified_undeadness(species_type sp);
 bool hermit_crab_can_escape();
+
+bool species_is_removed(species_type species);
+
+static inline bool species_type_valid(species_type species)
+{
+    return 0 <= species && species < NUM_SPECIES;
+}
+
+/** All non-removed species, including base and derived species */
+static inline vector<species_type> all_species()
+{
+    vector<species_type> species;
+    for (int i = 0; i < NUM_SPECIES; ++i)
+    {
+        const auto sp = static_cast<species_type>(i);
+        if (!species_is_removed(sp))
+            species.push_back(sp);
+    }
+    return species;
+}

@@ -28,17 +28,6 @@
 #define NO_CUSTOM_ALLOCATOR
 #endif
 
-#define CL_RESETSTACK_RETURN(ls, oldtop, retval) \
-    do \
-    {\
-        if (oldtop != lua_gettop(ls)) \
-        { \
-            lua_settop(ls, oldtop); \
-        } \
-        return retval; \
-    } \
-    while (false)
-
 static int  _clua_panic(lua_State *);
 static void _clua_throttle_hook(lua_State *, lua_Debug *);
 #ifndef NO_CUSTOM_ALLOCATOR
@@ -337,7 +326,7 @@ int CLua::execfile(const char *filename, bool trusted, bool die_on_fail,
     if (die_on_fail && !error.empty())
     {
         end(1, false, "Lua execfile error (%s): %s",
-            filename, dlua.error.c_str());
+            filename, error.c_str());
     }
     return err;
 }
@@ -350,17 +339,15 @@ bool CLua::runhook(const char *hook, const char *params, ...)
     if (!ls)
         return false;
 
-    // Remember top of stack, for debugging porpoises
-    int stack_top = lua_gettop(ls);
+    lua_stack_cleaner clean(ls);
+
     pushglobal(hook);
     if (!lua_istable(ls, -1))
-    {
-        lua_pop(ls, 1);
-        CL_RESETSTACK_RETURN(ls, stack_top, false);
-    }
+        return false;
     for (int i = 1; ; ++i)
     {
-        int currtop = lua_gettop(ls);
+        lua_stack_cleaner clean2(ls);
+
         lua_rawgeti(ls, -1, i);
         if (!lua_isfunction(ls, -1))
         {
@@ -373,10 +360,8 @@ bool CLua::runhook(const char *hook, const char *params, ...)
         va_start(args, params);
         calltopfn(ls, params, args);
         va_end(args);
-
-        lua_settop(ls, currtop);
     }
-    CL_RESETSTACK_RETURN(ls, stack_top, true);
+    return true;
 }
 
 void CLua::fnreturns(const char *format, ...)
@@ -560,21 +545,17 @@ maybe_bool CLua::callmbooleanfn(const char *fn, const char *params,
     if (!ls)
         return MB_MAYBE;
 
-    int stacktop = lua_gettop(ls);
+    lua_stack_cleaner clean(ls);
 
     pushglobal(fn);
     if (!lua_isfunction(ls, -1))
-    {
-        lua_pop(ls, 1);
-        CL_RESETSTACK_RETURN(ls, stacktop, MB_MAYBE);
-    }
+        return MB_MAYBE;
 
     bool ret = calltopfn(ls, params, args, 1);
     if (!ret)
-        CL_RESETSTACK_RETURN(ls, stacktop, MB_MAYBE);
+        return MB_MAYBE;
 
-    maybe_bool r = frombool(lua_toboolean(ls, -1));
-    CL_RESETSTACK_RETURN(ls, stacktop, r);
+    return frombool(lua_toboolean(ls, -1));
 }
 
 maybe_bool CLua::callmbooleanfn(const char *fn, const char *params, ...)
@@ -593,22 +574,17 @@ maybe_bool CLua::callmaybefn(const char *fn, const char *params, va_list args)
     if (!ls)
         return MB_MAYBE;
 
-    int stacktop = lua_gettop(ls);
+    lua_stack_cleaner clean(ls);
 
     pushglobal(fn);
     if (!lua_isfunction(ls, -1))
-    {
-        lua_pop(ls, 1);
-        CL_RESETSTACK_RETURN(ls, stacktop, MB_MAYBE);
-    }
+        return MB_MAYBE;
 
     bool ret = calltopfn(ls, params, args, 1);
     if (!ret)
-        CL_RESETSTACK_RETURN(ls, stacktop, MB_MAYBE);
+        return MB_MAYBE;
 
-    maybe_bool r = lua_isboolean(ls, -1) ? frombool(lua_toboolean(ls, -1))
-                                         : MB_MAYBE;
-    CL_RESETSTACK_RETURN(ls, stacktop, r);
+    return lua_isboolean(ls, -1) ? frombool(lua_toboolean(ls, -1)) : MB_MAYBE;
 }
 
 maybe_bool CLua::callmaybefn(const char *fn, const char *params, ...)
@@ -793,6 +769,17 @@ void CLua::init_lua()
     }
 #endif
 
+    lua_pushboolean(_state, managed_vm);
+    setregistry("lua_vm_is_managed");
+
+    lua_pushlightuserdata(_state, this);
+    setregistry("__clua");
+}
+
+void CLua::init_libraries()
+{
+    lua_stack_cleaner clean(state());
+
     // Open Crawl bindings
     cluaopen_kills(_state);
     cluaopen_you(_state);
@@ -808,8 +795,10 @@ void CLua::init_lua()
 
     cluaopen_globals(_state);
 
-    load_cmacro();
-    load_chooks();
+    execfile("dlua/macro.lua", true, true);
+
+    // All hook names must be chk_????
+    execstring("chk_startgame = { }", "base");
 
     lua_register(_state, "loadfile", _clua_loadfile);
     lua_register(_state, "dofile", _clua_dofile);
@@ -827,12 +816,6 @@ void CLua::init_lua()
         execfile("dlua/userbase.lua", true, true);
         execfile("dlua/persist.lua", true, true);
     }
-
-    lua_pushboolean(_state, managed_vm);
-    setregistry("lua_vm_is_managed");
-
-    lua_pushlightuserdata(_state, this);
-    setregistry("__clua");
 }
 
 CLua &CLua::get_vm(lua_State *ls)
@@ -851,20 +834,6 @@ bool CLua::is_managed_vm(lua_State *ls)
     lua_pushstring(ls, "lua_vm_is_managed");
     lua_gettable(ls, LUA_REGISTRYINDEX);
     return lua_toboolean(ls, -1);
-}
-
-void CLua::load_chooks()
-{
-    // All hook names must be chk_????
-    static const char *c_hooks =
-        "chk_startgame = { }"
-        ;
-    execstring(c_hooks, "base");
-}
-
-void CLua::load_cmacro()
-{
-    execfile("dlua/macro.lua", true, true);
 }
 
 void CLua::add_shutdown_listener(lua_shutdown_listener *listener)

@@ -980,9 +980,6 @@ void make_book_kiku_gift(item_def &book, bool first)
             && undead != US_HUNGRY_DEAD
             && undead != US_UNDEAD
             && undead != US_GHOST;
-        bool can_regen = you.species != SP_DEEP_DWARF
-            && undead != US_UNDEAD
-            && undead != US_GHOST;
 
         chosen_spells[0] = SPELL_PAIN;
         chosen_spells[1] = SPELL_CORPSE_ROT;
@@ -990,8 +987,7 @@ void make_book_kiku_gift(item_def &book, bool first)
         if (can_bleed) // Replace one of the corpse-using spells
             chosen_spells[random_range(1, 2)] = SPELL_SUBLIMATION_OF_BLOOD;
 
-        chosen_spells[3] = (!can_regen || coinflip())
-            ? SPELL_VAMPIRIC_DRAINING : SPELL_REGENERATION;
+        chosen_spells[3] = SPELL_VAMPIRIC_DRAINING;
     }
     else
     {

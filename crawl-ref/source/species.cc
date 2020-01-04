@@ -10,6 +10,7 @@
 #include "mutation.h"
 #include "notes.h"
 #include "output.h"
+#include "playable.h"
 #include "player.h"
 #include "player-stats.h"
 #include "random.h"
@@ -576,11 +577,8 @@ void change_species_to(species_type sp, bool rescale_skills)
 // A random valid (selectable on the new game screen) species.
 species_type random_starting_species()
 {
-  species_type species;
-  do {
-      species = static_cast<species_type>(random_range(0, NUM_SPECIES - 1));
-  } while (!is_starting_species(species));
-  return species;
+    const auto species = playable_species();
+    return species[random2(species.size())];
 }
 
 // Ensure the species isn't SP_RANDOM/SP_VIABLE and it has recommended jobs
@@ -591,16 +589,6 @@ bool is_starting_species(species_type species)
         && !get_species_def(species).recommended_jobs.empty();
 }
 
-// Check that we can give this draconian species to players as a color.
-static bool _is_viable_draconian(species_type species)
-{
-#if TAG_MAJOR_VERSION == 34
-    if (species == SP_MOTTLED_DRACONIAN)
-        return false;
-#endif
-    return true;
-}
-
 // A random non-base draconian colour appropriate for the player.
 species_type random_draconian_colour()
 {
@@ -609,7 +597,7 @@ species_type random_draconian_colour()
       species =
           static_cast<species_type>(random_range(SP_FIRST_NONBASE_DRACONIAN,
                                                  SP_LAST_NONBASE_DRACONIAN));
-  } while (!_is_viable_draconian(species));
+  } while (species_is_removed(species));
   return species;
 }
 
@@ -688,4 +676,18 @@ bool species_can_use_modified_undeadness(species_type sp)
 bool hermit_crab_can_escape()
 {
     return player_size() > SIZE_TINY;
+}
+
+bool species_is_removed(species_type species)
+{
+#if TAG_MAJOR_VERSION == 34
+    if (species == SP_MOTTLED_DRACONIAN)
+        return true;
+#endif
+    // all other derived Dr are ok and don't have recommended jobs
+    if (species_is_draconian(species))
+        return false;
+    if (get_species_def(species).recommended_jobs.empty())
+        return true;
+    return false;
 }

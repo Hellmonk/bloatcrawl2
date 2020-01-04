@@ -303,7 +303,9 @@ bool check_moveto_exclusions(const vector<coord_def> &areas,
                              const string &move_verb,
                              bool *prompted)
 {
-    if (is_excluded(you.pos()) || crawl_state.disables[DIS_CONFIRMATIONS])
+    const bool you_pos_excluded = is_excluded(you.pos())
+            && !is_stair_exclusion(you.pos());
+    if (you_pos_excluded || crawl_state.disables[DIS_CONFIRMATIONS])
         return true;
 
     int count = 0;
@@ -394,17 +396,6 @@ bool swap_check(monster* mons, coord_def &loc, bool quiet)
     if (!quiet && trap_at(loc) && trap_at(loc)->type == TRAP_ZOT
         && !yes_or_no("Do you really want to swap %s into the Zot trap?",
                       mons->name(DESC_YOUR).c_str()))
-    {
-        return false;
-    }
-
-    // Foxfire swaps burn you and dissapate the foxfire. Prompt for this.
-    // XXX: We still need the location so we can swap the foxfire and kill it
-    // in its new location (which is finalized after the player's movement is
-    // complete).
-    if (mons->type == MONS_FOXFIRE && !quiet
-        && !yesno(make_stringf("Do you really want to walk into %s?",
-                  mons->name(DESC_YOUR).c_str()).c_str(), true, 'N'))
     {
         return false;
     }
@@ -1181,14 +1172,6 @@ static int _player_bonus_regen()
 {
     int rr = 0;
 
-    // Trog's Hand is handled separately so that it will bypass slow
-    // regeneration, and it overrides the spell.
-    if (you.duration[DUR_REGENERATION]
-        && !you.duration[DUR_TROGS_HAND])
-    {
-        rr += 100;
-    }
-
     // Jewellery.
     if (you.props[REGEN_AMULET_ACTIVE].get_int() == 1)
         rr += REGEN_PIP * you.wearing(EQ_AMULET, AMU_REGENERATION);
@@ -1251,7 +1234,7 @@ int player_regen()
 
     // Bonus regeneration for alive vampires.
     if (you.undead_state() == US_SEMI_UNDEAD && you.vampire_alive)
-            rr += 20;
+        rr += 20;
 
     if (you.duration[DUR_COLLAPSE])
         rr /= 4;
@@ -1337,20 +1320,12 @@ void update_mana_regen_amulet_attunement()
         you.props[MANA_REGEN_AMULET_ACTIVE] = 0;
 }
 
-int player_hunger_rate(bool temp)
+int player_hunger_rate()
 {
     int hunger = 3;
 
     if (you.species == SP_TROLL)
         hunger += 3;            // in addition to the +3 for fast metabolism
-
-    if (temp
-        && (you.duration[DUR_REGENERATION]
-            || you.duration[DUR_TROGS_HAND])
-        && you.hp < you.hp_max)
-    {
-        hunger += 4;
-    }
 
     hunger += you.get_mutation_level(MUT_FAST_METABOLISM)
             - you.get_mutation_level(MUT_SLOW_METABOLISM);

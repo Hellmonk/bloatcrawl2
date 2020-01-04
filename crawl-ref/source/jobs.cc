@@ -7,6 +7,7 @@
 #include "libutil.h"
 #include "mapdef.h"
 #include "ng-setup.h"
+#include "playable.h"
 #include "player.h"
 #include "stringutil.h"
 
@@ -181,19 +182,19 @@ bool job_recommends_species(job_type job, species_type species)
 // A random valid (selectable on the new game screen) job.
 job_type random_starting_job()
 {
-    job_type job;
-    do {
-        job = static_cast<job_type>(random_range(0, NUM_JOBS - 1));
-    } while (!is_starting_job(job));
-    return job;
+    const auto jobs = playable_jobs();
+    return jobs[random2(jobs.size())];
 }
 
-// Ensure the job isn't JOB_RANDOM/JOB_VIABLE and it has recommended species
-// (old disabled jobs have none).
 bool is_starting_job(job_type job)
 {
-    return job < NUM_JOBS
-        && !_job_def(job).recommended_species.empty();
+    return job_type_valid(job)  // Ensure the job isn't RANDOM/VIABLE/UNKNOWN
+        && !job_is_removed(job);
+}
+
+bool job_is_removed(job_type job)
+{
+    return _job_def(job).recommended_species.empty();
 }
 
 bool job_is_zealot(job_type job)

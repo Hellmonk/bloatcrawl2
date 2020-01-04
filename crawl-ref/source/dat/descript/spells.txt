@@ -10,6 +10,11 @@ for a short time. It may also splash onto other nearby creatures on impact.
 %%%%
 Agony spell
 
+Cuts the resilience of an adjacent creature in half. This damage is never
+directly lethal.
+%%%%
+Agony Range spell
+
 Cuts the resilience of a target creature in half. This damage is never directly
 lethal.
 %%%%
@@ -433,6 +438,11 @@ causes magical contamination when cast.
 %%%%
 Dispel Undead spell
 
+Harms an adjacent undead creature greatly by interfering with the forces
+binding it together.
+%%%%
+Dispel Undead Range spell
+
 Harms an undead creature greatly by interfering with the forces binding it
 together.
 %%%%
@@ -611,9 +621,8 @@ the Vaults, or the Crypt; the specific branch varies with the caster.
 Foxfire spell
 
 Conjures two balls of burning swamp gas adjacent to the caster. The balls will
-rapidly seek the nearest monster and burn them. If unable to reach a target the
-foxfire will dissipate harmlessly. Foxfire will burn anything that tries to
-change places with it.
+rapidly seek the nearest monster and burn them. They will dissipate harmlessly
+if unable to reach a target or if the caster swaps places with them.
 %%%%
 Freeze spell
 
@@ -1101,12 +1110,6 @@ Recall spell
 
 Recalls any friendly creatures on the same level to a position adjacent to the
 caster, over a short duration.
-%%%%
-Regeneration spell
-
-Reanimates parts of the caster's wounds. This unnatural act dramatically but
-temporarily increases the caster's health regeneration, while also speeding
-their metabolism.
 %%%%
 Repel Missiles spell
 

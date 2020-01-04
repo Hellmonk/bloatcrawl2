@@ -734,7 +734,9 @@ bool magic_mapping(int map_radius, int proportion, bool suppress_msg,
             {
                 auto base_feat = magic_map_base_feat(feat);
                 auto colour = _feat_default_map_colour(base_feat);
-                knowledge.set_feature(base_feat, colour);
+                auto trap = feat_is_trap(grd(pos)) ? get_trap_type(pos)
+                                                   : TRAP_UNASSIGNED;
+                knowledge.set_feature(base_feat, colour, trap);
             }
             if (emphasise(pos))
                 knowledge.flags |= MAP_EMPHASIZE;
@@ -1446,8 +1448,9 @@ void viewwindow(bool show_updates, bool tiles_only, animation *a)
 
         // Update the animation of cells only once per turn.
         const bool anim_updates = (you.last_view_update != you.num_turns);
-        // Except for elemental colours, which should be updated every refresh.
-        you.frame_no++;
+
+        if (anim_updates)
+            you.frame_no++;
 
 #ifdef USE_TILE
         tiles.clear_text_tags(TAG_NAMED_MONSTER);

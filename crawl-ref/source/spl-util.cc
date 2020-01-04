@@ -1181,16 +1181,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your vaporous body cannot transform.";
         break;
 
-    case SPELL_REGENERATION:
-        if (you.species == SP_DEEP_DWARF)
-            return "you can't regenerate without divine aid.";
-        if (you.undead_state(temp) == US_UNDEAD
-            || you.undead_state(temp) == US_GHOST)
-        {
-            return "you're too dead to regenerate.";
-        }
-        break;
-
     case SPELL_EXCRUCIATING_WOUNDS:
         if (temp
             && (!you.weapon()
