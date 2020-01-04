@@ -6562,6 +6562,7 @@ int player::armour_class(bool /*calc_unid*/) const
         AC -= 400 * you.props["corrosion_amount"].get_int();
 
     AC += sanguine_armour_bonus();
+    AC += hermit_shell_bonus();
 
     return AC / scale;
 }
