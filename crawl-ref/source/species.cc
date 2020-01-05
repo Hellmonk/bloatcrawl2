@@ -687,6 +687,10 @@ bool species_is_removed(species_type species)
     // all other derived Dr are ok and don't have recommended jobs
     if (species_is_draconian(species))
         return false;
+    if (species_is_coloured_turtle(species))
+        return false;
+    if (species == SP_JATWOVIAN || species == SP_PROFANE_SERVITOR)
+        return false;
     if (get_species_def(species).recommended_jobs.empty())
         return true;
     return false;
