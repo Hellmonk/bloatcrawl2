@@ -2334,7 +2334,7 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         ostringstream ostr;
         ostr << mdef.have[level - 1]
             << "+" << hp << "% HP).";
-        ostr << "\nYour health pool defines your size (" << size << ").";
+        ostr << "\nYour health pool defines your size (currently " << size << ").";
         ostr << "\nYour protean flesh cannot be transmuted.";
         ostr << "\nYour protean flesh is especially vulnerable to rot.";
         result = ostr.str();
