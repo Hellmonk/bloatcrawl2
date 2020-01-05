@@ -2442,7 +2442,7 @@ int player_wizardry(spell_type /*spell*/)
 {
     return you.wearing(EQ_RINGS, RING_WIZARDRY)
            + you.wearing(EQ_STAFF, STAFF_WIZARDRY)
-           + you.species == SP_ASTRAL;
+           + (int)(you.species == SP_ASTRAL);
 }
 
 /**
