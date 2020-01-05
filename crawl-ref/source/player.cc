@@ -8856,19 +8856,19 @@ size_type player_size()
         // XL 27 Fighting 0 = 156hp
         // XL 27 Fighting 27 = 249hp
         const int hp = you.hp_max;
-        if (hp <= 50) // 0-50
+        if (hp < 50) // 0-49
             return SIZE_TINY;
-        else if (hp <= 100) // 51-100
+        else if (hp < 100) // 50-99
             return SIZE_LITTLE;
-        else if (hp <= 150) // 101-150
+        else if (hp < 150) // 100-149
             return SIZE_SMALL;
-        else if (hp <= 200) // 150-200
+        else if (hp < 200) // 150-199
             return SIZE_MEDIUM;
-        else if (hp <= 300) // 201-300 -- 100hp deltas from here
+        else if (hp < 300) // 200-299 -- 100hp deltas from here
             return SIZE_LARGE;
-        else if (hp <= 400) // 301-400
+        else if (hp < 400) // 300-399
             return SIZE_BIG;
-        else                // 401+ -- need 16 mutation levels at max XL/Fighting
+        else                // 400+ -- need 16 mutation levels at max XL/Fighting
             return SIZE_GIANT;
     }
     else if (you.has_mutation(MUT_HERMIT_SHELL))
