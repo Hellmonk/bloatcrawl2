@@ -678,18 +678,12 @@ bool player_likes_water(bool permanently)
 {
     if (permanently)
     {
-        if (you.has_mutation(MUT_PROTEAN_BODY))
-        {
-            const size_type size = player_size();
-            if (size == SIZE_BIG || size == SIZE_GIANT)
-                return true;
-        }
+        if (you.form == transformation::none && player_size() == SIZE_GIANT)
+            return true;
         return species_likes_water(you.species) && form_likes_water();
     }
     else
-    {
         return you.can_water_walk() || form_likes_water();
-    }
 }
 
 /**
