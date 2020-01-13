@@ -747,6 +747,17 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
               { 1, 0, 5 },
               HELL_KNIGHT_BRANDS
         } },
+        { MONS_MAGGIE,
+            { { { WPN_HALBERD,          1 },
+                { WPN_GLAIVE,           1 },
+                { WPN_WAR_AXE,          1 },
+                { WPN_MORNINGSTAR,       1 },
+                { WPN_LONG_SWORD,       1 },
+                { WPN_SCIMITAR,         1 },
+                { WPN_BROAD_AXE,        1 }, },
+              { },
+              HELL_KNIGHT_BRANDS
+        } },
         { MONS_MARGERY,
             { { { WPN_DEMON_WHIP,       2 },
                 { WPN_DEMON_BLADE,      2 },
@@ -1179,6 +1190,24 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
             force_item = true;
             set_item_ego_type(item, OBJ_WEAPONS, SPWPN_DISTORTION);
             item.plus  = random2(5);
+        }
+        break;
+
+    case MONS_MAGGIE:
+        if (one_chance_in(100) && !get_unique_item_status(UNRAND_WYRMBANE))
+        {
+            make_item_unrandart(item, UNRAND_WYRMBANE);
+            item.plus = 9; // Since she's wearing a dragon armour
+            force_item = true;
+        }
+        break;
+
+    case MONS_MARGERY:
+        if (one_chance_in(100) && !get_unique_item_status(UNRAND_WYRMBANE))
+        {
+            make_item_unrandart(item, UNRAND_WYRMBANE);
+            item.plus = 10 + random2(2); // Now she's killed at least 2 dragons
+            force_item = true;
         }
         break;
 
@@ -1840,10 +1869,17 @@ int make_mons_armour(monster_type type, int level)
         item.sub_type  = random_choose(ARM_RING_MAIL,   ARM_SCALE_MAIL);
         break;
 
-    case MONS_MARGERY:
+    case MONS_MAGGIE:
         item.base_type = OBJ_ARMOUR;
         item.sub_type = random_choose_weighted(3, ARM_ACID_DRAGON_ARMOUR,
-                                               1, ARM_SWAMP_DRAGON_ARMOUR,
+                                               3, ARM_SWAMP_DRAGON_ARMOUR,
+                                               6, ARM_STEAM_DRAGON_ARMOUR);
+        break;
+
+    case MONS_MARGERY:
+        item.base_type = OBJ_ARMOUR;
+        item.sub_type = random_choose_weighted(3, ARM_STORM_DRAGON_ARMOUR,
+                                               3, ARM_SHADOW_DRAGON_ARMOUR,
                                                6, ARM_FIRE_DRAGON_ARMOUR);
         break;
 

@@ -1181,7 +1181,7 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_cone>(&you, range);
     case SPELL_CLOUD_CONE:
         return make_unique<targeter_shotgun>(&you, CLOUD_CONE_BEAM_COUNT,
-                                             range);
+                                             range, true);
     case SPELL_SCATTERSHOT:
         return make_unique<targeter_shotgun>(&you, shotgun_beam_count(pow),
                                              range);

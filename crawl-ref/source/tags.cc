@@ -2363,6 +2363,9 @@ static spell_type _fixup_positional_player_spell(spell_type s)
         case SPELL_BOLT_OF_FIRE:
             return SPELL_STARBURST;
 
+        case SPELL_CONFUSE:
+            return SPELL_CONFUSING_TOUCH;
+
         default:
             return s;
     }

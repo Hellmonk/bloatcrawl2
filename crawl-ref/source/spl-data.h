@@ -215,7 +215,8 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_CONFUSE, "Confuse",
     spschool::hexes,
-    spflag::dir_or_target | spflag::needs_tracer | spflag::MR_check,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::MR_check
+        | spflag::monster,
     3,
     200,
     LOS_RADIUS, LOS_RADIUS,
@@ -821,7 +822,7 @@ static const struct spell_desc spelldata[] =
     SPELL_DISPEL_UNDEAD, "Dispel Undead",
     spschool::necromancy,
     spflag::dir_or_target | spflag::needs_tracer,
-    5,
+    4,
     100,
     1, 1,
     4, 0,
@@ -1316,8 +1317,8 @@ static const struct spell_desc spelldata[] =
     SPELL_CONFUSING_TOUCH, "Confusing Touch",
     spschool::hexes,
     spflag::none,
-    1,
-    50,
+    3,
+    100,
     -1, -1,
     2, 0,
     TILEG_CONFUSING_TOUCH,
@@ -3973,7 +3974,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_BORGNJORS_VILE_CLUTCH, "Borgnjor's Vile Clutch",
     spschool::necromancy | spschool::earth,
-    spflag::target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer,
     5,
     200,
     6, 6,
