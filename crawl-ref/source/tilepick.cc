@@ -3931,8 +3931,6 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
         case SP_DEEP_ELF:
         case SP_PROFOUND_ELF:
         case SP_WEED_ELF:
-        case SP_SQUAT_ELF:
-        case SP_EMBER_ELF:
             return TILEG_SP_DEEP_ELF;
         case SP_HALFLING:
             return TILEG_SP_HALFLING;
@@ -4025,11 +4023,15 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
         case SP_ROBOT:
             return TILEG_SP_ROBOT;
         case SP_TURTLE:
-        case SP_RED_TURTLE:
-        case SP_BLUE_TURTLE:
-        case SP_ORANGE_TURTLE:
-        case SP_PURPLE_TURTLE:
             return TILEG_SP_TURTLE;
+        case SP_RED_TURTLE:
+            return TILEG_SP_RED_TURTLE;
+        case SP_BLUE_TURTLE:
+            return TILEG_SP_BLUE_TURTLE;
+        case SP_ORANGE_TURTLE:
+            return TILEG_SP_ORANGE_TURTLE;
+        case SP_PURPLE_TURTLE:
+            return TILEG_SP_PURPLE_TURTLE;
         case SP_FUNGOID:
             return TILEG_SP_FUNGOID;
         case SP_HEDGEHOG:
@@ -4038,6 +4040,16 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
             return TILEG_SP_ZODACH;
         case SP_BOOMER:
             return TILEG_SP_BOOMER;
+        case SP_ASTRAL:
+            return TILEG_SP_ASTRAL;
+        case SP_EMBER_ELF:
+            return TILEG_SP_EMBER_ELF;
+        case SP_FLAN:
+            return TILEG_SP_FLAN;
+        case SP_XENO_ELF:
+            return TILEG_SP_XENO_ELF;
+        case SP_SQUAT_ELF:
+            return TILEG_SP_SQUAT_ELF;
         default:
             return TILEG_SP_HUMAN;
     }

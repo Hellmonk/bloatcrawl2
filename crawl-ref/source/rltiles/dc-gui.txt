@@ -501,6 +501,30 @@ base/hedgehog SP_RECOMMENDED_HEDGEHOG
 %compose body/animal_skin
 %compose hair/short_white
 %finish SP_RECOMMENDED_BOOMER
+base/astral SP_RECOMMENDED_ASTRAL
+%start
+%compose base/squat_f
+%compose body/animal_skin
+%compose hair/elf_white
+%finish SP_RECOMMENDED_SQUAT_ELF
+%start
+%compose base/xeno_f
+%compose body/animal_skin
+%compose hair/elf_white
+%finish SP_RECOMMENDED_XENO_ELF
+%start
+%compose base/ember_f
+%compose body/animal_skin
+%compose hair/elf_white
+%finish SP_RECOMMENDED_EMBER_ELF
+base/turtle_b SP_RECOMMENDED_BLUE_TURTLE
+base/turtle_o SP_RECOMMENDED_ORANGE_TURTLE
+base/turtle_p SP_RECOMMENDED_PURPLE_TURTLE
+base/turtle_r SP_RECOMMENDED_RED_TURTLE
+%start
+%compose base/flan
+%compose body/animal_skin
+%finish SP_RECOMMENDED_FLAN
 %syn LAST_RECOMMENDED_SPECIES
 
 %sdir gui/backgrounds
@@ -558,4 +582,13 @@ enum:SP_RECOMMENDED_FUNGOID SP_FUNGOID
 enum:SP_RECOMMENDED_HEDGEHOG SP_HEDGEHOG
 enum:SP_RECOMMENDED_ZODACH SP_ZODACH
 enum:SP_RECOMMENDED_BOOMER SP_BOOMER
+enum:SP_RECOMMENDED_ASTRAL SP_ASTRAL
+enum:SP_RECOMMENDED_SQUAT_ELF SP_SQUAT_ELF
+enum:SP_RECOMMENDED_XENO_ELF SP_XENO_ELF
+enum:SP_RECOMMENDED_BLUE_TURTLE SP_BLUE_TURTLE
+enum:SP_RECOMMENDED_ORANGE_TURTLE SP_ORANGE_TURTLE
+enum:SP_RECOMMENDED_PURPLE_TURTLE SP_PURPLE_TURTLE
+enum:SP_RECOMMENDED_RED_TURTLE SP_RED_TURTLE
+enum:SP_RECOMMENDED_EMBER_ELF SP_EMBER_ELF
+enum:SP_RECOMMENDED_FLAN SP_FLAN
 %syn LAST_SPECIES

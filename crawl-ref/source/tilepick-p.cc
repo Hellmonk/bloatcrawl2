@@ -595,10 +595,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_SLUDGE_ELF:
 #endif
     case SP_DEEP_ELF:
-    case SP_EMBER_ELF:
     case SP_PROFOUND_ELF:
     case SP_WEED_ELF:
-    case SP_SQUAT_ELF:
         return TILEP_BASE_DEEP_ELF;
     case SP_HALFLING:
         return TILEP_BASE_HALFLING;
@@ -702,11 +700,15 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_ROBOT:
         return TILEP_BASE_ROBOT;
     case SP_TURTLE:
-    case SP_RED_TURTLE:
-    case SP_BLUE_TURTLE:
-    case SP_ORANGE_TURTLE:
-    case SP_PURPLE_TURTLE:
         return TILEP_BASE_TURTLE;
+    case SP_RED_TURTLE:
+        return TILEP_BASE_RED_TURTLE;
+    case SP_BLUE_TURTLE:
+        return TILEP_BASE_BLUE_TURTLE;
+    case SP_ORANGE_TURTLE:
+        return TILEP_BASE_ORANGE_TURTLE;
+    case SP_PURPLE_TURTLE:
+        return TILEP_BASE_PURPLE_TURTLE;
     case SP_FUNGOID:
         return TILEP_BASE_FUNGOID;
     case SP_HEDGEHOG:
@@ -715,6 +717,16 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_ZODACH;
     case SP_BOOMER:
         return TILEP_BASE_BOOMER;
+    case SP_ASTRAL:
+        return TILEP_BASE_ASTRAL;
+    case SP_EMBER_ELF:
+        return TILEP_BASE_EMBER_ELF;
+    case SP_XENO_ELF:
+        return TILEP_BASE_XENO_ELF;
+    case SP_SQUAT_ELF:
+        return TILEP_BASE_SQUAT_ELF;
+    case SP_FLAN:
+        return TILEP_BASE_FLAN;
     default:
         return TILEP_BASE_HUMAN;
     }
@@ -837,6 +849,7 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_PURPLE_TURTLE:
         case SP_FUNGOID:
         case SP_HEDGEHOG:
+        case SP_ASTRAL:
             hair = 0;
             break;
         case SP_ZODACH:
