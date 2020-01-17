@@ -118,6 +118,18 @@ fungoid FUNGOID
 hedgehog HEDGEHOG
 zodach ZODACH
 human_m BOOMER
+astral ASTRAL
+ember_f EMBER_ELF
+ember_m
+flan FLAN
+squat_f SQUAT_ELF
+squat_m
+turtle_b BLUE_TURTLE
+turtle_o ORANGE_TURTLE
+turtle_p PURPLE_TURTLE
+turtle_r RED_TURTLE
+xeno_f XENO_ELF
+xeno_m
 
 # draconians
 draconian_f DRACONIAN DRACONIAN_FIRST
