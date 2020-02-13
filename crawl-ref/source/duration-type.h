@@ -205,5 +205,6 @@ enum duration_type
     DUR_SHAFT_IMMUNITY,
     DUR_SQUAT,
     DUR_NOXIOUS_BOG,
+    DUR_FROZEN_RAMPARTS,
     NUM_DURATIONS
 };

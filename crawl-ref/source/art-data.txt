@@ -93,8 +93,6 @@
 # * notelep:  Prevents wearer from teleporting or blinking.
 # * poison:   Grants poison resistance.
 # * rcorr:    Grants corrosion resistance.
-# * randapp:  Generated with a random artefact's appearance (used by
-#             strictly-bad unrands).
 # * rmsl:     Passively repels missiles.
 # * rmut:     Grants mutation resistance.
 # * rnd_tele: Induces random teleportation.
@@ -149,7 +147,8 @@
 # MAGIC:    Magic resistance/vulnerability.
 # MP:       Mana capacity modifier.
 # NAME:     Name of artefact when identified.
-# REGEN:    Provides regeneration (1 = amulet of regen, 2.5 = the spell).
+# REGEN:    Health regeneration, in units of HP healed every 25 aut
+#           (2.5 normal turns).
 # STEALTH:  Stealth modifier.
 # STR:      Strength modifier.
 # TILE:     The file containing the artefact's tile, with file type png.
@@ -684,12 +683,12 @@ TILE_EQ:  storm_bow
 BRAND:    SPWPN_ELECTROCUTION
 INSCRIP:  penet
 
-NAME:    large shield of Ignorance
-OBJ:     OBJ_ARMOUR/ARM_LARGE_SHIELD
+NAME:    tower shield of Ignorance
+OBJ:     OBJ_ARMOUR/ARM_TOWER_SHIELD
 PLUS:    +10
 COLOUR:  BROWN
 TILE:    urand_ignorance
-TILE_EQ: lshield_of_ignorance
+TILE_EQ: tower_shield_of_ignorance
 INT:     -4
 LIFE:    1
 
@@ -716,12 +715,12 @@ STEALTH:  1
 BOOL:     seeinv, fog
 
 # TAG_MAJOR_VERSION == 34
-NAME:    large shield "Bullseye"
-OBJ:     OBJ_ARMOUR/ARM_LARGE_SHIELD
+NAME:    tower shield "Bullseye"
+OBJ:     OBJ_ARMOUR/ARM_TOWER_SHIELD
 PLUS:    +15
 COLOUR:  RED
 TILE:    urand_bullseye
-TILE_EQ: shield_bullseye
+TILE_EQ: kite_shield_bullseye
 EV:      -5
 BOOL:    nogen
 
@@ -823,11 +822,11 @@ TILE_EQ: glove_black
 SLAY:    5
 
 NAME:    shield of Resistance
-OBJ:     OBJ_ARMOUR/ARM_SHIELD
+OBJ:     OBJ_ARMOUR/ARM_KITE_SHIELD
 PLUS:    +2
 COLOUR:  LIGHTRED
 TILE:    urand_resistance
-TILE_EQ: shield_of_resistance
+TILE_EQ: kite_shield_of_resistance
 FIRE:    1
 COLD:    1
 MAGIC:   1
@@ -930,12 +929,12 @@ LIFE:     1
 BOOL:     poison
 
 NAME:     shield of the Gong
-OBJ:      OBJ_ARMOUR/ARM_SHIELD
-FALLBACK: OBJ_ARMOUR/ARM_LARGE_SHIELD
+OBJ:      OBJ_ARMOUR/ARM_KITE_SHIELD
+FALLBACK: OBJ_ARMOUR/ARM_TOWER_SHIELD
 PLUS:     +18
 COLOUR:   ETC_GOLD
 TILE:     urand_gong
-TILE_EQ:  shield_gong
+TILE_EQ:  kite_shield_gong
 EV:       -5
 MAGIC:    1
 LIFE:     1
@@ -1380,6 +1379,16 @@ COLOUR:   ETC_MAGIC
 TILE:     urand_staff_of_battle
 TILE_EQ:  battle_staff
 VALUE:    800
+
+ENUM:     EMBRACE
+NAME:     Cigotuvi's embrace
+OBJ:      OBJ_ARMOUR/ARM_LEATHER_ARMOUR
+PLUS:     +4 # varies with corpse count
+COLOUR:   ETC_UNHOLY
+# XXX TODO: tiles
+LIFE:     1
+INSCRIP:  rRot
+BOOL:     drain, evil, special, no_upgrade
 
 # This entry must always be last.
 ENUM:   DUMMY2

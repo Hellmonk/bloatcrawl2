@@ -314,7 +314,7 @@ static bool _check_stairs(const dungeon_feature_type ftype, bool going_up)
             if (ftype == DNGN_STONE_ARCH)
                 mpr("There is nothing on the other side of the stone arch.");
             else if (ftype == DNGN_ABANDONED_SHOP)
-                mpr("This shop appears to be closed.");
+                mpr("This shop has been abandoned, nothing of value remains.");
             else if (going_up)
                 mpr("You can't go up here!");
             else
@@ -623,6 +623,7 @@ void floor_transition(dungeon_feature_type how,
     you.stop_being_constricted();
     you.clear_beholders();
     you.clear_fearmongers();
+    dec_frozen_ramparts(you.duration[DUR_FROZEN_RAMPARTS]);
 
     if (!forced)
     {
@@ -1089,8 +1090,12 @@ static void _update_level_state()
         }
     }
     for (rectangle_iterator ri(0); ri; ++ri)
+    {
         if (grd(*ri) == DNGN_SLIMY_WALL)
             env.level_state |= LSTATE_SLIMY_WALL;
+        else if (is_icecovered(*ri))
+            env.level_state |= LSTATE_ICY_WALL;
+    }
 
     env.orb_pos = coord_def();
     if (item_def* orb = find_floor_item(OBJ_ORBS, ORB_ZOT))

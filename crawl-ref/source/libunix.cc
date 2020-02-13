@@ -469,7 +469,7 @@ static int proc_mouse_event(int c, const MEVENT *me)
 
 static int pending = 0;
 
-int getchk()
+static int _get_key_from_curses()
 {
 #ifdef WATCHDOG
     // If we have (or wait for) actual keyboard input, it's not an infinite
@@ -528,12 +528,11 @@ void set_getch_returns_resizes(bool rr)
     getch_returns_resizes = rr;
 }
 
-int m_getch()
+int getch_ck()
 {
-    int c;
-    do
+    while (true)
     {
-        c = getchk();
+        int c = _get_key_from_curses();
 
 #ifdef NCURSES_MOUSE_VERSION
         if (c == -KEY_MOUSE)
@@ -541,8 +540,12 @@ int m_getch()
             MEVENT me;
             getmouse(&me);
             c = proc_mouse_event(c, &me);
+
+            if (!crawl_state.mouse_enabled)
+                continue;
         }
 #endif
+
 #ifdef KEY_RESIZE
         if (c == -KEY_RESIZE)
         {
@@ -557,40 +560,32 @@ int m_getch()
             // This causes crashiness: e.g. in a menu, make the window taller,
             // then scroll down one line. To fix this, we always sync termsz:
             crawl_view.init_geometry();
+
+            if (!getch_returns_resizes)
+                continue;
         }
 #endif
-    } while (
-#ifdef KEY_RESIZE
-             (c == -KEY_RESIZE && !getch_returns_resizes) ||
-#endif
-             ((c == CK_MOUSE_MOVE || c == CK_MOUSE_CLICK)
-                 && !crawl_state.mouse_enabled));
 
-    return c;
-}
-
-int getch_ck()
-{
-    int c = m_getch();
-    switch (c)
-    {
-    // [dshaligram] MacOS ncurses returns 127 for backspace.
-    case 127:
-    case -KEY_BACKSPACE: return CK_BKSP;
-    case -KEY_DC:    return CK_DELETE;
-    case -KEY_HOME:  return CK_HOME;
-    case -KEY_PPAGE: return CK_PGUP;
-    case -KEY_END:   return CK_END;
-    case -KEY_NPAGE: return CK_PGDN;
-    case -KEY_UP:    return CK_UP;
-    case -KEY_DOWN:  return CK_DOWN;
-    case -KEY_LEFT:  return CK_LEFT;
-    case -KEY_RIGHT: return CK_RIGHT;
+        switch (c)
+        {
+        // [dshaligram] MacOS ncurses returns 127 for backspace.
+        case 127:
+        case -KEY_BACKSPACE: return CK_BKSP;
+        case -KEY_DC:    return CK_DELETE;
+        case -KEY_HOME:  return CK_HOME;
+        case -KEY_PPAGE: return CK_PGUP;
+        case -KEY_END:   return CK_END;
+        case -KEY_NPAGE: return CK_PGDN;
+        case -KEY_UP:    return CK_UP;
+        case -KEY_DOWN:  return CK_DOWN;
+        case -KEY_LEFT:  return CK_LEFT;
+        case -KEY_RIGHT: return CK_RIGHT;
 #ifdef KEY_RESIZE
-    case -KEY_RESIZE: return CK_RESIZE;
+        case -KEY_RESIZE: return CK_RESIZE;
 #endif
-    case -KEY_BTAB: return CK_SHIFT_TAB;
-    default:         return c;
+        case -KEY_BTAB: return CK_SHIFT_TAB;
+        default:         return c;
+        }
     }
 }
 

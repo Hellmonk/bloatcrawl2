@@ -1445,7 +1445,7 @@ void pickup(bool partial_quantity)
                      menu_colour_item_name(mitm[o], DESC_A).c_str());
 
                 mouse_control mc(MOUSE_MODE_YESNO);
-                keyin = getchk();
+                keyin = getch_ck();
             }
 
             if (keyin == '*' || keyin == '?' || keyin == ',' || keyin == 'g'
@@ -1501,23 +1501,25 @@ bool is_stackable_item(const item_def &item)
     if (!item.defined())
         return false;
 
-    if (item.base_type == OBJ_MISSILES
-        || item.base_type == OBJ_FOOD
-        || item.base_type == OBJ_SCROLLS
-        || item.base_type == OBJ_POTIONS
-        || item.base_type == OBJ_GOLD)
-    {
-        return true;
+    switch (item.base_type) {
+        case OBJ_MISSILES:
+        case OBJ_FOOD:
+        case OBJ_SCROLLS:
+        case OBJ_POTIONS:
+        case OBJ_GOLD:
+            return true;
+        case OBJ_MISCELLANY:
+            switch (item.sub_type) {
+                case MISC_PHANTOM_MIRROR:
+                case MISC_ZIGGURAT:
+                case MISC_SACK_OF_SPIDERS:
+                case MISC_BOX_OF_BEASTS:
+                case MISC_TREMORSTONE:
+                    return true;
+                default: break;
+            }
+        default: break;
     }
-
-    if (item.is_type(OBJ_MISCELLANY, MISC_PHANTOM_MIRROR)
-        || item.is_type(OBJ_MISCELLANY, MISC_ZIGGURAT)
-        || item.is_type(OBJ_MISCELLANY, MISC_SACK_OF_SPIDERS)
-        || item.is_type(OBJ_MISCELLANY, MISC_BOX_OF_BEASTS))
-    {
-        return true;
-    }
-
     return false;
 }
 
@@ -2658,6 +2660,14 @@ void drop_last()
     }
 }
 
+/** Get the equipment slot an item is equipped in. If the item is not
+ * equipped by the player, return -1 instead.
+ *
+ * @param item The item to check.
+ *
+ * @returns The equipment slot (equipment_type) the item is in or -1
+ * (EQ_NONE)
+*/
 int get_equip_slot(const item_def *item)
 {
     int worn = -1;
@@ -3598,8 +3608,8 @@ colour_t item_def::armour_colour() const
             return LIGHTGREY;
         case ARM_CRYSTAL_PLATE_ARMOUR:
             return WHITE;
-        case ARM_SHIELD:
-        case ARM_LARGE_SHIELD:
+        case ARM_KITE_SHIELD:
+        case ARM_TOWER_SHIELD:
         case ARM_BUCKLER:
             return CYAN;
         default:
@@ -3961,6 +3971,8 @@ colour_t item_def::miscellany_colour() const
         case MISC_XOMS_CHESSBOARD:
             return DARKGREY;
 #endif
+        case MISC_TREMORSTONE:
+            return BROWN;
         case MISC_QUAD_DAMAGE:
             return ETC_DARK;
         case MISC_ZIGGURAT:
@@ -4017,8 +4029,7 @@ colour_t item_def::get_colour() const
     }
 
     // unrands get to override everything else (wrt colour)
-    // ...except for un-ID'd random-appearance artefacts (Misfortune)
-    if (is_unrandom_artefact(*this) && !is_randapp_artefact(*this))
+    if (is_unrandom_artefact(*this))
     {
         const unrandart_entry *unrand = get_unrand_entry(
                                             find_unrandart_index(*this));
@@ -4568,19 +4579,10 @@ item_info get_item_info(const item_def& item)
 
     if (is_unrandom_artefact(item))
     {
-        if (!is_randapp_artefact(item))
-        {
-            // Unrandart index
-            // Since the appearance of unrandarts is fixed anyway, this
-            // is not an information leak.
-            ii.unrand_idx = item.unrand_idx;
-        }
-        else
-        {
-            // Disguise as a normal randart
-            ii.flags &= ~ISFLAG_UNRANDART;
-            ii.flags |= ISFLAG_RANDART;
-        }
+        // Unrandart index
+        // Since the appearance of unrandarts is fixed anyway, this
+        // is not an information leak.
+        ii.unrand_idx = item.unrand_idx;
     }
 
     switch (item.base_type)

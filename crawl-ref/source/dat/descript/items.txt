@@ -282,6 +282,10 @@ book of unlife
 An unholy book describing a variety of magical methods for the creation and
 command of undead servants.
 %%%%
+boomerang
+
+A curved, flat, throwing baton designed to return to its user.
+%%%%
 box of beasts
 
 A box filled with the bizarre leftovers of a depraved wizard's magical
@@ -558,6 +562,12 @@ katana
 
 A very rare and extremely effective weapon, featuring a long single-edged blade.
 %%%%
+kite shield
+
+A piece of wood and metal, to be strapped on one arm for defence. It is
+cumbersome to wear, and impedes the evasion, spellcasting ability, and attack
+speed of an unskilled wearer.
+%%%%
 lajatang
 
 A very rare and extremely effective weapon, featuring a pole with half-moon
@@ -579,12 +589,6 @@ A very large and very heavy stone. {{
        return "Only large creatures are capable of throwing it."
    end
 }}
-%%%%
-large shield
-
-A large piece of wood and metal, to be strapped on one arm for defence. It is
-cumbersome to wear, and impedes the evasion, spellcasting ability, and attack
-speed of an unskilled wearer.
 %%%%
 leather armour
 
@@ -951,7 +955,7 @@ scroll of enchant armour
 
 A scroll that places an enchantment on a piece of armour chosen by the reader.
 Body armour and bardings can be enchanted up to the same value as their base
-AC. Bucklers, shields and large shields can be enchanted up to +3, +5 or +8
+AC. Bucklers, kite shields and tower shields can be enchanted up to +3, +5 or +8
 respectively, and other armour can be enchanted up to +2. Magical artefacts
 cannot be enchanted at all.
 %%%%
@@ -1018,8 +1022,8 @@ covering only the reader, before it times out.
 %%%%
 scroll of summoning
 
-A scroll that calls forth several creatures woven from shadow into the shapes
-of those beings found within the reader's immediate vicinity.
+A scroll that calls forth several allied creatures woven from shadow into the
+shapes of those beings found within the reader's immediate vicinity.
 %%%%
 scroll of teleportation
 
@@ -1041,12 +1045,6 @@ magic.
 scythe
 
 A farm implement, usually only used by untrained mobs in combat.
-%%%%
-shield
-
-A piece of wood and metal, to be strapped on one arm for defence. It is
-cumbersome to wear, and impedes the evasion, spellcasting ability, and attack
-speed of an unskilled wearer.
 %%%%
 shortbow
 
@@ -1157,9 +1155,20 @@ A mesh of ropes knotted together with weights around the edge, used to entangle
 and entrap targets. Struggling victims can eventually destroy the net and break
 free, if they live long enough.
 %%%%
-boomerang
+tower shield
 
-A curved, flat, throwing baton designed to return to its user.
+A large piece of wood and metal, to be strapped on one arm for defence. It is
+cumbersome to wear, and impedes the evasion, spellcasting ability, and attack
+speed of an unskilled wearer.
+%%%%
+tremorstone
+
+A dormant earth elemental in the form of a tiny, very heavy pebble. When hurled,
+the elemental literally explodes with rage at its rest being disturbed.
+Tremorstones usually land slightly off-target, and the user is always at risk of
+being hit. However, armour is extremely effective at repelling the lightweight
+fragments of rock from a tremorstone's explosion, so a well-armoured wielder has
+little to fear. Evocations skill has no effect on tremorstones.
 %%%%
 trident
 

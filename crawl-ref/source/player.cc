@@ -49,6 +49,7 @@
 #include "items.h"
 #include "item-use.h"
 #include "kills.h"
+#include "level-state-type.h"
 #include "libutil.h"
 #include "macro.h"
 #include "melee-attack.h"
@@ -853,8 +854,8 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
         break;
 
     case EQ_SHIELD:
-        // No races right now that can wear ARM_LARGE_SHIELD but not ARM_SHIELD
-        dummy.sub_type = ARM_LARGE_SHIELD;
+        // No races right now that can wear ARM_TOWER_SHIELD but not ARM_KITE_SHIELD
+        dummy.sub_type = ARM_TOWER_SHIELD;
         if (you.body_size(PSIZE_TORSO, !temp) < SIZE_MEDIUM)
             alternate.sub_type = ARM_BUCKLER;
         break;
@@ -2460,7 +2461,7 @@ int player_shield_class()
     {
         const item_def& item = you.inv[you.equip[EQ_SHIELD]];
         int size_factor = (you.body_size(PSIZE_TORSO) - SIZE_MEDIUM)
-                        * (item.sub_type - ARM_LARGE_SHIELD);
+                        * (item.sub_type - ARM_TOWER_SHIELD);
         int base_shield = property(item, PARM_AC) * 2 + size_factor;
 
         // bonus applied only to base, see above for effect:
@@ -2475,7 +2476,7 @@ int player_shield_class()
         int stat = 0;
         if (item.sub_type == ARM_BUCKLER)
             stat = you.dex() * 38;
-        else if (item.sub_type == ARM_LARGE_SHIELD)
+        else if (item.sub_type == ARM_TOWER_SHIELD)
             stat = you.dex() * 12 + you.strength() * 26;
         else
             stat = you.dex() * 19 + you.strength() * 19;
@@ -4070,7 +4071,7 @@ int slaying_bonus(bool ranged)
 // pushed onto *matches.
 int player::scan_artefacts(artefact_prop_type which_property,
                            bool calc_unid,
-                           vector<item_def> *matches) const
+                           vector<const item_def *> *matches) const
 {
     int retval = 0;
 
@@ -4081,21 +4082,22 @@ int player::scan_artefacts(artefact_prop_type which_property,
 
         const int eq = equip[i];
 
+        const item_def &item = inv[eq];
+
         // Only weapons give their effects when in our hands.
-        if (i == EQ_WEAPON && inv[ eq ].base_type != OBJ_WEAPONS)
+        if (i == EQ_WEAPON && item.base_type != OBJ_WEAPONS)
             continue;
 
-        if (!is_artefact(inv[ eq ]))
-            continue;
+        int val = 0;
 
         // TODO: id check not needed, probably, due to full wear-id?
-        if (calc_unid || fully_identified(inv[eq]))
-        {
-            int val = artefact_property(inv[eq], which_property);
-            retval += val;
-            if (matches && val)
-                matches->push_back(inv[eq]);
-        }
+        if (is_artefact(item) && (calc_unid || fully_identified(item)))
+            val = artefact_property(item, which_property);
+
+        retval += val;
+
+        if (matches && val)
+            matches->push_back(&item);
     }
 
     return retval;
@@ -5273,6 +5275,35 @@ void dec_channel_player(int delay)
 
     if (!you.duration[DUR_CHANNEL_ENERGY])
         mpr("You feel less invigorated.");
+}
+
+void dec_frozen_ramparts(int delay)
+{
+    if (!you.duration[DUR_FROZEN_RAMPARTS])
+        return;
+
+    you.duration[DUR_FROZEN_RAMPARTS] =
+        max(0, you.duration[DUR_FROZEN_RAMPARTS] - delay);
+
+    if (!you.duration[DUR_FROZEN_RAMPARTS])
+    {
+        ASSERT(you.props.exists(FROZEN_RAMPARTS_KEY));
+        const auto &pos = you.props[FROZEN_RAMPARTS_KEY].get_coord();
+        ASSERT(in_bounds(pos));
+
+        for (distance_iterator di(pos, false, false, FROZEN_RAMPARTS_RADIUS);
+                di; di++)
+        {
+            env.pgrid(*di) &= ~FPROP_ICY;
+            env.map_knowledge(*di).flags &= ~MAP_ICY;
+        }
+
+        you.props.erase(FROZEN_RAMPARTS_KEY);
+
+        env.level_state &= ~LSTATE_ICY_WALL;
+
+        mpr("The frozen ramparts melt away.");
+    }
 }
 
 bool invis_allowed(bool quiet, string *fail_reason)
@@ -6518,36 +6549,103 @@ int player::ac_changes_from_mutations() const
 }
 
 /**
- * The player's "base" armour class, before transitory buffs are applied.
+ * Get a vector with the items of armour the player is wearing.
  *
- * (This is somewhat arbitrarily defined - forms, for example, are considered
- * to be long-lived for these purposes.)
- *
- * @param   A scale by which the player's base AC is multiplied.
- * @return  The player's AC, multiplied by the given scale.
+ * @return  A vector of non-null pointers to all armour the player has equipped.
  */
-int player::base_ac(int scale) const
+vector<const item_def *> player::get_armour_items() const
 {
-    int AC = 0;
+    vector<const item_def *> armour_items;
 
     for (int eq = EQ_MIN_ARMOUR; eq <= EQ_MAX_ARMOUR; ++eq)
     {
-        if (eq == EQ_SHIELD)
+        if (!slot_item(static_cast<equipment_type>(eq)))
+            continue;
+
+        armour_items.push_back(&inv[equip[eq]]);
+
+    }
+
+    return armour_items;
+}
+
+/**
+ * Get a vector with the items of armour the player would be wearing
+ * if they put on a specific piece of armour
+ *
+ * @param   The item which the player would be wearing in this theoretical
+ *          situation.
+ * @return  A vector of non-null pointers to all armour the player would have
+ *          equipped.
+ */
+vector<const item_def *> player::get_armour_items_one_sub(const item_def& sub) const
+{
+    vector<const item_def *> armour_items = get_armour_items_one_removal(sub);
+
+    armour_items.push_back(&sub);
+
+    return armour_items;
+}
+
+/**
+ * Get a vector with the items of armour the player would be wearing
+ * if they removed a specific piece of armour
+ *
+ * @param   The item which the player would be remove in this theoretical
+ *          situation.
+ * @return  A vector of non-null pointers to all armour the player would have
+ *          equipped after removing the item passed in.
+ */
+vector<const item_def *> player::get_armour_items_one_removal(const item_def& remove) const
+{
+    vector<const item_def *> armour_items;
+
+    for (int eq = EQ_MIN_ARMOUR; eq <= EQ_MAX_ARMOUR; ++eq)
+    {
+        if (get_armour_slot(remove) == eq)
             continue;
 
         if (!slot_item(static_cast<equipment_type>(eq)))
             continue;
 
-        const item_def& item = inv[equip[eq]];
-        AC += base_ac_from(item, 100);
-        AC += item.plus * 100;
+        armour_items.push_back(&inv[equip[eq]]);
+
+    }
+
+    return armour_items;
+}
+
+/**
+ * Get the players "base" ac, assuming they are wearing a particular set of
+ * armour items (which isn't necessarily the set of armour items they are
+ * currently wearing.)
+ *
+ * @param   A scale by which the player's base AC is multiplied.
+ * @param   A list of items to assume the player is wearing.
+ * @return  The player's AC, multiplied by the given scale.
+ */
+int player::base_ac_with_specific_items(int scale,
+                            vector<const item_def *> armour_items) const
+{
+    int AC = 0;
+
+    for (auto item : armour_items)
+    {
+        // Shields give SH instead of AC
+        if (get_armour_slot(*item) != EQ_SHIELD)
+        {
+            AC += base_ac_from(*item, 100);
+            AC += item->plus * 100;
+        }
+
+        if (get_armour_ego_type(*item) == SPARM_PROTECTION)
+            AC += 300;
     }
 
     AC += wearing(EQ_RINGS_PLUS, RING_PROTECTION) * 100;
 
-    if (wearing_ego(EQ_SHIELD, SPARM_PROTECTION))
-        AC += 300;
-
+    //XXX: This doesn't take into account armour_items, so an unrand shield
+    //     with +AC would have a buggy display.
     AC += scan_artefacts(ARTP_AC) * 100;
 
     AC += get_form()->get_ac_bonus();
@@ -6558,11 +6656,43 @@ int player::base_ac(int scale) const
 
     return AC * scale / 100;
 }
+/**
+ * The player's "base" armour class, before transitory buffs are applied.
+ *
+ * (This is somewhat arbitrarily defined - forms, for example, are considered
+ * to be long-lived for these purposes.)
+ *
+ * @param   A scale by which the player's base AC is multiplied.
+ * @return  The player's AC, multiplied by the given scale.
+ */
+int player::base_ac(int scale) const
+{
+    vector<const item_def *> armour_items = get_armour_items();
+
+    return base_ac_with_specific_items(scale, armour_items);
+}
 
 int player::armour_class(bool /*calc_unid*/) const
 {
+    return armour_class_with_specific_items(get_armour_items());
+}
+
+int player::armour_class_with_one_sub(item_def sub) const
+{
+    return armour_class_with_specific_items(
+                            get_armour_items_one_sub(sub));
+}
+
+int player::armour_class_with_one_removal(item_def removed) const
+{
+    return armour_class_with_specific_items(
+                            get_armour_items_one_removal(removed));
+}
+
+int player::armour_class_with_specific_items(vector<const item_def *> items) const
+{
     const int scale = 100;
-    int AC = base_ac(scale);
+    int AC = base_ac_with_specific_items(scale, items);
 
     if (duration[DUR_ICY_ARMOUR])
         AC += 500 + you.props[ICY_ARMOUR_KEY].get_int() * 8;
@@ -6584,6 +6714,7 @@ int player::armour_class(bool /*calc_unid*/) const
 
     return AC / scale;
 }
+
  /**
   * Guaranteed damage reduction.
   *
@@ -6795,33 +6926,37 @@ int player::res_poison(bool temp) const
     return player_res_poison(true, temp);
 }
 
-int player::res_rotting(bool temp) const
+rot_resistance player::res_rotting(bool temp) const
 {
     if (get_mutation_level(MUT_ROT_IMMUNITY)
         || is_nonliving(temp)
         || temp && get_form()->res_rot()
         || you.has_mutation(MUT_VAPOROUS_BODY))
     {
-        return 3;
+        return ROT_RESIST_FULL;
     }
+
+    const item_def *armour = slot_item(EQ_BODY_ARMOUR);
+    const bool embraced = armour && is_unrandom_artefact(*armour, UNRAND_EMBRACE);
+    const rot_resistance base_res = embraced ? ROT_RESIST_MUNDANE : ROT_RESIST_NONE;
 
     switch (undead_state(temp))
     {
     default:
     case US_ALIVE:
-        return 0;
+        return base_res;
 
     case US_HUNGRY_DEAD:
-        return 1; // rottable by Zin, not by necromancy
+        return ROT_RESIST_MUNDANE; // rottable by Zin, not by necromancy
 
     case US_SEMI_UNDEAD:
         if (temp && !you.vampire_alive)
-            return 1;
-        return 0; // no permanent resistance
+            return ROT_RESIST_MUNDANE;
+        return base_res;
 
     case US_UNDEAD:
     case US_GHOST:
-        return 3; // full immunity
+        return ROT_RESIST_FULL;
     }
 }
 
@@ -6963,21 +7098,21 @@ string player::no_tele_reason(bool calc_unid, bool blinking) const
     if (form == transformation::tree)
         problems.emplace_back("held in place by your roots");
 
-    vector<item_def> notele_items;
+    vector<const item_def *> notele_items;
     if (has_notele_item(calc_unid, &notele_items))
     {
         vector<string> worn_notele;
         bool found_nonartefact = false;
 
-        for (const auto &item : notele_items)
+        for (const auto item : notele_items)
         {
-            if (item.base_type == OBJ_WEAPONS)
+            if (item->base_type == OBJ_WEAPONS)
             {
                 problems.push_back(make_stringf("wielding %s",
-                                                item.name(DESC_A).c_str()));
+                                                item->name(DESC_A).c_str()));
             }
             else
-                worn_notele.push_back(item.name(DESC_A));
+                worn_notele.push_back(item->name(DESC_A));
         }
 
         if (worn_notele.size() > (problems.empty() ? 3 : 1))

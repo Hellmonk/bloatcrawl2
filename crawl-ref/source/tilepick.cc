@@ -15,6 +15,7 @@
 #include "item-name.h"
 #include "item-prop.h"
 #include "item-status-flag-type.h"
+#include "level-state-type.h"
 #include "libutil.h"
 #include "mon-death.h"
 #include "mon-tentacle.h"
@@ -505,22 +506,21 @@ tileidx_t tileidx_feature(const coord_def &gc)
     switch (feat)
     {
     case DNGN_FLOOR:
-        // branches that can have slime walls (premature optimization?)
-        if (player_in_branch(BRANCH_SLIME)
-            || player_in_branch(BRANCH_TEMPLE)
-            || player_in_branch(BRANCH_LAIR))
+        if (env.level_state & LSTATE_SLIMY_WALL)
+            for (adjacent_iterator ai(gc); ai; ++ai)
+                if (env.map_knowledge(*ai).feat() == DNGN_SLIMY_WALL)
+                    return TILE_FLOOR_SLIME_ACIDIC;
+
+        if (env.level_state & LSTATE_ICY_WALL)
         {
-            bool slimy = false;
             for (adjacent_iterator ai(gc); ai; ++ai)
             {
-                if (env.map_knowledge(*ai).feat() == DNGN_SLIMY_WALL)
+                if (feat_is_wall(env.map_knowledge(*ai).feat())
+                    && env.map_knowledge(*ai).flags & MAP_ICY)
                 {
-                    slimy = true;
-                    break;
+                    return TILE_FLOOR_ICY;
                 }
             }
-            if (slimy)
-                return TILE_FLOOR_SLIME_ACIDIC;
         }
         // deliberate fall-through
     case DNGN_ROCK_WALL:
@@ -2281,8 +2281,8 @@ static tileidx_t _tileidx_armour_base(const item_def &item)
     case ARM_CRYSTAL_PLATE_ARMOUR:
         return TILE_ARM_CRYSTAL_PLATE_ARMOUR;
 
-    case ARM_SHIELD:
-        return TILE_ARM_SHIELD;
+    case ARM_KITE_SHIELD:
+        return TILE_ARM_KITE_SHIELD;
 
     case ARM_CLOAK:
         return TILE_ARM_CLOAK;
@@ -2310,8 +2310,8 @@ static tileidx_t _tileidx_armour_base(const item_def &item)
     case ARM_BUCKLER:
         return TILE_ARM_BUCKLER;
 
-    case ARM_LARGE_SHIELD:
-        return TILE_ARM_LARGE_SHIELD;
+    case ARM_TOWER_SHIELD:
+        return TILE_ARM_TOWER_SHIELD;
 
     case ARM_CENTAUR_BARDING:
         return TILE_ARM_CENTAUR_BARDING;
@@ -2628,7 +2628,7 @@ tileidx_t tileidx_item(const item_def &item)
     case OBJ_WEAPONS:
         if (is_unrandom_artefact(item, UNRAND_WYRMBANE))
             return _tileidx_wyrmbane(item.plus);
-        else if (is_unrandom_artefact(item) && !is_randapp_artefact(item))
+        else if (is_unrandom_artefact(item))
             return _tileidx_unrand_artefact(find_unrandart_index(item));
         else
             return _tileidx_weapon(item);
@@ -2637,7 +2637,7 @@ tileidx_t tileidx_item(const item_def &item)
         return _tileidx_missile(item);
 
     case OBJ_ARMOUR:
-        if (is_unrandom_artefact(item) && !is_randapp_artefact(item))
+        if (is_unrandom_artefact(item))
             return _tileidx_unrand_artefact(find_unrandart_index(item));
         else
             return _tileidx_armour(item);
@@ -2660,7 +2660,7 @@ tileidx_t tileidx_item(const item_def &item)
         return _tileidx_gold(item);
 
     case OBJ_JEWELLERY:
-        if (is_unrandom_artefact(item) && !is_randapp_artefact(item))
+        if (is_unrandom_artefact(item))
             return _tileidx_unrand_artefact(find_unrandart_index(item));
 
         // rings

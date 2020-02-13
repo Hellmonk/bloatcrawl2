@@ -2688,17 +2688,22 @@ void monster::set_hit_dice(int new_hit_dice)
     }
 }
 
-void monster::moveto(const coord_def& c, bool clear_net)
+void monster::set_position(const coord_def &c)
 {
-    if (clear_net && c != pos() && in_bounds(pos()))
-        mons_clear_trapping_net(this);
-
     if (mons_is_projectile(*this))
     {
         // Assume some means of displacement, normal moves will overwrite this.
         props[IOOD_X].get_float() += c.x - pos().x;
         props[IOOD_Y].get_float() += c.y - pos().y;
     }
+
+    actor::set_position(c);
+}
+
+void monster::moveto(const coord_def& c, bool clear_net)
+{
+    if (clear_net && c != pos() && in_bounds(pos()))
+        mons_clear_trapping_net(this);
 
     set_position(c);
 
@@ -3137,7 +3142,7 @@ int monster::shield_bonus() const
 
         int shld_c = property(*shld, PARM_AC) + shld->plus * 2;
         shld_c = shld_c * 2 + (body_size(PSIZE_TORSO) - SIZE_MEDIUM)
-                            * (shld->sub_type - ARM_LARGE_SHIELD);
+                            * (shld->sub_type - ARM_TOWER_SHIELD);
         sh = random2avg(shld_c + get_hit_dice() * 4 / 3, 2) / 2;
     }
     // shielding from jewellery
@@ -3907,32 +3912,41 @@ bool monster::res_sticky_flame() const
     return is_insubstantial() || get_mons_resist(*this, MR_RES_STICKY_FLAME) > 0;
 }
 
-int monster::res_rotting(bool /*temp*/) const
-{
-    int res = 0;
-    const mon_holy_type holi = holiness();
+static rot_resistance _base_rot_resistance(const monster &mons) {
+    const mon_holy_type holi = mons.holiness();
 
     // handle undead first so that multi-holiness undead get their due
     if (holi & MH_UNDEAD)
     {
-        if (mons_genus(type) == MONS_GHOUL || type == MONS_ZOMBIE)
-            res = 1;
-        else
-            res = 3;
+        if (mons_genus(mons.type) == MONS_GHOUL || mons.type == MONS_ZOMBIE)
+            return ROT_RESIST_MUNDANE;
+        return ROT_RESIST_FULL;
     }
-    else if (holi & (MH_NATURAL | MH_PLANT))
-        res = 0; // was 1 for plants before. Gardening shows it should be -1
-    else if (holi & (MH_HOLY | MH_DEMONIC))
-        res = 1;
-    else if (is_nonliving())
-        res = 3;
+    if (holi & (MH_NATURAL | MH_PLANT))
+        return ROT_RESIST_NONE; // was 1 for plants before. Gardening shows it should be -1
+    if (holi & (MH_HOLY | MH_DEMONIC))
+        return ROT_RESIST_MUNDANE;
+    if (mons.is_nonliving())
+        return ROT_RESIST_FULL;
+    if (mons.is_insubstantial())
+        return ROT_RESIST_FULL;
+    return ROT_RESIST_NONE;
+}
 
-    if (is_insubstantial())
-        res = 3;
+rot_resistance monster::res_rotting(bool /*temp*/) const
+{
+    const rot_resistance res = _base_rot_resistance(*this);
+    if (res != ROT_RESIST_NONE)
+        return res;
+
     if (get_mons_resist(*this, MR_RES_ROTTING))
-        res += 1;
+        return ROT_RESIST_MUNDANE;
 
-    return min(3, res);
+    const item_def *armour = mslot_item(MSLOT_ARMOUR);
+    if (armour && is_unrandom_artefact(*armour, UNRAND_EMBRACE))
+        return ROT_RESIST_MUNDANE;
+
+    return res;
 }
 
 int monster::res_holy_energy() const
@@ -5576,6 +5590,10 @@ bool monster::move_to_pos(const coord_def &newpos, bool clear_net, bool force)
  *  to a spot that's occupied. This will abort if either monster can't survive
  *  in the new place.
  *
+ *  We also cannot use moveto, since that calls clear_invalid_constrictions,
+ *  which may cause a more(), causing a render. While monsters are being
+ *  swapped, their positions and the mgrd mismatch, so rendering would crash.
+ *
  *  @param other the monster to swap with
  *  @returns whether they ended up moving.
  */
@@ -5596,11 +5614,19 @@ bool monster::swap_with(monster* other)
         return false;
     }
 
-    moveto(new_pos);
-    other->moveto(old_pos);
+    mons_clear_trapping_net(this);
+    mons_clear_trapping_net(other);
 
+    // Swap monster positions. Cannot render inside here, since mgrd and monster
+    // positions would mismatch.
     mgrd(old_pos) = other->mindex();
     mgrd(new_pos) = mindex();
+    set_position(new_pos);
+    other->set_position(old_pos);
+
+    // Okay to render again now
+    clear_invalid_constrictions(true);
+    other->clear_invalid_constrictions(true);
 
     return true;
 }

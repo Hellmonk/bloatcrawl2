@@ -716,6 +716,24 @@ int apply_random_around_square(cell_func cf, const coord_def& where,
     return rv;
 }
 
+/*
+ * Place clouds over an area with a function.
+ *
+ * @param func        A function called to place each cloud.
+ * @param where       The starting location of the cloud. A targeter_cloud
+ *                    with aim set to this location is used to determine the
+ *                    affected locations.
+ * @param pow         The spellpower of the spell placing the clouds, which
+ *                    determines how long the cloud will last.
+ * @param number      How many clouds to place in total. Only this number will
+ *                    be placed regardless
+ * @param ctype       The type of cloud to place.
+ * @param agent       Any agent that may have caused the cloud. If this is the
+ *                    player, god conducts are applied.
+ * @param spread_rate How quickly the cloud spreads.
+ * @param excl_rad    How large of an exclusion radius to make around the
+ *                    cloud.
+*/
 void apply_area_cloud(cloud_func func, const coord_def& where,
                        int pow, int number, cloud_type ctype,
                        const actor *agent, int spread_rate, int excl_rad)
@@ -1374,6 +1392,7 @@ bool spell_no_hostile_in_range(spell_type spell)
     case SPELL_OLGREBS_TOXIC_RADIANCE:
     case SPELL_INTOXICATE:
     case SPELL_IGNITION:
+    case SPELL_FROZEN_RAMPARTS:
         return minRange > you.current_vision;
 
     // Special handling for cloud spells.

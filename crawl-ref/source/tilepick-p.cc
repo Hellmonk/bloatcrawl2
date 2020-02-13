@@ -283,15 +283,15 @@ tileidx_t tilep_equ_shield(const item_def &item)
 
     switch (item.sub_type)
     {
-        case ARM_SHIELD:
-            return _modrng(item.rnd, TILEP_HAND2_SHIELD_FIRST_NORM,
-                           TILEP_HAND2_SHIELD_LAST_NORM);
+        case ARM_KITE_SHIELD:
+            return _modrng(item.rnd, TILEP_HAND2_KITE_SHIELD_FIRST_NORM,
+                           TILEP_HAND2_KITE_SHIELD_LAST_NORM);
         case ARM_BUCKLER:
             return _modrng(item.rnd, TILEP_HAND2_BUCKLER_FIRST_NORM,
                            TILEP_HAND2_BUCKLER_LAST_NORM);
-        case ARM_LARGE_SHIELD:
-            return _modrng(item.rnd, TILEP_HAND2_LSHIELD_FIRST_NORM,
-                           TILEP_HAND2_LSHIELD_LAST_NORM);
+        case ARM_TOWER_SHIELD:
+            return _modrng(item.rnd, TILEP_HAND2_TOWER_SHIELD_FIRST_NORM,
+                           TILEP_HAND2_TOWER_SHIELD_LAST_NORM);
         default: return 0;
     }
 }
@@ -1081,7 +1081,7 @@ void tilep_job_default(int job, dolls_data *doll)
 
         case JOB_GLADIATOR:
         case JOB_FENCER:
-            parts[TILEP_PART_HAND2] = TILEP_HAND2_SHIELD_ROUND2;
+            parts[TILEP_PART_HAND2] = TILEP_HAND2_KITE_SHIELD_ROUND2;
             parts[TILEP_PART_BODY]  = TILEP_BODY_BELT1;
             parts[TILEP_PART_LEG]   = TILEP_LEG_BELT_GRAY;
             parts[TILEP_PART_BOOTS] = TILEP_BOOTS_MIDDLE_GRAY;

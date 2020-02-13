@@ -15,6 +15,7 @@
 #include <queue>
 #include <set>
 
+#include "ability.h"
 #include "artefact.h"
 #include "art-enum.h"
 #include "colour.h"
@@ -203,12 +204,12 @@ static armour_type _acquirement_armour_for_slot(equipment_type slot_type,
  *
  * Weighted by Shields skill & the secret racial shield bonus.
  *
- * Ratios by shields skill & player size (B = buckler, S = shield, L = lg. sh.)
+ * Ratios by shields skill & player size (B = buckler, K = kite shield, P = tower shield)
  *
  *     Shields    0           5         10          15        20
- * Large:   {6B}/5S/4L  ~{1B}/1S/1L  ~{1B}/5S/7L  ~2S/3L     1S/2L
- * Med.:        2B/1S    6B/4S/1L      2B/2S/1L   4B/8S/3L   1S/1L
- * Small:      ~3B/1S     ~5B/2S      ~2B/1S     ~3B/2S     ~1B/1S
+ * Large:   {6B}/5K/4P  ~{1B}/1K/1P  ~{1B}/5K/7P  ~2K/3P     1K/2P
+ * Med.:        2B/1K    6B/4K/1P      2B/2K/1P   4B/8K/3P   1K/1P
+ * Small:      ~3B/1K     ~5B/2K      ~2B/1K     ~3B/2K     ~1B/1K
  *
  * XXX: possibly shield skill should count for more for non-med races?
  *
@@ -220,8 +221,8 @@ static armour_type _acquirement_shield_type()
     vector<pair<armour_type, int>> weights = {
         { ARM_BUCKLER,       player_shield_racial_factor() * 4 * scale
                                 - _skill_rdiv(SK_SHIELDS, scale) },
-        { ARM_SHIELD,        10 * scale },
-        { ARM_LARGE_SHIELD,  20 * scale
+        { ARM_KITE_SHIELD,        10 * scale },
+        { ARM_TOWER_SHIELD,  20 * scale
                              - player_shield_racial_factor() * 4 * scale
                              + _skill_rdiv(SK_SHIELDS, scale / 2) },
     };
@@ -352,8 +353,8 @@ static armour_type _useless_armour_type()
         {
             vector<pair<armour_type, int>> shield_weights = {
                 { ARM_BUCKLER,       1 },
-                { ARM_SHIELD,        1 },
-                { ARM_LARGE_SHIELD,  1 },
+                { ARM_KITE_SHIELD,        1 },
+                { ARM_TOWER_SHIELD,  1 },
             };
 
             return filtered_vector_select<armour_type>(shield_weights,
@@ -654,7 +655,7 @@ static int _acquirement_staff_subtype(bool /*divine*/, int & /*quantity*/,
  * Return a miscellaneous evokable item for acquirement.
  * @return   The item type chosen.
  */
-static int _acquirement_misc_subtype(bool /*divine*/, int & /*quantity*/,
+static int _acquirement_misc_subtype(bool /*divine*/, int & quantity,
                                      int /*agent*/)
 {
     // Give a crystal ball based on both evocations and either spellcasting or
@@ -678,6 +679,8 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & /*quantity*/,
                                        (NO_LOVE ?     0 :  7)},
         {MISC_PHANTOM_MIRROR,
                                        (NO_LOVE ?     0 :  7)},
+        // Tremorstones are better for heavily armoured characters.
+        {MISC_TREMORSTONE, 3 + _skill_rdiv(SK_ARMOUR) / 3 },
         // The player never needs more than one.
         {MISC_LIGHTNING_ROD,
             (you.seen_misc[MISC_LIGHTNING_ROD] ?      0 : 17)},
@@ -687,9 +690,13 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & /*quantity*/,
             (you.seen_misc[MISC_PHIAL_OF_FLOODS] ?    0 : 17)},
         {MISC_FAN_OF_GALES,
             (you.seen_misc[MISC_FAN_OF_GALES] ?       0 : 17)},
+
     };
 
     const int * const choice = random_choose_weighted(choices);
+
+    if (choice != nullptr && *choice == MISC_TREMORSTONE)
+        quantity = 2; // not quite worth it alone
 
     // Could be nullptr if all the weights were 0.
     return choice ? *choice : MISC_CRYSTAL_BALL_OF_ENERGY;
@@ -859,23 +866,23 @@ static bool _is_magic_skill(int skill)
 
 static bool _skill_useless_with_god(int skill)
 {
+    if (skill == SK_INVOCATIONS)
+    {
+        // No active invocations, or uses a different skill.
+        return invo_skill() != SK_INVOCATIONS
+               || you_worship(GOD_XOM)
+               || you_worship(GOD_VEHUMET)
+               || you_worship(GOD_NO_GOD);
+    }
+
     switch (you.religion)
     {
     case GOD_TROG:
-        return _is_magic_skill(skill) || skill == SK_INVOCATIONS;
+        return _is_magic_skill(skill);
     case GOD_ZIN:
     case GOD_SHINING_ONE:
     case GOD_ELYVILON:
         return skill == SK_NECROMANCY;
-    case GOD_XOM:
-    case GOD_RU:
-    case GOD_KIKUBAAQUDGHA:
-    case GOD_VEHUMET:
-    case GOD_ASHENZARI:
-    case GOD_JIYVA:
-    case GOD_GOZAG:
-    case GOD_NO_GOD:
-        return skill == SK_INVOCATIONS;
     default:
         return false;
     }
@@ -1627,28 +1634,29 @@ bool AcquireMenu::acquire_selected()
 {
     vector<MenuEntry*> selected = selected_entries();
     ASSERT(selected.size() == 1);
+    auto& entry = *selected[0];
 
     const string col = colour_to_str(channel_to_colour(MSGCH_PROMPT));
     update_help();
     const formatted_string old_more = more;
     more = formatted_string::parse_string(make_stringf(
-               "<%s>Acquire this item? (%s/N)</%s>\n",
+               "<%s>Acquire %s? (%s/N)</%s>\n",
                col.c_str(),
+               entry.text.c_str(),
                Options.easy_confirm == easy_confirm_type::none ? "Y" : "y",
                col.c_str()));
     more += old_more;
     update_more();
 
-    auto entry = selected[0];
     if (!yesno(nullptr, true, 'n', false, false, true))
     {
-        entry->select();
+        entry.select();
         more = old_more;
         update_more();
         return true;
     }
 
-    item_def &acq_item = *static_cast<item_def*>(entry->data);
+    item_def &acq_item = *static_cast<item_def*>(entry.data);
     if (copy_item_to_grid(acq_item, you.pos()))
         canned_msg(MSG_SOMETHING_APPEARS);
     else

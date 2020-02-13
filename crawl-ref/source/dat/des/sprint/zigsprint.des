@@ -731,8 +731,8 @@ KITEM:    B = plate armour mundane not_cursed ident:all plus:5, \
               gold dragon scales mundane not_cursed ident:all plus:5, \
               crystal plate armour mundane not_cursed ident:all plus:5
 KITEM:    C = buckler mundane not_cursed ident:all plus:3, \
-              shield mundane not_cursed ident:all plus:3, \
-              large shield mundane not_cursed ident:all plus:3
+              kite shield mundane not_cursed ident:all plus:3, \
+              tower shield mundane not_cursed ident:all plus:3
 KITEM:    D = broad axe mundane not_cursed ident:all plus:5, \
               battleaxe mundane not_cursed ident:all plus:5, \
               executioner's axe mundane not_cursed ident:all plus:5

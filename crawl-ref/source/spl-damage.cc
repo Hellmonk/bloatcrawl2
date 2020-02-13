@@ -27,6 +27,7 @@
 #include "god-conduct.h"
 #include "invent.h"
 #include "items.h"
+#include "level-state-type.h"
 #include "los.h"
 #include "losglobal.h"
 #include "macro.h"
@@ -355,22 +356,22 @@ spret cast_chain_spell(spell_type spell_cast, int pow,
 
 /*
  * Handle the application of damage from a player spell that doesn't apply these
- * through struct bolt. This applies any Zin sancuary violation and can apply
- * god conducts as well.
+ * through struct bolt. This can apply god conducts and handles any necessary
+ * death cleanup.
  * @param mon          The monster.
  * @param damage       The damage to apply, if any. Regardless of damage done,
  *                     the monster will have death cleanup applied via
  *                     monster_die() if it's now dead.
  * @param flavour      The beam flavour of damage.
- * @param god_conducts If true, apply any god conducts. Some callers need to
- *                     apply effects prior to damage that might kill the
- *                     monster, hence handle conducts on their own.
+ * @param god_conducts If true, apply any god conducts, in which case the
+ *                     monster must be alive. Some callers need to apply
+ *                     effects prior to damage that might kill the monster,
+ *                     hence handle conducts on their own.
 */
 static void _player_hurt_monster(monster &mon, int damage, beam_type flavour,
                                  bool god_conducts = true)
 {
-    if (is_sanctuary(you.pos()) || is_sanctuary(mon.pos()))
-        remove_sanctuary(true);
+    ASSERT(mon.alive() || !god_conducts);
 
     if (god_conducts && you.deity() == GOD_FEDHAS && fedhas_neutralises(mon))
     {
@@ -382,11 +383,8 @@ static void _player_hurt_monster(monster &mon, int damage, beam_type flavour,
     if (god_conducts)
         set_attack_conducts(conducts, mon, you.can_see(mon));
 
-    // Don't let monster::hurt() do death cleanup here. We're handling death
-    // cleanup at the end to cover cases where we've done no damage and the
-    // monster is dead from previous effects.
     if (damage)
-        mon.hurt(&you, damage, flavour, KILLED_BY_BEAM, "", "", false);
+        mon.hurt(&you, damage, flavour, KILLED_BY_BEAM);
 
     if (mon.alive())
     {
@@ -395,7 +393,8 @@ static void _player_hurt_monster(monster &mon, int damage, beam_type flavour,
         if (damage && you.can_see(mon))
             print_wounds(mon);
     }
-    else
+    // monster::hurt() wasn't called, so we do death cleanup.
+    else if (!damage)
         monster_die(mon, KILL_YOU, NON_MONSTER);
 }
 
@@ -858,9 +857,6 @@ spret cast_airstrike(int pow, const dist &beam, bool fail)
     if (stop_attack_prompt(mons, false, you.pos()))
         return spret::abort;
     fail_check();
-
-    god_conduct_trigger conducts[3];
-    set_attack_conducts(conducts, *mons, you.can_see(*mons));
 
     noisy(spell_effect_noise(SPELL_AIRSTRIKE), beam.target);
 
@@ -2029,7 +2025,9 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
             return true;
         }
     }
-    else if (mon && (caster->is_monster() || (you.can_see(*mon))))
+    else if (mon
+             && mon->alive()
+             && (caster->is_monster() || (you.can_see(*mon))))
     {
         switch (mon->type)
         {
@@ -2262,8 +2260,8 @@ spret cast_fragmentation(int pow, const actor *caster,
     }
     else // Monster explodes.
     {
-        // Checks by setup_fragmentation_beam() must guarantee that we have a
-        // monster.
+        // Checks by setup_fragmentation_beam() must guarantee that we have an
+        // alive monster.
         monster* mon = monster_at(target);
         ASSERT(mon);
 
@@ -2607,10 +2605,9 @@ spret cast_toxic_radiance(actor *agent, int pow, bool fail, bool mon_tracer)
     if (agent->is_player())
     {
         targeter_radius hitfunc(&you, LOS_NO_TRANS);
-        {
-            if (stop_attack_prompt(hitfunc, "poison", _toxic_can_affect))
-                return spret::abort;
-        }
+        if (stop_attack_prompt(hitfunc, "poison", _toxic_can_affect))
+            return spret::abort;
+
         fail_check();
 
         if (!you.duration[DUR_TOXIC_RADIANCE])
@@ -2676,8 +2673,6 @@ void toxic_radiance_effect(actor* agent, int mult, bool on_cast)
     else
         pow = agent->as_monster()->get_hit_dice() * 8;
 
-    bool break_sanctuary = (agent->is_player() && is_sanctuary(you.pos()));
-
     for (actor_near_iterator ai(agent->pos(), LOS_NO_TRANS); ai; ++ai)
     {
         if (!_toxic_can_affect(*ai))
@@ -2705,17 +2700,12 @@ void toxic_radiance_effect(actor* agent, int mult, bool on_cast)
         }
         else
         {
-            // We need to deal with conducts before damaging the monster,
-            // because otherwise friendly monsters that are one-shot won't
-            // trigger conducts. Only trigger conducts on the turn the player
-            // casts the spell (see PR #999).
+            god_conduct_trigger conducts[3];
+
+            // Only trigger conducts on the turn the player casts the spell
+            // (see PR #999).
             if (on_cast && agent->is_player())
-            {
-                god_conduct_trigger conducts[3];
                 set_attack_conducts(conducts, *ai->as_monster());
-                if (is_sanctuary(ai->pos()))
-                    break_sanctuary = true;
-            }
 
             ai->hurt(agent, dam, BEAM_POISON);
 
@@ -2731,9 +2721,6 @@ void toxic_radiance_effect(actor* agent, int mult, bool on_cast)
             }
         }
     }
-
-    if (break_sanctuary)
-        remove_sanctuary(true);
 }
 
 spret cast_searing_ray(int pow, bolt &beam, bool fail)
@@ -3368,4 +3355,50 @@ void actor_apply_toxic_bog(actor * act)
         act->hurt(oppressor, final_damage, BEAM_MISSILE,
                   KILLED_BY_POISON, "", "toxic bog");
     }
+}
+
+/**
+ * Cast Frozen Ramparts
+ *
+ * @param caster The caster.
+ * @param pow    The spell power.
+ * @param fail   Did this spell miscast? If true, abort the cast.
+ * @return       spret::fail if one could be found but we miscast, and
+ *               spret::success if the spell was successfully cast.
+*/
+spret cast_frozen_ramparts(int pow, bool fail)
+{
+    vector<coord_def> walls;
+    for (distance_iterator di(you.pos(), false, false, FROZEN_RAMPARTS_RADIUS);
+            di; ++di)
+    {
+        const auto feat = grd(*di);
+        if (you.see_cell(*di)
+            && feat_is_wall(feat)
+            && !feat_is_permarock(feat))
+        {
+            walls.push_back(*di);
+        }
+    }
+
+    if (walls.empty())
+    {
+        mpr("There are no walls around you to affect.");
+        return spret::abort;
+    }
+
+    fail_check();
+
+    for (auto wall : walls)
+        env.pgrid(wall) |= FPROP_ICY;
+
+    env.level_state |= LSTATE_ICY_WALL;
+    you.props[FROZEN_RAMPARTS_KEY] = you.pos();
+
+    mpr("The walls around you are covered in icicles.");
+    noisy(spell_effect_noise(SPELL_FROZEN_RAMPARTS), you.pos());
+
+    you.duration[DUR_FROZEN_RAMPARTS] = random_range(40 + pow,
+                                                     80 + pow * 3 / 2);
+    return spret::success;
 }

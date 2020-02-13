@@ -24,6 +24,13 @@ enum class ev_ignore
 };
 DEF_BITFIELD(ev_ignore_type, ev_ignore);
 
+enum rot_resistance     // Resistance to HP rot.
+{
+    ROT_RESIST_NONE,    // No resistance to rotting.
+    ROT_RESIST_MUNDANE, // Immune to non-divine rotting. (Zin is special.)
+    ROT_RESIST_FULL,    // Immune to all forms of rot.
+};
+
 struct bolt;
 
 class actor
@@ -117,7 +124,7 @@ public:
                             bool calc_unid = true) const = 0;
     virtual int scan_artefacts(artefact_prop_type which_property,
                                bool calc_unid = true,
-                               vector<item_def> *matches = nullptr) const = 0;
+                               vector<const item_def *> *matches = nullptr) const = 0;
 
     virtual hands_reqd_type hands_reqd(const item_def &item,
                                        bool base = false) const;
@@ -296,7 +303,7 @@ public:
     virtual int res_cold() const = 0;
     virtual int res_elec() const = 0;
     virtual int res_poison(bool temp = true) const = 0;
-    virtual int res_rotting(bool temp = true) const = 0;
+    virtual rot_resistance res_rotting(bool temp = true) const = 0;
     virtual int res_water_drowning() const = 0;
     virtual bool res_sticky_flame() const = 0;
     virtual int res_holy_energy() const = 0;
@@ -316,7 +323,7 @@ public:
 
     virtual bool res_corr(bool calc_unid = true, bool items = true) const;
     bool has_notele_item(bool calc_unid = true,
-                         vector<item_def> *matches = nullptr) const;
+                         vector<const item_def *> *matches = nullptr) const;
     virtual bool stasis() const = 0;
     virtual bool cloud_immune(bool calc_unid = true, bool items = true) const;
     virtual bool run(bool calc_unid = true, bool items = true) const;

@@ -152,6 +152,7 @@ public:
                                 int killernum = -1) override;
     void self_destruct() override;
 
+    void set_position(const coord_def &c) override;
     void moveto(const coord_def& c, bool clear_net = true) override;
     bool move_to_pos(const coord_def &newpos, bool clear_net = true,
                      bool force = false) override;
@@ -283,7 +284,7 @@ public:
         override;
     int scan_artefacts(artefact_prop_type which_property,
                        bool calc_unid = true,
-                       vector<item_def> *_unused_matches = nullptr) const
+                       vector<const item_def *> *_unused_matches = nullptr) const
         override;
 
     item_def *slot_item(equipment_type eq, bool include_melded=false) const
@@ -383,7 +384,7 @@ public:
     int res_cold() const override;
     int res_elec() const override;
     int res_poison(bool temp = true) const override;
-    int res_rotting(bool /*temp*/ = true) const override;
+    rot_resistance res_rotting(bool /*temp*/ = true) const override;
     int res_water_drowning() const override;
     bool res_sticky_flame() const override;
     int res_holy_energy() const override;

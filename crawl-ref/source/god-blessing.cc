@@ -350,7 +350,7 @@ static string _beogh_bless_weapon(monster* mon)
 
 static void _upgrade_shield(item_def &sh)
 {
-    // Promote from buckler up through large shield.
+    // Promote from buckler up through tower shield.
     if (sh.sub_type >= ARM_FIRST_SHIELD && sh.sub_type < ARM_LAST_SHIELD)
         sh.sub_type++;
 }
@@ -383,7 +383,7 @@ static void _gift_armour_to_orc(monster* orc, bool shield = false)
     item_def armour;
     armour.base_type = OBJ_ARMOUR;
     if (shield)
-        armour.sub_type = highlevel ? ARM_SHIELD : ARM_BUCKLER;
+        armour.sub_type = highlevel ? ARM_KITE_SHIELD : ARM_BUCKLER;
     else
         armour.sub_type = highlevel ? ARM_SCALE_MAIL : ARM_RING_MAIL;
     armour.quantity = 1;

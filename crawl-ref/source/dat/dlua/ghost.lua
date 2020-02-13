@@ -420,6 +420,6 @@ function setup_armoury_orcs(e)
             " . chain mail good_item " ..
             "    | chain mail randart | plate armour good_item " ..
             "    | plate armour randart " ..
-            " . shield good_item w:4 | shield randart w:2 " ..
-            "    | large shield good_item w:2 | large shield randart w:1")
+            " . kite shield good_item w:4 | kite shield randart w:2 " ..
+            "    | tower shield good_item w:2 | tower shield randart w:1")
 end

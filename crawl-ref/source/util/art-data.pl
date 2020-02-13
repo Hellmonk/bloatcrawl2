@@ -847,17 +847,14 @@ HEADER_END
         {
             $part = "HAND2";
         }
-        elsif ($artefact->{sub_type} =~ /_CLOAK/)
+        elsif ($artefact->{sub_type} =~ /_CLOAK/
+               || $artefact->{sub_type} =~ /_SCARF/)
         {
             $part = "CLOAK";
         }
-        elsif ($artefact->{sub_type} =~ /_CAP|_HAT|_HELMET/)
+        elsif ($artefact->{sub_type} =~ /_HAT|_HELMET/)
         {
             $part = "HELM";
-        }
-        elsif ($artefact->{sub_type} =~ /_SHIELD/)
-        {
-            $part = "HAND2";
         }
         elsif ($artefact->{sub_type} =~ /_BOOTS|_BARDING/)
         {

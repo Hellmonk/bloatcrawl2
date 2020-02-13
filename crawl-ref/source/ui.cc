@@ -207,6 +207,12 @@ Widget::~Widget()
 #endif
 }
 
+void Widget::_emit_layout_pop()
+{
+    Widget::slots.layout_pop.emit(this);
+    Widget::slots.layout_pop.remove_by_target(this);
+}
+
 bool Widget::on_event(const Event& event)
 {
     return Widget::slots.event.emit(this, event);
@@ -2455,6 +2461,7 @@ void UIRoot::push_child(shared_ptr<Widget> ch, KeymapContext km)
 
 void UIRoot::pop_child()
 {
+    top_child()->_emit_layout_pop();
     m_root.pop_child();
     m_needs_layout = true;
     state = saved_layout_info.back();
@@ -3155,7 +3162,7 @@ void pump_events(int wait_event_timeout)
     // since these can come in faster than crawl can redraw.
     // unlike mousemotion events, we don't drop all but the last event
     // ...but if there are macro keys, we do need to layout (for menu UI)
-    if (!wm->get_event_count(WME_MOUSEWHEEL) || macro_key != -1)
+    if (!wm->next_event_is(WME_MOUSEWHEEL) || macro_key != -1)
 #endif
     {
         ui_root.layout();
@@ -3187,16 +3194,10 @@ void pump_events(int wait_event_timeout)
                 return;
         }
 
-        if (event.type == WME_MOUSEMOTION)
-        {
-            // For consecutive mouse events, ignore all but the last,
-            // since these can come in faster than crawl can redraw.
-            //
-            // Note that get_event_count() is misleadingly named and only
-            // peeks at the first event, and so will only return 0 or 1.
-            if (wm->get_event_count(WME_MOUSEMOTION) > 0)
-                continue;
-        }
+        // For consecutive mouse events, ignore all but the last,
+        // since these can come in faster than crawl can redraw.
+        if (event.type == WME_MOUSEMOTION && wm->next_event_is(WME_MOUSEMOTION))
+            continue;
         if (event.type == WME_KEYDOWN && event.key.keysym.sym == 0)
             continue;
 
@@ -3438,6 +3439,7 @@ progress_popup::progress_popup(string title, int width)
     tiles.json_write_string("status", "");
     tiles.push_ui_layout("progress-bar", 1);
     tiles.flush_messages();
+    contents->on_layout_pop([](){ tiles.pop_ui_layout(); });
 #endif
 
     push_layout(move(contents));
@@ -3449,7 +3451,6 @@ progress_popup::~progress_popup()
     pop_layout();
 
 #ifdef USE_TILE_WEB
-    tiles.pop_ui_layout();
     tiles.flush_messages();
 #endif
 }

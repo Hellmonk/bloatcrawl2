@@ -198,13 +198,11 @@ int show_description(const describe_info &inf, const tile_def *tile)
     tiles.json_write_string("quote", inf.quote);
     tiles.json_write_string("body", inf.body.str());
     tiles.push_ui_layout("describe-generic", 0);
+    popup->on_layout_pop([](){ tiles.pop_ui_layout(); });
 #endif
 
     ui::run_layout(move(popup), done);
 
-#ifdef USE_TILE_WEB
-    tiles.pop_ui_layout();
-#endif
     return lastch;
 }
 
@@ -1361,15 +1359,15 @@ static string _describe_weapon(const item_def &item, bool verbose)
 
     if (you.duration[DUR_EXCRUCIATING_WOUNDS] && &item == you.weapon())
     {
-        description += "\nIt is temporarily rebranded; it is actually a";
+        description += "\nIt is temporarily rebranded; it is actually ";
         if ((int) you.props[ORIGINAL_BRAND_KEY] == SPWPN_NORMAL)
-            description += "n unbranded weapon.";
+            description += "an unbranded weapon.";
         else
         {
-            description += " weapon of "
-                        + ego_type_string(item, false,
-                           (brand_type) you.props[ORIGINAL_BRAND_KEY].get_int())
-                        + ".";
+            brand_type original = static_cast<brand_type>(
+                you.props[ORIGINAL_BRAND_KEY].get_int());
+            description += article_a(
+                weapon_brand_desc("weapon", item, false, original) + ".", true);
         }
     }
 
@@ -1559,11 +1557,95 @@ static string _warlock_mirror_reflect_desc()
            "effects.";
 }
 
+static string _describe_point_change(int points)
+{
+    string point_diff_description;
+
+    point_diff_description += make_stringf("%s by %d",
+                                           points > 0 ? "increase" : "decrease",
+                                           abs(points));
+
+    return point_diff_description;
+}
+
+static string _describe_point_diff(int original,
+                                   int changed)
+{
+    string description;
+
+    int difference = changed - original;
+
+    if (difference == 0)
+        return "remain unchanged.\n";
+
+    description += _describe_point_change(difference);
+    description += " (";
+    description += to_string(original);
+    description += " -> ";
+    description += to_string(changed);
+    description += ").\n";
+
+    return description;
+}
+
+static string _armour_ac_sub_change_description(const item_def &item)
+{
+    string description;
+
+    description.reserve(100);
+
+
+    description += "\n\nIf you switch to wearing this armour,"
+                        " your AC will ";
+
+    int you_ac_with_this_item =
+                 you.armour_class_with_one_sub(item);
+
+    description += _describe_point_diff(you.armour_class(),
+                                        you_ac_with_this_item);
+
+    return description;
+}
+
+static string _armour_ac_remove_change_description(const item_def &item)
+{
+    string description;
+
+    description += "\n\nIf you remove this armour,"
+                        " your AC will ";
+
+    int you_ac_without_item =
+                 you.armour_class_with_one_removal(item);
+
+    description += _describe_point_diff(you.armour_class(),
+                                        you_ac_without_item);
+
+    return description;
+}
+
+static bool _you_are_wearing_item(const item_def &item)
+{
+    return get_equip_slot(&item) != EQ_NONE;
+}
+
+static string _armour_ac_change(const item_def &item)
+{
+    string description;
+
+    if (!_you_are_wearing_item(item)){
+        description = _armour_ac_sub_change_description(item);
+    }else{
+        description = _armour_ac_remove_change_description(item);
+    }
+
+    return description;
+}
+
 static string _describe_armour(const item_def &item, bool verbose)
 {
     string description;
 
-    description.reserve(200);
+    description.reserve(300);
 
     if (verbose)
     {
@@ -1763,7 +1845,11 @@ static string _describe_armour(const item_def &item, bool verbose)
         }
         else
             description += "\n\nIt cannot be enchanted further.";
+
     }
+
+    if (item_ident(item, ISFLAG_KNOW_PLUSES) && !is_shield(item))
+        description += _armour_ac_change(item);
 
     return description;
 }
@@ -2164,7 +2250,12 @@ static vector<pair<string,string>> _get_feature_extra_descs(const coord_def &pos
 {
     vector<pair<string,string>> ret;
     dungeon_feature_type feat = env.map_knowledge(pos).feat();
-    if (!feat_is_solid(feat))
+    if (feat_is_wall(feat) && env.map_knowledge(pos).flags & MAP_ICY)
+    {
+        ret.emplace_back(pair<string,string>("A covering of icicles.",
+                    getLongDescription("icicle covered")));
+    }
+    else if (!feat_is_solid(feat))
     {
         if (haloed(pos) && !umbraed(pos))
         {
@@ -2390,13 +2481,10 @@ void describe_feature_wide(const coord_def& pos)
     }
     tiles.json_close_array();
     tiles.push_ui_layout("describe-feature-wide", 0);
+    popup->on_layout_pop([](){ tiles.pop_ui_layout(); });
 #endif
 
     ui::run_layout(move(popup), done);
-
-#ifdef USE_TILE_WEB
-    tiles.pop_ui_layout();
-#endif
 }
 
 void describe_feature_type(dungeon_feature_type feat)
@@ -2777,13 +2865,10 @@ bool describe_item(item_def &item, function<void (string&)> fixup_desc)
     }
     tiles.json_close_array();
     tiles.push_ui_layout("describe-item", 0);
+    popup->on_layout_pop([](){ tiles.pop_ui_layout(); });
 #endif
 
     ui::run_layout(move(popup), done);
-
-#ifdef USE_TILE_WEB
-    tiles.pop_ui_layout();
-#endif
 
     if (action != CMD_NO_CMD)
         return _do_action(item, actions, lastch);
@@ -3251,13 +3336,10 @@ void describe_spell(spell_type spell, const monster_info *mon_owner,
     tiles.json_write_string("desc", desc);
     tiles.json_write_bool("can_mem", can_mem);
     tiles.push_ui_layout("describe-spell", 0);
+    popup->on_layout_pop([](){ tiles.pop_ui_layout(); });
 #endif
 
     ui::run_layout(move(popup), done);
-
-#ifdef USE_TILE_WEB
-    tiles.pop_ui_layout();
-#endif
 
     if (toupper_safe(lastch) == 'M' && can_mem)
     {
@@ -4718,13 +4800,10 @@ int describe_monsters(const monster_info &mi, const string& /*footer*/)
         }
     }
     tiles.push_ui_layout("describe-monster", 1);
+    popup->on_layout_pop([](){ tiles.pop_ui_layout(); });
 #endif
 
     ui::run_layout(move(popup), done);
-
-#ifdef USE_TILE_WEB
-    tiles.pop_ui_layout();
-#endif
 
     return lastch;
 }

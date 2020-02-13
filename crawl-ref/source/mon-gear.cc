@@ -1560,12 +1560,12 @@ static void _give_shield(monster* mon, int level)
     switch (mon->type)
     {
     case MONS_ASTERION:
-        make_item_for_monster(mon, OBJ_ARMOUR, ARM_SHIELD,
+        make_item_for_monster(mon, OBJ_ARMOUR, ARM_KITE_SHIELD,
                               level * 2 + 1, 1);
         break;
     case MONS_DAEVA:
     case MONS_MENNAS:
-        make_item_for_monster(mon, OBJ_ARMOUR, ARM_LARGE_SHIELD,
+        make_item_for_monster(mon, OBJ_ARMOUR, ARM_TOWER_SHIELD,
                               level * 2 + 1, 1);
         break;
 
@@ -1581,8 +1581,8 @@ static void _give_shield(monster* mon, int level)
         if (one_chance_in(3))
         {
             make_item_for_monster(mon, OBJ_ARMOUR,
-                                  one_chance_in(3) ? ARM_LARGE_SHIELD
-                                                   : ARM_SHIELD,
+                                  one_chance_in(3) ? ARM_TOWER_SHIELD
+                                                   : ARM_KITE_SHIELD,
                                   level);
         }
         break;
@@ -1591,7 +1591,7 @@ static void _give_shield(monster* mon, int level)
         if (coinflip())
         {
             make_item_for_monster(mon, OBJ_ARMOUR,
-                                  random_choose(ARM_LARGE_SHIELD, ARM_SHIELD),
+                                  random_choose(ARM_TOWER_SHIELD, ARM_KITE_SHIELD),
                                   level);
         }
         break;
@@ -1604,7 +1604,7 @@ static void _give_shield(monster* mon, int level)
         if (mon->type != MONS_TENGU_WARRIOR && !one_chance_in(3))
             break;
         make_item_for_monster(mon, OBJ_ARMOUR,
-                              random_choose(ARM_BUCKLER, ARM_SHIELD),
+                              random_choose(ARM_BUCKLER, ARM_KITE_SHIELD),
                               level);
         break;
 
@@ -1640,18 +1640,18 @@ static void _give_shield(monster* mon, int level)
         break;
 
     case MONS_LOUISE:
-        shield = make_item_for_monster(mon, OBJ_ARMOUR, ARM_LARGE_SHIELD,
+        shield = make_item_for_monster(mon, OBJ_ARMOUR, ARM_TOWER_SHIELD,
                                        level * 2 + 1, 1);
         if (shield && !is_artefact(*shield))
         {
-            shield->props["item_tile_name"] = "lshield_louise";
-            shield->props["worn_tile_name"] = "lshield_louise";
+            shield->props["item_tile_name"] = "tower shield_louise";
+            shield->props["worn_tile_name"] = "tower shield_louise";
             bind_item_tile(*shield);
         }
         break;
 
     case MONS_DONALD:
-        shield = make_item_for_monster(mon, OBJ_ARMOUR, ARM_SHIELD,
+        shield = make_item_for_monster(mon, OBJ_ARMOUR, ARM_KITE_SHIELD,
                                        level * 2 + 1, 1);
 
         if (shield)
@@ -1663,8 +1663,8 @@ static void _give_shield(monster* mon, int level)
             }
             if (!is_artefact(*shield))
             {
-                shield->props["item_tile_name"] = "shield_donald";
-                shield->props["worn_tile_name"] = "shield_donald";
+                shield->props["item_tile_name"] = "kite_shield_donald";
+                shield->props["worn_tile_name"] = "kite_shield_donald";
                 bind_item_tile(*shield);
             }
         }
@@ -1689,14 +1689,14 @@ static void _give_shield(monster* mon, int level)
     case MONS_BLACK_SUN:
         if (one_chance_in(3))
         {
-            armour_type shield_type = random_choose(ARM_BUCKLER, ARM_SHIELD);
+            armour_type shield_type = random_choose(ARM_BUCKLER, ARM_KITE_SHIELD);
             make_item_for_monster(mon, OBJ_ARMOUR, shield_type, level);
         }
         break;
 
     case MONS_WARMONGER:
         make_item_for_monster(mon, OBJ_ARMOUR,
-                              random_choose(ARM_LARGE_SHIELD, ARM_SHIELD),
+                              random_choose(ARM_TOWER_SHIELD, ARM_KITE_SHIELD),
                               ISPEC_GOOD_ITEM);
         break;
 

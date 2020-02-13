@@ -743,6 +743,10 @@ unsigned int item_value(item_def item, bool ident)
             valued += 200;
             break;
 
+        case MISC_TREMORSTONE:
+            valued += 150;
+            break;
+
         default:
             valued += 200;
         }

@@ -116,15 +116,6 @@ bool ranged_attack::attack()
                             you.can_see(*defender));
     }
 
-    if (env.sanctuary_time > 0 && attack_occurred
-        && (is_sanctuary(attacker->pos()) || is_sanctuary(defender->pos()))
-        && (attacker->is_player()
-            // XXX: Can friendly monsters actually violate sanctuary?
-            || attacker->as_monster()->friendly() && !attacker->confused()))
-    {
-        remove_sanctuary(true);
-    }
-
     if (shield_blocked)
         handle_phase_blocked();
     else
@@ -384,6 +375,9 @@ int ranged_attack::apply_damage_modifiers(int damage)
 
 bool ranged_attack::ignores_shield(bool verbose)
 {
+    if (defender->is_player() && player_omnireflects())
+        return false;
+
     if (is_penetrating_attack(*attacker, weapon, *projectile))
     {
         if (verbose)

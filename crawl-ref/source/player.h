@@ -54,12 +54,15 @@
 #define PARALYSED_BY_KEY "paralysed_by"
 #define PETRIFIED_BY_KEY "petrified_by"
 #define NOXIOUS_BOG_KEY "noxious_bog_pow"
+#define FROZEN_RAMPARTS_KEY "frozen_ramparts_position"
 
 // display/messaging breakpoints for penalties from Ru's MUT_HORROR
 #define HORROR_LVL_EXTREME  3
 #define HORROR_LVL_OVERWHELMING  5
 
 #define SEVERE_CONTAM_LEVEL 3
+
+#define FROZEN_RAMPARTS_RADIUS 3
 
 /// Maximum stat value
 static const int MAX_STAT_VALUE = 125;
@@ -676,7 +679,7 @@ public:
         override;
     int scan_artefacts(artefact_prop_type which_property,
                        bool calc_unid = true,
-                       vector<item_def> *matches = nullptr) const override;
+                       vector<const item_def *> *matches = nullptr) const override;
 
     item_def *weapon(int which_attack = -1) const override;
     item_def *shield() const override;
@@ -782,7 +785,7 @@ public:
     int res_cold() const override;
     int res_elec() const override;
     int res_poison(bool temp = true) const override;
-    int res_rotting(bool temp = true) const override;
+    rot_resistance res_rotting(bool temp = true) const override;
     int res_water_drowning() const override;
     bool res_sticky_flame() const override;
     int res_holy_energy() const override;
@@ -925,6 +928,10 @@ public:
 
     bool clear_far_engulf() override;
 
+    int armour_class_with_one_sub(item_def sub) const;
+
+    int armour_class_with_one_removal(item_def sub) const;
+
 protected:
     void _removed_beholder(bool quiet = false);
     bool _possible_beholder(const monster* mon) const;
@@ -934,6 +941,14 @@ protected:
 
 private:
     int ac_changes_from_mutations() const;
+    vector<const item_def *> get_armour_items() const;
+    vector<const item_def *> get_armour_items_one_sub(const item_def& sub) const;
+    vector<const item_def *> get_armour_items_one_removal(const item_def& sub) const;
+    int base_ac_with_specific_items(int scale,
+                                    vector<const item_def *> armour_items) const;
+    int armour_class_with_specific_items(
+                                vector<const item_def *> items) const;
+
 };
 COMPILE_CHECK((int) SP_UNKNOWN_BRAND < 8*sizeof(you.seen_weapon[0]));
 COMPILE_CHECK((int) SP_UNKNOWN_BRAND < 8*sizeof(you.seen_armour[0]));
@@ -1163,6 +1178,7 @@ void dec_haste_player(int delay);
 void dec_elixir_player(int delay);
 void dec_ambrosia_player(int delay);
 void dec_channel_player(int delay);
+void dec_frozen_ramparts(int delay);
 bool invis_allowed(bool quiet = false, string *fail_reason = nullptr);
 bool flight_allowed(bool quiet = false, string *fail_reason = nullptr);
 void fly_player(int pow, bool already_flying = false);

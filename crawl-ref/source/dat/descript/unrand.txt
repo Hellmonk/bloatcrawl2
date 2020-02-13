@@ -169,7 +169,7 @@ zealot's sword
 
 A sword made of one huge piece of crystal. Legend says it was the Shining One's
 gift to a worshipper. This blade is notorious for inducing bloodthirsty rage in
-both the wielder and all of his or her mortal followers.
+both the wielder and all of their mortal followers.
 %%%%
 arbalest "Damnation"
 
@@ -283,7 +283,7 @@ storm bow
 A longbow with the colour of dark rain clouds that fires arrows like
 lightning.
 %%%%
-large shield of Ignorance
+tower shield of Ignorance
 
 A shield unearthed from the remains of a ruined city. It bears an inscription
 written in an ancient language. Scholars and wise men laboured for countless
@@ -303,7 +303,7 @@ A pitch-black cloak which allows its wearer to excel in the arts of thievery,
 and can be evoked to release thick clouds of smoke for a hasty escape.
 %%%%
 # TAG_MAJOR_VERSION == 34
-large shield "Bullseye"
+tower shield "Bullseye"
 
 Just in case you had trouble getting hit.
 %%%%
@@ -505,7 +505,7 @@ slither at almost a human's pace.
 Black Knight's horse barding
 
 A heavy barding made from pitch-black steel and inlaid with plates of black
-diamond. It once protected the steed of the Black Knight during his reign of
+diamond. It once protected the steed of the Black Knight during their reign of
 terror. Those who wear it become partially undead, gaining some of the benefits
 without the unfortunate downsides, although the great weight of metal and stone
 slows the wearer somewhat.
@@ -688,10 +688,15 @@ teleports its attack directly to its victim.
 %%%%
 staff of Battle
 
-A tubular staff encased in vividly coloured scales, the handiwork of a
-long-forgotten mage. It was stolen by the wizard Iskenderun who used it for a
-time before unlocking its secrets. The staff increases the power of its
-wielder's conjuration magic and, when its wielder is in danger, the staff will
-conjure a battlesphere to provide support. The strength of the battlesphere
-depends on the wielder's skill with Charms and Conjurations.
+A staff encased in vividly coloured scales, wrought by a long-forgotten wizard.
+It was the mage Iskenderun's favorite playtoy. The staff increases the power of
+its wielder's conjurations. When danger looms, it conjures a battlesphere, the
+strength of which depends on the wielder's skill with Charms and Conjurations.
 %%%%
+Cigotuvi's embrace
+
+Armour borne of rotten flesh and bone and gristle, held intact by the will of a
+long-dead sorcerer. The dreadful energies within it call to the bodies of the
+recently dead, sucking them in, protecting the wearer with a cocoon of carrion.
+This protection only lasts a short time, however - the ward against decay holds
+true within, but not without.
