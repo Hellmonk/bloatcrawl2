@@ -325,6 +325,7 @@ TILE:    urand_faerie
 TILE_EQ: faerie_dragon_armour
 BOOL:    nogen, no_upgrade
 
+# TAG_MAJOR_VERSION == 34
 NAME:    demon blade "Bloodbane"
 OBJ:     OBJ_WEAPONS/WPN_DEMON_BLADE
 PLUS:    +8
@@ -333,7 +334,7 @@ TILE:    urand_bloodbane
 TILE_EQ: bloodbane
 BRAND:   SPWPN_VORPAL
 ANGRY:   5
-BOOL:    berserk
+BOOL:    berserk, nogen
 STEALTH: -1
 
 # TAG_MAJOR_VERSION == 34
@@ -370,9 +371,9 @@ COLOUR:  ETC_DARK
 TILE:    urand_leech
 TILE_EQ: leech
 BRAND:   SPWPN_VAMPIRISM
-AC:      -3
-EV:      -3
-LIFE:     1
+LIFE:    1
+ANGRY:   5
+BOOL:    berserk
 
 # TAG_MAJOR_VERSION == 34
 NAME:    dagger of Chilly Death
@@ -767,15 +768,14 @@ TILE_EQ:  red
 EV:       4
 BOOL:     fly, nogen
 
-ENUM:     BOOTS_ASSASSIN
-NAME:     boots of the Assassin
-OBJ:      OBJ_ARMOUR/ARM_BOOTS
-FB_BRAND: SPARM_STEALTH
+ENUM:     HOOD_ASSASSIN
+NAME:     hood of the Assassin
+OBJ:      OBJ_ARMOUR/ARM_HAT
+FB_BRAND: SPARM_SEE_INVISIBLE
 INSCRIP:  Detection Stab+
 PLUS:     +2
 COLOUR:   BROWN
-TILE:     urand_assassin
-TILE_EQ:  middle_gray
+# XXX: needs tiles
 STEALTH:  2
 VALUE:    600
 
@@ -800,7 +800,7 @@ TILE:    urand_zhor
 TILE_EQ: zhor
 COLD:    3
 BOOL:    seeinv
-INSCRIP: Hibernate
+INSCRIP: Englaciate
 
 ENUM:    SALAMANDER
 NAME:    salamander hide armour
@@ -1264,6 +1264,7 @@ PLUS:    7
 BRAND:   SPWPN_PROTECTION
 FB_BRAND: SPWPN_VORPAL
 
+# TAG_MAJOR_VERSION == 34
 ENUM:    ETHERIC_CAGE
 NAME:    Maxwell's etheric cage
 OBJ:     OBJ_ARMOUR/ARM_HELMET
@@ -1273,7 +1274,7 @@ TILE_EQ: etheric_cage
 INSCRIP: RegenMP+
 PLUS:    +0
 MP:      +4
-BOOL:    mutate, elec, chaotic
+BOOL:    mutate, elec, chaotic, nogen
 VALUE:   400
 
 # TAG_MAJOR_VERSION == 34

@@ -61,10 +61,6 @@ livlige farver deres undergang, fordi de advarede eventuelt bytte. De er nu
 uddøde, og dette skattede relikvie er et af de sidste beviser på, at de
 overhovedet har eksisteret.
 %%%%
-demon blade "Bloodbane"
-
-Den bærer en umenneskelig galnings blodige besmittelse.
-%%%%
 scimitar of Flaming Death
 
 Brandvarm!
@@ -212,12 +208,6 @@ En pragtfuld, flagrende kåbe af pels og silke.
 cloak of Flash
 
 En vibrerende kappe.
-%%%%
-boots of the Assassin
-
-Et par bløde støvler, som er omhyggeligt formgivet af Snigmordernes Lav. De gør
-bæreren mere opmærksom på potentielle ofre og bedre til at få øje på svagheder
-hos uopmærksomme ofre.
 %%%%
 Lear's hauberk
 

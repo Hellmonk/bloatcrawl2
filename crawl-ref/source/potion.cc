@@ -339,8 +339,6 @@ public:
         mprf(MSGCH_DURATION, "You feel %s all of a sudden.",
              were_mighty ? "mightier" : "very mighty");
         you.increase_duration(DUR_MIGHT, 35 + random2(pow), 80);
-        if (!were_mighty)
-            notify_stat_change(STAT_STR, 5, true);
         return true;
     }
 };
@@ -363,34 +361,29 @@ public:
         mprf(MSGCH_DURATION, "You feel %sclever all of a sudden.",
              were_brilliant ? "more " : "");
         you.increase_duration(DUR_BRILLIANCE, 35 + random2(pow), 80);
-        if (!were_brilliant)
-            notify_stat_change(STAT_INT, 5, true);
         return true;
     }
 };
 
-class PotionAgility : public PotionEffect
+class PotionStabbing : public PotionEffect
 {
 private:
-    PotionAgility() : PotionEffect(POT_AGILITY) { }
-    DISALLOW_COPY_AND_ASSIGN(PotionAgility);
+    PotionStabbing() : PotionEffect(POT_STABBING) { }
+    DISALLOW_COPY_AND_ASSIGN(PotionStabbing);
 public:
-    static const PotionAgility &instance()
+    static const PotionStabbing &instance()
     {
-        static PotionAgility inst; return inst;
+        static PotionStabbing inst; return inst;
     }
 
     bool effect(bool=true, int pow = 40, bool=true) const override
     {
-        const bool were_agile = you.duration[DUR_AGILITY] > 0;
+        const bool was_stabbing = you.duration[DUR_STABBING] > 0;
 
-        mprf(MSGCH_DURATION, "You feel %sagile all of a sudden.",
-             were_agile ? "more " : "");
+        mprf(MSGCH_DURATION, "You feel %sready to backstab.",
+             was_stabbing ? "more " : "");
 
-        you.increase_duration(DUR_AGILITY, 35 + random2(pow), 80);
-
-        if (!were_agile)
-            notify_stat_change(STAT_DEX, 5, true);
+        you.increase_duration(DUR_STABBING, 35 + random2(pow), 80);
         return true;
     }
 };
@@ -1310,7 +1303,7 @@ static const PotionEffect* potion_effects[] =
     &PotionHaste::instance(),
     &PotionMight::instance(),
     &PotionBrilliance::instance(),
-    &PotionAgility::instance(),
+    &PotionStabbing::instance(),
 #if TAG_MAJOR_VERSION == 34
     &PotionGainStrength::instance(),
     &PotionGainDexterity::instance(),
@@ -1351,6 +1344,8 @@ static const PotionEffect* potion_effects[] =
     &PotionLignify::instance(),
 #if TAG_MAJOR_VERSION == 34
     &PotionBeneficialMutation::instance(),
+    &PotionStale::instance(), // placeholder for POT_DUMMY_AGILITY, a very
+                              // temporary then removed potion type
 #endif
     &PotionStale::instance()
 };

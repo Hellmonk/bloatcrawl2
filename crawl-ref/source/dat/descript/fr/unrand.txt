@@ -85,10 +85,6 @@ Malheureusement, leurs couleurs vives firent leur perte, car elles alertaient
 leurs proies potentielles. Ils sont maintenant presque tous éteints, et cette
 précieuse relique est l'une des dernières preuves de leur existence.
 %%%%
-demon blade "Bloodbane"
-
-Elle porte la soif sanglante d'un fou inhumain.
-%%%%
 scimitar of Flaming Death
 
 Ça fume !
@@ -284,12 +280,6 @@ Une splendide robe souple, faite de fourrure et de soie.
 cloak of Flash
 
 Une cape vibrante.
-%%%%
-boots of the Assassin
-
-Des bottes souples, conçue spécialement par la Guilde des Assassins. Elles
-permettent au porteur de sentir la présence de victimes potentielles et le rend
-plus à même de trouver les points faibles de ses victimes.
 %%%%
 Lear's hauberk
 

@@ -1749,7 +1749,7 @@ int attack::player_stab_weapon_bonus(int damage)
 
     if (player_good_stab())
     {
-        // We might be unarmed if we're using the boots of the Assassin.
+        // We might be unarmed if we're using the hood of the Assassin.
         const bool extra_good = using_weapon() && weapon->sub_type == WPN_DAGGER;
         int bonus = you.dex() * (stab_skill + 100) / (extra_good ? 500 : 1000);
 
@@ -1812,9 +1812,10 @@ void attack::player_stab_check()
 
     stab_type st = find_stab_type(&you, *defender);
     // Find stab type is also used for displaying information about monsters,
-    // so we need to upgrade the stab type for the Spriggan's Knife here
-    if (using_weapon()
+    // so upgrade the stab type for !stab and the Spriggan's Knife here
+    if ((using_weapon()
         && is_unrandom_artefact(*weapon, UNRAND_SPRIGGANS_KNIFE)
+        || you.duration[DUR_STABBING] > 0 && coinflip())
         && st != STAB_NO_STAB)
     {
         st = STAB_SLEEPING;

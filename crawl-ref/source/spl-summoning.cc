@@ -388,13 +388,6 @@ static monster_type _choose_dragon_type(int pow, god_type /*god*/, bool player)
 
 spret cast_dragon_call(int pow, bool fail)
 {
-    if (you.duration[DUR_DRAGON_CALL]
-        || you.duration[DUR_DRAGON_CALL_COOLDOWN])
-    {
-        mpr("You cannot issue another dragon's call so soon.");
-        return spret::abort;
-    }
-
     if (otr_stop_summoning_prompt("call dragons"))
         return spret::abort;
 
@@ -410,7 +403,6 @@ spret cast_dragon_call(int pow, bool fail)
 
 static void _place_dragon()
 {
-
     const int pow = calc_spell_power(SPELL_DRAGON_CALL, true);
     monster_type mon = _choose_dragon_type(pow, you.religion, true);
     int mp_cost = random_range(2, 3);
@@ -1014,21 +1006,18 @@ spret cast_summon_guardian_golem(int pow, god_type god, bool fail)
 /**
  * Choose a type of imp to summon with Call Imp.
  *
- * @param pow   The power with which the spell is being cast.
  * @return      An appropriate imp type.
  */
-static monster_type _get_imp_type(int pow)
+static monster_type _get_imp_type()
 {
-    // Proportion of white imps is independent of spellpower.
     if (x_chance_in_y(5, 18))
         return MONS_WHITE_IMP;
 
-    // 3/13 * 13/18 = 1/6 chance of one of these two at 0-46 spellpower,
-    // increasing up to about 4/9 at max spellpower.
-    if (random2(pow) >= 46 || x_chance_in_y(3, 13))
+    // 3/13 * 13/18 = 1/6 chance of one of these two.
+    if (x_chance_in_y(3, 13))
         return one_chance_in(3) ? MONS_IRON_IMP : MONS_SHADOW_IMP;
 
-    // 5/9 crimson at 0-46 spellpower, about half that at max power.
+    // 5/9 chance of getting, regrettably, a crimson imp.
     return MONS_CRIMSON_IMP;
 }
 
@@ -1052,7 +1041,7 @@ spret cast_call_imp(int pow, god_type god, bool fail)
 {
     fail_check();
 
-    const monster_type imp_type = _get_imp_type(pow);
+    const monster_type imp_type = _get_imp_type();
 
     const int dur = min(2 + (random2(pow) / 4), 6);
 

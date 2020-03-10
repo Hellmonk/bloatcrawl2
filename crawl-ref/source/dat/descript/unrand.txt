@@ -96,11 +96,13 @@ An enchanted suit of armour created from the scales of a rare breed of dragon,
 now thought to be extinct. This prized relic is now one of the last proofs that
 the vividly coloured faerie dragons ever existed.
 %%%%
+# TAG_MAJOR_VERSION == 34
 demon blade "Bloodbane"
 
 A blade forged in Hell by the sacrifice of countless tortured souls. It
 inflicts the rage and suffering of those souls upon its wielder.
 %%%%
+# TAG_MAJOR_VERSION == 34
 scimitar of Flaming Death
 
 A scimitar with a mysteriously smoking blade. Occasionally its heat leaks out,
@@ -115,9 +117,11 @@ reveals the machinations of those who would prefer to stay invisible.
 %%%%
 demon blade "Leech"
 
-An unerringly vampiric blade which gorges itself on drained life force every
-time it strikes.
+An unerringly vampiric blade, forged in Hell by the sacrifice of countless
+tortured souls. It fills its wielder with the rage and suffering of those
+souls, and gorges itself further on drained life force every time it strikes.
 %%%%
+# TAG_MAJOR_VERSION == 34
 dagger of Chilly Death
 
 A dagger made of one huge shard of sapphire. It covers opponents in ice,
@@ -328,12 +332,12 @@ cloak of Flash
 
 A cloak that twitches and jerks without any intervention.
 %%%%
-boots of the Assassin
+hood of the Assassin
 
-A pair of soft boots, specially designed by the Assassin's Guild, that allow
-the wearer to sense potential victims nearby. They also allow the wearer to
-easily find vulnerabilities when attacking unaware opponents, allowing
-effective stabbing attacks with any weapon.
+A soft hood, enchanted by members of the Assassin's Guild to allow the wearer
+to sense potential victims nearby. It also allows the wearer to easily spot
+vulnerabilities when attacking unaware opponents, allowing effective stabbing
+attacks with any weapon.
 %%%%
 Lear's hauberk
 
@@ -529,7 +533,9 @@ A wooden cudgel, loaded with more than just lead.
 dragonskin cloak
 
 An opalescent cloak gleaming with the colours of all kinds of dragons. It
-protects its wearer from most elemental attacks, although somewhat unreliably.
+imbues the wearer with draconic resistances (although somewhat unreliably),
+providing a chance to resist fire, cold, poison, electricity, acid, and
+negative energy.
 %%%%
 ring of the Octopus King
 
@@ -622,6 +628,7 @@ pair of quick blades "Gyre" and "Gimble"
 Two quick blades joined by a chain. Swinging one compels the wielder to swing
 the other, as if they have minds of their own.
 %%%%
+# TAG_MAJOR_VERSION == 34
 Maxwell's etheric cage
 
 A fine mesh cage designed to capture magical energy. Experimental notes suggest

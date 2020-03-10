@@ -292,9 +292,6 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
     if (wizardry > 0)
       fail_reduce = fail_reduce * 6 / (7 + wizardry);
 
-    if (you.duration[DUR_BRILLIANCE])
-        fail_reduce = fail_reduce / 2;
-
     // Hard cap on fail rate reduction.
     if (fail_reduce < 50)
         fail_reduce = 50;
@@ -461,11 +458,6 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
     }
     else
     {
-        // Brilliance boosts spell power a bit (equivalent to three
-        // spell school levels).
-        if (you.duration[DUR_BRILLIANCE])
-            power += 600;
-
         if (apply_intel)
             power = (power * you.intel()) / 10;
 
@@ -540,6 +532,7 @@ static int _spell_enhancement(spell_type spell)
 
     enhanced += you.archmagi();
     enhanced += player_equip_unrand(UNRAND_MAJIN);
+    enhanced += you.duration[DUR_BRILLIANCE] > 0;
 
     // These are used in an exponential way, so we'll limit them a bit. -- bwr
     if (enhanced > 3)
@@ -861,7 +854,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         }
     }
 
-    const bool staff_energy = player_energy();
+    const bool hungerless = hungerless_spells();
     you.last_cast_spell = spell;
     // Silently take MP before the spell.
     dec_mp(cost, true);
@@ -888,8 +881,8 @@ bool cast_a_spell(bool check_range, spell_type spell)
 
     flush_mp();
 
-    if (!staff_energy && you.undead_state() != US_UNDEAD
-        && you.species != SP_ROBOT && you.undead_state() != US_GHOST)
+    if (!hungerless && you.undead_state() != US_UNDEAD
+        && you.species != SP_ROBOT && you.undead_state() != US_GHOST))
     {
         const int spellh = spell_hunger(spell);
         if (calc_hunger(spellh) > 0)
@@ -1681,7 +1674,7 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
         return cast_liquefaction(powc, fail);
 
     case SPELL_OZOCUBUS_REFRIGERATION:
-        return fire_los_attack_spell(spell, powc, &you, nullptr, fail);
+        return fire_los_attack_spell(spell, powc, &you, fail);
 
     case SPELL_OLGREBS_TOXIC_RADIANCE:
         return cast_toxic_radiance(&you, powc, fail);

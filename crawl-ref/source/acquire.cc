@@ -55,7 +55,6 @@ static armour_type _acquirement_shield_type();
 static armour_type _acquirement_body_armour(bool);
 static armour_type _useless_armour_type();
 
-
 /**
  * Get a randomly rounded value for the player's specified skill, unmodified
  * by crosstraining, draining, etc.
@@ -680,7 +679,7 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & quantity,
         {MISC_PHANTOM_MIRROR,
                                        (NO_LOVE ?     0 :  7)},
         // Tremorstones are better for heavily armoured characters.
-        {MISC_TREMORSTONE, 3 + _skill_rdiv(SK_ARMOUR) / 3 },
+        {MISC_TIN_OF_TREMORSTONES, 3 + _skill_rdiv(SK_ARMOUR) / 3 },
         // The player never needs more than one.
         {MISC_LIGHTNING_ROD,
             (you.seen_misc[MISC_LIGHTNING_ROD] ?      0 : 17)},
@@ -695,7 +694,7 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & quantity,
 
     const int * const choice = random_choose_weighted(choices);
 
-    if (choice != nullptr && *choice == MISC_TREMORSTONE)
+    if (choice != nullptr && *choice == MISC_TIN_OF_TREMORSTONES)
         quantity = 2; // not quite worth it alone
 
     // Could be nullptr if all the weights were 0.
@@ -1657,6 +1656,10 @@ bool AcquireMenu::acquire_selected()
     }
 
     item_def &acq_item = *static_cast<item_def*>(entry.data);
+
+    if (is_unrandom_artefact(acq_item))
+        set_unique_item_status(acq_item, UNIQ_EXISTS);
+
     if (copy_item_to_grid(acq_item, you.pos()))
         canned_msg(MSG_SOMETHING_APPEARS);
     else
@@ -1720,49 +1723,67 @@ bool AcquireMenu::process_key(int keyin)
     return true;
 }
 
+static item_def _acquirement_item_def(object_class_type item_type)
+{
+    item_def item;
+
+    const int item_index = acquirement_create_item(item_type, AQ_SCROLL, true);
+
+    if (item_index != NON_ITEM)
+    {
+        ASSERT(!god_hates_item(mitm[item_index]));
+
+        // We make a copy of the item def, but we don't keep the real item.
+        item = mitm[item_index];
+        set_ident_flags(item, ISFLAG_IDENT_MASK);
+        destroy_item(item_index, true);
+    }
+
+    return item;
+}
+
 static void _make_acquirement_items()
 {
-    vector<object_class_type> rand_acq_classes;
+    vector<object_class_type> rand_classes;
 
     if (you.species != SP_FELID && you.species != SP_BUTTERFLY)
     {
-        rand_acq_classes.emplace_back(OBJ_WEAPONS);
-        rand_acq_classes.emplace_back(OBJ_ARMOUR);
-        rand_acq_classes.emplace_back(OBJ_STAVES);
+        rand_classes.emplace_back(OBJ_WEAPONS);
+        rand_classes.emplace_back(OBJ_ARMOUR);
+        rand_classes.emplace_back(OBJ_STAVES);
     }
 
-    rand_acq_classes.emplace_back(OBJ_JEWELLERY);
-    rand_acq_classes.emplace_back(OBJ_BOOKS);
+    rand_classes.emplace_back(OBJ_JEWELLERY);
+    rand_classes.emplace_back(OBJ_BOOKS);
 
-    vector<object_class_type> chosen_classes;
-    const int num_wanted = min(3, (int) rand_acq_classes.size());
-    shuffle_array(rand_acq_classes);
-    for (int i = 0 ; i < num_wanted ; i++)
-        chosen_classes.emplace_back(rand_acq_classes[i]);
-
-    // Gold and food (for characters that eat) are guaranteed.
-    chosen_classes.emplace_back(OBJ_GOLD);
-    if (!you_foodless(false))
-        chosen_classes.emplace_back(OBJ_FOOD);
+    const int num_wanted = min(3, (int) rand_classes.size());
+    shuffle_array(rand_classes);
 
     CrawlVector &acq_items = you.props[ACQUIRE_ITEMS_KEY].get_vector();
     acq_items.empty();
-    for (auto acq_class : chosen_classes)
+
+    // Generate item defs until we have enough, skipping any random classes
+    // that fail to generate an item.
+    for (auto obj_type : rand_classes)
     {
-        const int item_index = acquirement_create_item(acq_class, AQ_SCROLL,
-                true);
+        if (acq_items.size() == num_wanted)
+            break;
 
-        // If we couldn't make an item of this type, just skip it.
-        // TODO: it would be nice to instead try another item class.
-        if (item_index == NON_ITEM)
-            continue;
-        ASSERT(!god_hates_item(mitm[item_index]));
+        auto item = _acquirement_item_def(obj_type);
+        if (item.defined())
+            acq_items.push_back(item);
+    }
 
-        item_def item = mitm[item_index];
-        set_ident_flags(item, ISFLAG_IDENT_MASK);
-        acq_items.push_back(item);
-        // Copy the item def, but we don't want to keep the real item.
-        destroy_item(item_index, true);
+    // Gold and food (for characters that eat) are guaranteed.
+    auto gold_item = _acquirement_item_def(OBJ_GOLD);
+    if (gold_item.defined())
+            acq_items.push_back(gold_item);
+
+    if (!you_foodless(false))
+    {
+        auto food_item = _acquirement_item_def(OBJ_FOOD);
+        if (food_item.defined())
+            acq_items.push_back(food_item);
     }
 }
 

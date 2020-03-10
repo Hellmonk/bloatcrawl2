@@ -1576,14 +1576,14 @@ static string _describe_point_diff(int original,
     int difference = changed - original;
 
     if (difference == 0)
-        return "remain unchanged.\n";
+        return "remain unchanged.";
 
     description += _describe_point_change(difference);
     description += " (";
     description += to_string(original);
     description += " -> ";
     description += to_string(changed);
-    description += ").\n";
+    description += ").";
 
     return description;
 }
@@ -1632,11 +1632,10 @@ static string _armour_ac_change(const item_def &item)
 {
     string description;
 
-    if (!_you_are_wearing_item(item)){
+    if (!_you_are_wearing_item(item))
         description = _armour_ac_sub_change_description(item);
-    }else{
+    else
         description = _armour_ac_remove_change_description(item);
-    }
 
     return description;
 }
@@ -1697,14 +1696,6 @@ static string _describe_armour(const item_def &item, bool verbose)
             {
                 description += "       Evasion: "
                             + to_string(evp / 30);
-            }
-
-            // only display player-relevant info if the player exists
-            if (crawl_state.need_save && get_armour_slot(item) == EQ_BODY_ARMOUR)
-            {
-                description += make_stringf("\nWearing mundane armour of this type "
-                                            "will give the following: %d AC",
-                                             you.base_ac_from(item, 100) / 100);
             }
         }
     }
@@ -1848,8 +1839,14 @@ static string _describe_armour(const item_def &item, bool verbose)
 
     }
 
-    if (item_ident(item, ISFLAG_KNOW_PLUSES) && !is_shield(item))
+    // Only displayed if the player exists (not for item lookup from the menu).
+    if (crawl_state.need_save
+        && can_wear_armour(item, false, true)
+        && item_ident(item, ISFLAG_KNOW_PLUSES)
+        && !is_shield(item))
+    {
         description += _armour_ac_change(item);
+    }
 
     return description;
 }

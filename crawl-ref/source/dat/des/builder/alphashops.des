@@ -59,7 +59,7 @@
       local i = {}
       if s == "A" then i = { "arbalest", "book of alchemy", "book of air",
        "manual of air magic", "book of annihilations", "arrow",
-       "potion of agility", "potion of ambrosia", "scroll of acquirement q:1",
+       "potion of ambrosia", "scroll of acquirement q:1",
        "scroll of amnesia", "staff of air", "ring of attention",
        "manual of axes", "manual of armour", "wand of acid",
        "acid dragon scales" }
@@ -157,14 +157,15 @@
        "steam dragon scales", "shadow dragon scales", "storm dragon scales",
        "swamp dragon scales", "manual of short blades", "staff of summoning",
        "manual of slings", "manual of shields", "manual of spellcasting",
-       "manual of summonings", "stone", "wand of scattershot" }
+       "manual of summonings", "stone", "wand of scattershot",
+       "potion of stabbing" }
 
       elseif s == "T" then i = { "book of the tempests", "scroll of torment",
        "book of transfigurations", "ring of teleportation",
        "scroll of teleportation", "triple sword", "triple crossbow",
        "troll leather armour", "manual of throwing",
        "manual of translocations", "manual of transmutations",
-       "trident", "throwing net", "tower shield", "tremorstone" }
+       "trident", "throwing net", "tower shield", "tin of tremorstones" }
 
       elseif s == "U" then i = { "book of unlife", "manual of unarmed combat" }
 

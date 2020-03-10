@@ -657,7 +657,7 @@ const char* potion_type_name(int potiontype)
     case POT_HEAL_WOUNDS:       return "heal wounds";
     case POT_HASTE:             return "haste";
     case POT_MIGHT:             return "might";
-    case POT_AGILITY:           return "agility";
+    case POT_STABBING:          return "stabbing";
     case POT_BRILLIANCE:        return "brilliance";
 #if TAG_MAJOR_VERSION == 34
     case POT_GAIN_STRENGTH:     return "gain strength";
@@ -998,7 +998,7 @@ static string misc_type_name(int type)
     case MISC_AIR_HORN:                  return "air horn";
     case MISC_ANCIENT_CRATE:             return "ancient crate";
     case MISC_DUSTY_TOME:                return "dusty tome";
-    case MISC_TREMORSTONE:               return "tremorstone";
+    case MISC_TIN_OF_TREMORSTONES:       return "tin of tremorstones";
 
     default:
         return "buggy miscellaneous item";
@@ -2476,6 +2476,7 @@ void check_item_knowledge(bool unknown_items)
         for (int i = 0; i < NUM_MISCELLANY; i++)
         {
             if (i == MISC_HORN_OF_GERYON
+                || i == MISC_ZIGGURAT
 #if TAG_MAJOR_VERSION == 34
                 || is_deck_type(i)
                 || i == MISC_BUGGY_EBONY_CASKET
@@ -3267,7 +3268,7 @@ bool is_dangerous_item(const item_def &item, bool temp)
 
     case OBJ_MISCELLANY:
         // Tremorstones will blow you right up.
-        return item.sub_type == MISC_TREMORSTONE;
+        return item.sub_type == MISC_TIN_OF_TREMORSTONES;
 
     default:
         return false;

@@ -491,7 +491,7 @@ unsigned int item_value(item_def item, bool ident)
                 break;
 
             case POT_MIGHT:
-            case POT_AGILITY:
+            case POT_STABBING:
             case POT_BRILLIANCE:
                 valued += 40;
                 break;
@@ -743,7 +743,7 @@ unsigned int item_value(item_def item, bool ident)
             valued += 200;
             break;
 
-        case MISC_TREMORSTONE:
+        case MISC_TIN_OF_TREMORSTONES:
             valued += 150;
             break;
 

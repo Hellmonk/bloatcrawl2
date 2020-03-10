@@ -823,12 +823,7 @@ static short _get_stat_colour(stat_type stat)
 
     // Stat is magically increased.
     if (you.duration[DUR_DIVINE_STAMINA]
-        || stat == STAT_STR && you.duration[DUR_MIGHT]
-        || stat == STAT_STR && you.duration[DUR_BERSERK]
-        || stat == STAT_STR && you.duration[DUR_SQUAT]
-        || stat == STAT_INT && you.duration[DUR_BRILLIANCE]
-        || stat == STAT_INT && you.duration[DUR_SQUAT]
-        || stat == STAT_DEX && you.duration[DUR_AGILITY])
+        || (you.duration[DUR_SQUAT] && (stat == STAT_STR || stat == STAT_INT)))
     {
         return LIGHTBLUE;  // no end of effect warning
     }
@@ -2541,12 +2536,18 @@ static vector<formatted_string> _get_overview_resistances(
     const int regen = player_regen(); // round up
     out += make_stringf("HPRegen  %d.%d%d/turn\n", regen/100, regen/10%10, regen%10);
 
+#if TAG_MAJOR_VERSION == 34
     const bool etheric = player_equip_unrand(UNRAND_ETHERIC_CAGE);
     const int mp_regen = player_mp_regen() //round up
                          + (etheric ? 50 : 0); // on average
     out += make_stringf("MPRegen  %d.%02d/turn%s\n",
                         mp_regen / 100, mp_regen % 100,
                         etheric ? "*" : "");
+#else
+    const int mp_regen = player_mp_regen(); // round up
+    out += make_stringf("MPRegen  %d.%02d/turn\n",
+                        mp_regen / 100, mp_regen % 100);
+#endif
 
     cols.add_formatted(0, out, false);
 

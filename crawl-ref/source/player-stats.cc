@@ -103,7 +103,7 @@ bool attribute_increase()
 {
     if (you.species == SP_ANCIENT_GNOLL)
         return true;
-    
+
     const string stat_gain_message = make_stringf("Your experience leads to a%s "
                                                   "increase in your attributes!",
                                                   you.species == SP_DEMIGOD ?
@@ -502,7 +502,7 @@ void notify_stat_change(stat_type which_stat, int amount, bool suppress_msg)
 {
     if (you.species == SP_ANCIENT_GNOLL)
         return;
-    
+
     ASSERT(!crawl_state.game_is_arena());
 
     // sanity - is non-zero amount?
@@ -541,16 +541,13 @@ static int _strength_modifier(bool innate_only)
 {
     if (you.species == SP_ANCIENT_GNOLL)
         return 0;
-    
+
     int result = 0;
 
     if (!innate_only)
     {
         if (you.duration[DUR_SQUAT])
             result += you.base_stats[STAT_INT] / 2;
-        
-        if (you.duration[DUR_MIGHT] || you.duration[DUR_BERSERK])
-            result += 5;
 
         if (you.duration[DUR_DIVINE_STAMINA])
             result += you.attribute[ATTR_DIVINE_STAMINA];
@@ -583,19 +580,16 @@ static int _strength_modifier(bool innate_only)
 
 static int _int_modifier(bool innate_only)
 {
-    
+
     if (you.species == SP_ANCIENT_GNOLL)
         return 0;
-    
+
     int result = 0;
 
     if (!innate_only)
     {
         if (you.duration[DUR_SQUAT])
             result += you.base_stats[STAT_STR] / 2;
-        
-        if (you.duration[DUR_BRILLIANCE])
-            result += 5;
 
         if (you.duration[DUR_DIVINE_STAMINA])
             result += you.attribute[ATTR_DIVINE_STAMINA];
@@ -621,17 +615,14 @@ static int _int_modifier(bool innate_only)
 
 static int _dex_modifier(bool innate_only)
 {
-    
+
     if (you.species == SP_ANCIENT_GNOLL)
         return 0;
-    
+
     int result = 0;
 
     if (!innate_only)
     {
-        if (you.duration[DUR_AGILITY])
-            result += 5;
-
         if (you.duration[DUR_DIVINE_STAMINA])
             result += you.attribute[ATTR_DIVINE_STAMINA];
 
@@ -703,7 +694,7 @@ bool lose_stat(stat_type which_stat, int stat_loss, bool force)
 {
     if (stat_loss <= 0)
         return false;
-    
+
     if (you.species == SP_ANCIENT_GNOLL)
         return false;
 

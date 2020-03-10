@@ -401,7 +401,7 @@ bool del_spell_from_memory(spell_type spell)
 
 int spell_hunger(spell_type which_spell)
 {
-    if (player_energy())
+    if (hungerless_spells())
         return 0;
 
     if (you.has_mutation(MUT_FAERIE_MAGIC))
@@ -419,6 +419,10 @@ int spell_hunger(spell_type which_spell)
         hunger = (basehunger[0] * level * level) / 4;
 
     hunger -= you.skill(SK_SPELLCASTING, you.intel());
+
+    if (you.duration[DUR_BRILLIANCE] > 0) {
+        hunger /= 2;
+    }
 
     if (hunger < 0)
         hunger = 0;
@@ -1321,6 +1325,20 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "a magic seal in the Gauntlet prevents this spell "
                 "from working.";
         }
+        break;
+
+    case  SPELL_DRAGON_CALL:
+        if (temp && (you.duration[DUR_DRAGON_CALL]
+                     || you.duration[DUR_DRAGON_CALL_COOLDOWN]))
+        {
+            return "you cannot issue another dragon's call so soon.";
+        }
+        break;
+
+    case SPELL_FROZEN_RAMPARTS:
+        if (temp && you.duration[DUR_FROZEN_RAMPARTS])
+            return "you cannot sustain more frozen ramparts right now.";
+        break;
 
     default:
         break;

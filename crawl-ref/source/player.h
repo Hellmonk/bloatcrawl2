@@ -888,6 +888,8 @@ public:
                                 killer_type killer = KILL_NONE,
                                 int killernum = -1) override;
 
+    void be_agile(int pow);
+
     ////////////////////////////////////////////////////////////////
 
     PlaceInfo& get_place_info() const ; // Current place info
@@ -1001,7 +1003,7 @@ void update_acrobat_status();
 bool is_effectively_light_armour(const item_def *item);
 bool player_effectively_in_light_armour();
 
-int player_energy();
+bool hungerless_spells();
 
 int player_shield_racial_factor();
 int player_armour_shield_spell_penalty();
@@ -1044,8 +1046,7 @@ int player_res_electricity(bool calc_unid = true, bool temp = true,
 
 int player_res_fire(bool calc_unid = true, bool temp = true,
                     bool items = true);
-int player_res_sticky_flame(bool calc_unid = true, bool temp = true,
-                            bool items = true);
+int player_res_sticky_flame();
 int player_res_steam(bool calc_unid = true, bool temp = true,
                      bool items = true);
 

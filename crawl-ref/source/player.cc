@@ -1582,6 +1582,13 @@ bool player::res_corr(bool calc_unid, bool items) const
     if (you.species == SP_ASTRAL)
         return false;
 
+    // dragonskin cloak: 0.5 to draconic resistances
+    if (items && calc_unid
+        && player_equip_unrand(UNRAND_DRAGONSKIN) && coinflip())
+    {
+        return true;
+    }
+
     if (have_passive(passive_t::resist_corrosion))
         return true;
 
@@ -1812,27 +1819,11 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
     return rp;
 }
 
-int player_res_sticky_flame(bool calc_unid, bool /*temp*/, bool items)
+int player_res_sticky_flame()
 {
     if (you.species == SP_ASTRAL)
         return 0;
-
-    int rsf = 0;
-
-    // dragonskin cloak: 0.5 to draconic resistances
-    if (items && calc_unid
-        && player_equip_unrand(UNRAND_DRAGONSKIN) && coinflip())
-    {
-        rsf++;
-    }
-
-    if (get_form()->res_sticky_flame())
-        rsf++;
-
-    if (rsf > 1)
-        rsf = 1;
-
-    return rsf;
+    return get_form()->res_sticky_flame();
 }
 
 int player_spec_death()
@@ -1962,14 +1953,9 @@ int player_spec_poison()
     return sp;
 }
 
-int player_energy()
+bool hungerless_spells()
 {
-    int pe = 0;
-
-    // Staves
-    pe += you.wearing(EQ_STAFF, STAFF_ENERGY);
-
-    return pe;
+    return you.wearing(EQ_STAFF, STAFF_ENERGY) || you.duration[DUR_BRILLIANCE];
 }
 
 // If temp is set to false, temporary sources of resistance won't be
@@ -3618,9 +3604,6 @@ int player_stealth()
     if (you.duration[DUR_STEALTH])
         stealth += STEALTH_PIP * 2;
 
-    if (you.duration[DUR_AGILITY])
-        stealth += STEALTH_PIP;
-
     if (you.form == transformation::blade_hands && you.species == SP_FELID
         && !you.airborne())
     {
@@ -4573,8 +4556,10 @@ void contaminate_player(int change, bool controlled, bool msg)
     bool was_glowing = player_severe_contamination();
     int new_level  = 0;
 
+#if TAG_MAJOR_VERSION == 34
     if (change > 0 && player_equip_unrand(UNRAND_ETHERIC_CAGE))
         change *= 2;
+#endif
 
     you.magic_contamination = max(0, min(250000,
                                          you.magic_contamination + change));
@@ -8418,7 +8403,7 @@ int player_monster_detect_radius()
     int radius = max(you.get_mutation_level(MUT_ANTENNAE) * 2,
                      you.get_mutation_level(MUT_CAVEPERSON_WARNING) * 6);
 
-    if (player_equip_unrand(UNRAND_BOOTS_ASSASSIN))
+    if (player_equip_unrand(UNRAND_HOOD_ASSASSIN))
         radius = max(radius, 4);
     if (have_passive(passive_t::detect_montier))
         radius = max(radius, you.piety / 20);
@@ -8934,8 +8919,6 @@ void player_end_berserk()
     // slightly longer.
     you.increase_duration(DUR_BERSERK_COOLDOWN, dur * 2);
 
-    notify_stat_change(STAT_STR, -5, true);
-
     // Don't trigger too many hints mode messages.
     const bool hints_slow = Hints.hints_events[HINT_YOU_ENCHANTED];
     Hints.hints_events[HINT_YOU_ENCHANTED] = false;
@@ -9059,4 +9042,16 @@ size_type player_size()
         return you.hermit_shell_size;
     else
         return species_size(you.species);
+}
+
+// Activate DUR_AGILE.
+void player::be_agile(int pow)
+{
+    const bool were_agile = you.duration[DUR_AGILITY] > 0;
+    mprf(MSGCH_DURATION, "You feel %sagile all of a sudden.",
+         were_agile ? "more " : "");
+
+    you.increase_duration(DUR_AGILITY, 35 + random2(pow), 80);
+    if (!were_agile)
+        you.redraw_evasion = true;
 }
