@@ -882,7 +882,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     flush_mp();
 
     if (!hungerless && you.undead_state() != US_UNDEAD
-        && you.species != SP_ROBOT && you.undead_state() != US_GHOST))
+        && you.species != SP_ROBOT && you.undead_state() != US_GHOST)
     {
         const int spellh = spell_hunger(spell);
         if (calc_hunger(spellh) > 0)

@@ -424,7 +424,7 @@ static skill_type _setup_archaeologist_crate(item_def& crate)
     case UNRAND_FENCERS:
         return SK_DODGING;
     case UNRAND_THIEF:
-    case UNRAND_BOOTS_ASSASSIN:
+    case UNRAND_HOOD_ASSASSIN:
     case UNRAND_NIGHT:
     case UNRAND_SHADOWS:
         return SK_STEALTH;
