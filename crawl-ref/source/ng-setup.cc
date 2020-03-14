@@ -401,14 +401,17 @@ static skill_type _setup_archaeologist_crate(item_def& crate)
 
     crate.props[ARCHAEOLOGIST_CRATE_ITEM] = type;
 
+    // Jewellery only happens on felid / butterfly.
+    if (unrand.base_type == OBJ_JEWELLERY)
+        return SK_SPELLCASTING;
+
     // Handle items unlocked through interesting skills.
-    // Jewellery only happens on felids.
     switch (type)
     {
     case UNRAND_PONDERING:
     case UNRAND_MAJIN:
     case UNRAND_ETHERIC_CAGE:
-        return SK_SPELLCASTING;
+        return you.species == SP_SILENT_SPECTRE ? SK_ARMOUR : SK_SPELLCASTING;
     case UNRAND_DRAGONMASK:
     case UNRAND_WAR:
     case UNRAND_BEAR_SPIRIT:
@@ -433,9 +436,7 @@ static skill_type _setup_archaeologist_crate(item_def& crate)
         break;
     }
 
-    if (unrand.base_type == OBJ_JEWELLERY)
-        return SK_SPELLCASTING;
-    else if (unrand.base_type == OBJ_WEAPONS)
+    if (unrand.base_type == OBJ_WEAPONS)
     {
         if(you.species == SP_HILL_ORC && !is_range_weapon(unrand))
             return SK_FIGHTING;
@@ -445,7 +446,9 @@ static skill_type _setup_archaeologist_crate(item_def& crate)
     else if (is_shield(unrand))
         return SK_SHIELDS;
     else if (unrand.sub_type == ARM_ROBE || unrand.sub_type == ARM_ANIMAL_SKIN)
-        return coinflip() ? SK_SPELLCASTING : SK_DODGING;
+        return coinflip()
+            ? you.species == SP_SILENT_SPECTRE ? SK_ARMOUR : SK_SPELLCASTING
+            : SK_DODGING;
     else
         return species_apt(SK_ARMOUR) == UNUSABLE_SKILL
                ? _archaeologist_armour_skill_unusable(type)
