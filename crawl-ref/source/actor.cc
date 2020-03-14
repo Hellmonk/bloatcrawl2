@@ -974,7 +974,8 @@ void actor::collide(coord_def newpos, const actor *agent, int pow)
 
         const string thisname = name(DESC_A, true);
         const string othername = other->name(DESC_A, true);
-        if (other->alive() && !fedhas_prot_other)
+        if (other->alive() && !fedhas_prot_other &&
+            !actor_collision_immune(other))
         {
             other->hurt(agent, other->apply_ac(damage.roll()),
                         BEAM_MISSILE, KILLED_BY_COLLISION,
