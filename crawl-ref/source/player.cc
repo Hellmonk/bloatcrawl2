@@ -2224,7 +2224,7 @@ void update_acrobat_status()
 static int _player_evasion_size_factor(bool base = false)
 {
     // XXX: you.body_size() implementations are incomplete, fix.
-    const size_type size = you.body_size(PSIZE_BODY, base);
+    const size_type size = player_size();
     return 2 * (SIZE_MEDIUM - size);
 }
 
