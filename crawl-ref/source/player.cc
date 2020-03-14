@@ -2865,15 +2865,26 @@ void update_player_size(size_type old_size)
     const string verb = (int)new_size > (int)old_size ? "grow" : "shrink";
     mprf("You %s from %s to %s.", verb.c_str(),
          get_size_adj(old_size), get_size_adj(new_size));
-    for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
+
+    if (you.equip[EQ_WEAPON] != -1 && !can_wield(&you.inv[you.equip[EQ_WEAPON]]))
     {
-        if (you_can_wear(static_cast<equipment_type>(i)) == MB_FALSE
-            && you.equip[i] != -1)
+        mprf("You can no longer wield %s!",
+            you.inv[you.equip[EQ_WEAPON]].name(DESC_YOUR).c_str()
+        );
+        you.equip[EQ_WEAPON] = -1;
+        you.melded.set(EQ_WEAPON, false);
+    }
+    for (int i = EQ_MIN_ARMOUR; i < EQ_MAX_ARMOUR; ++i)
+    {
+        if (you.equip[i] == -1)
+            continue;
+        item_def item = you.inv[you.equip[i]];
+
+        if (!can_wear_armour(item, false, true))
         {
             mprf("%s fall%s away!",
-                 you.inv[you.equip[i]].name(DESC_YOUR).c_str(),
-                 you.inv[you.equip[i]].quantity > 1 ? "" : "s");
-            // Unwear items without the usual processing.
+                item.name(DESC_YOUR).c_str(),
+                item.quantity > 1 ? "" : "s");
             you.equip[i] = -1;
             you.melded.set(i, false);
         }
