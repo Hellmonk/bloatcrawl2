@@ -3053,18 +3053,18 @@ NAME:    hangedman_elemental_death_ray
 TAGS:    transparent patrolling
 DEPTH:   Depths, !Depths:$
 ORIENT:  float
-MONS:    necromancer ; wand of iceblast . \
+MONS:    necromancer ; \
          staff of fire w:15 | quarterstaff ego:flaming w:15 . \
          robe ego:fire_resistance w:14 | robe ego:cold_resistance w:15 | \
          robe ego:resistance w:1
-MONS:    necromancer ; wand of iceblast . \
+MONS:    necromancer ; \
          staff of cold ident:type | quarterstaff ego:freezing ident:type . \
          robe ego:fire_resistance w:15 | robe ego:cold_resistance w:14 | \
          robe ego:resistance w:1
 MONS:    fire giant ; battleaxe ego:freezing
 MONS:    frost giant ; great sword ego:flaming
 MONS:    ettin simulacrum, efreet, deep elf mage
-KITEM:   d = lamp of fire, *
+KITEM:   d = triple crossbow ego:flaming ident:type, *
 KITEM:   e = lajatang ego:freezing ident:type, *
 SHUFFLE: 12, 34, 5df / 6eF, {[(<
 FTILE:   fF'@{[(< = floor_pebble_darkgray
@@ -3243,8 +3243,7 @@ ORIENT: float
 MONS:   raiju / sixfirhy w:2
 KMONS:  2 = shock serpent / storm dragon
 ITEM:   book of air / book of the sky / manual of air magic / \
-        staff of air ident:type / lightning rod w:15 / fan of gales w:15 / \
-        storm dragon scales w:5
+        staff of air ident:type / lightning rod w:20 / storm dragon scales w:5
 KITEM:  2 = arc_blade ident:type
 : minmay_elemental_octagon_setup(_G)
 MAP
@@ -3329,7 +3328,7 @@ ORIENT: float
 MONS:   fire bat
 KMONS:  2 = fire giant / fire dragon
 ITEM:   book of flames / book of fire / manual of fire magic / \
-        staff of fire ident:type / ring of fire ident:type / lamp of fire / \
+        staff of fire ident:type / ring of fire ident:type / \
         fire dragon scales w:5
 KITEM:  2 = firestarter ident:type
 : minmay_elemental_octagon_setup(_G)
@@ -3675,8 +3674,7 @@ MONS: spark wasp
 : else
 MONS: w:5 anaconda / black mamba / water moccasin, mana viper, shock serpent
 : end
-ITEM: w:60 star_item / crystal ball of energy / staff of air / \
-      staff of energy / lightning rod w:15  / fan of gales w:15
+ITEM: w:60 star_item / staff of air / staff of energy w:20 / lightning rod w:20
 NSUBST: " = 1:2 / 1:1 / 3=12., ' = 1:2 / 1:1 / 3=12., - = 2:3, ` = 2=*% / *:%
 MAP
 @...........
@@ -9038,20 +9036,21 @@ MAP
   ...........
 ENDMAP
 
-NAME: gammafunk_its_a_trap
-TAGS: no_monster_gen no_trap_gen no_tele_into
-DEPTH: Crypt, D:$, Depths, Elf, Shoals, Spider, Snake, Swamp, Zot
-ORIENT: float
-KMASK: ^ = no_item_gen
-ITEM: any randart jewellery
+NAME:    gammafunk_its_a_trap
+TAGS:    no_monster_gen no_trap_gen no_tele_into
+DEPTH:   Crypt, D:$, Depths, Elf, Shoals, Spider, Snake, Swamp, Zot
+ORIENT:  float
+KMASK:   ^ = no_item_gen
+: item(dgn.loot_scrolls .. " / " .. dgn.loot_potions)
+ITEM:    any randart jewellery
 SHUFFLE: FGHI / JKLM
-NSUBST: D = ^ / ., E = ^ / ., I = . / "
-SUBST: FGH = ., JKLM = ", ' = ^., " = ^^.
-KFEAT: ^ = known zot trap
-MARKER: P = lua:transp_loc("its_a_trap_entry")
-MARKER: Q = lua:transp_dest_loc("its_a_trap_entry")
-MARKER: R = lua:transp_loc("its_a_trap_exit")
-MARKER: S = lua:transp_dest_loc("its_a_trap_exit")
+NSUBST:  D = ^ / ., E = ^ / ., I = . / "
+SUBST:   FGH = ., JKLM = ", ' = ^., " = ^^., d = dd$
+KFEAT:   ^ = known zot trap
+MARKER:  P = lua:transp_loc("its_a_trap_entry")
+MARKER:  Q = lua:transp_dest_loc("its_a_trap_entry")
+MARKER:  R = lua:transp_loc("its_a_trap_exit")
+MARKER:  S = lua:transp_dest_loc("its_a_trap_exit")
 MAP
        cccccccccc
       cccccccccccc
@@ -9059,13 +9058,13 @@ MAP
   ccccccccDcc^ccccccccccc
   ccccccc.D....cccccccccc
   cccccc".c.ccc..cccccccc
-  ccc.''."c"I.0'".cd^$ccc
+  ccc.''."c"I.0'".ce^dccc
   ccc''.c"GHc.9'".c'*'nnn
-..nnn^..cFc"I.0'"^+|^$nnn..
+..nnn^..cFc"I.0'"^+|^dnnn..
 @PnnnQ.^."""c.8'""c'*RnnnS@
-..nnn^..cJc"M.0'"^+|^$nnn..
+..nnn^..cJc"M.0'"^+|^dnnn..
   ccc''.c"KLc.9'".c'*'nnn
-  ccc.''."c"M.0'".c|^dccc
+  ccc.''."c"M.0'".c|^eccc
   cccccc".c.ccc..cccccccc
   ccccccc.E....cccccccccc
   ccccccccEcc^ccccccccccc
@@ -9074,42 +9073,47 @@ MAP
        cccccccccc
 ENDMAP
 
-NAME: gammafunk_dig_for_victory
-TAGS: no_monster_gen no_item_gen no_trap_gen
-# Must not place on a branch end so it can place downhatch
-DEPTH: Crypt, !Crypt:$, D:13-, !D:$, Depths, !Depths:$, Pan, Zot, !Zot:$
+NAME:   gammafunk_dig_for_victory
+TAGS:   no_monster_gen no_trap_gen
+# This must not place on a branch end so it can place a downhatch.
+DEPTH:  Crypt, !Crypt:$, D:13-, !D:$, Depths, !Depths:$, Pan, Zot, !Zot:$
 ORIENT: float
-KPROP: 1DEFHJKR|*$em = no_tele_into
-ITEM: wand of digging ident:all, any randart jewellery
+KPROP:  1DEFHJR|*$efm = no_tele_into
+{{
+-- Guarantee at least 5 charges, and on-average give 50% more than usual.
+item("wand of digging plus:" .. tostring(5 + crawl.random2(6)) ..
+     "ident:all")
+item(dgn.loot_scrolls .. " / " .. dgn.loot_potions)
+}}
+ITEM:   any randart jewellery
 # Do these substs now so they can be cleaned up by branch.
-NSUBST: D = 1:8 / 2:9 / 0, F = 1:8 / 2:9 / 0, J = 1:8 / 2:9 / 0, e = 2:e / |
-SUBST:  E = 89..
+NSUBST: D = 8 / 2=9 / 0, F = 8 / 2=9 / 0, J = 8 / 2=9 / 0, f = 2=f / |
+SUBST:  E = 89.., e = ee$
 : if you.in_branch("D") or you.in_branch("Depths") then
-KMONS: 1H = deep troll earth mage
-COLOUR: n = lightblue
-COLOUR: c = blue
-TILE:   n = dngn_transparent_stone_blue
+KMONS:  1H = deep troll earth mage
+COLOUR: p = blue
+TILE:   p = dngn_transparent_stone_blue
 : else
-KMONS: 1HK = cacodemon
+KMONS:  1HK = cacodemon
 :   if you.in_branch("Crypt") then
-KMONS: 2 = ancient lich
+KMONS:  2 = ancient lich
 NSUBST: 8 = 2 / 8
 :   elseif you.in_branch("Pandemonium") then
 # 8 and 9 spawns aren't a thing in Pan, so replace these with scary things.
-KMONS: 2 = greater demon / nonbase demonspawn
-KMONS: 3 = executioner / brimstone fiend / ice fiend / tzitzimitl \
+KMONS:  2 = greater demon / nonbase demonspawn
+KMONS:  3 = executioner / brimstone fiend / ice fiend / tzitzimitl \
            / hell sentinel
-SUBST: 8 = 39, 9 = 02, H = K
+SUBST:  8 = 39, 9 = 02, H = K
 :   elseif you.in_branch("Zot") then
-KMONS: 2 = ancient lich / orb of fire / curse toe
-SUBST: 8 = 28
+KMONS:  2 = ancient lich / orb of fire / curse toe
+SUBST:  8 = 28
 :   end
-COLOUR: n = yellow
-COLOUR: c = brown
-TILE:   n = dngn_transparent_stone_yellow
+COLOUR: p = yellow
+TILE:   p = dngn_transparent_stone_yellow
 : end
-KFEAT: H = >
-KFEAT: K = {
+KFEAT:  H = >
+KFEAT:  K = {
+KFEAT:  p = n
 MARKER: P = lua:transp_loc("dig_for_victory_entry")
 MARKER: Q = lua:transp_dest_loc("dig_for_victory_entry")
 MARKER: R = lua:transp_loc("dig_for_victory_exit")
@@ -9118,19 +9122,19 @@ MAP
        cccccccccccccccc
        cccccccccccccccc
        cccccccccccccccc
-       ccn1mmDDDEEmmmcc
-  ccccccnnnnmDDDEmmmmccccccc
-  c.....mmmmmmmmmmmmmnem*mec
+       ccp1mmDDDEEmmmcc
+  ccccccppppmDDDEmmmmccccccc
+  c.....mmmmmmmmmmmmmnfm*mfc
   c.....mmmmmmmmmmmmmmmmmmmn
-  c.....mmmmmmmmmmmmmn*m$m$n
+  c.....mmmmmmmmmmmmmn*memen
  .n.....mmmmmmmmmmJJmmmmmmmn.
 @PnQ.d.........mmmHJmn|mRm|nS@
  .n.....mmmmmmmmmmJJmmmmmmmn.
-  c.....mmmmmmmmmmmmmn*m$m$n
+  c.....mmmmmmmmmmmmmn*memen
   c.....mmmmmmmmmmmmmmmmmmmn
-  c.....mmmmmmmmmmmmmnem*mec
-  ccccccnnnnmFFFEmmmmccccccc
-       ccn1mmFFFEEmmmcc
+  c.....mmmmmmmmmmmmmnfm*mfc
+  ccccccppppmFFFEmmmmccccccc
+       ccp1mmFFFEEmmmcc
        cccccccccccccccc
        cccccccccccccccc
        cccccccccccccccc

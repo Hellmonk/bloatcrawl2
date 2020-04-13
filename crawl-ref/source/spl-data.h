@@ -3258,7 +3258,8 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_GLACIATE, "Glaciate",
     spschool::conjuration | spschool::ice,
-    spflag::dir_or_target | spflag::area | spflag::not_self,
+    spflag::dir_or_target | spflag::area | spflag::not_self
+        | spflag:: monster,
     9,
     200,
     6, 6,
@@ -4099,9 +4100,20 @@ static const struct spell_desc spelldata[] =
     spflag::area | spflag::no_ghost,
     3,
     50,
-    3, 3,
+    2, 2,
     3, 8,
     TILEG_FREEZE,
+},
+
+{
+    SPELL_ABSOLUTE_ZERO, "Absolute Zero",
+    spschool::ice,
+    spflag::no_ghost,
+    9,
+    200,
+    5, 5,
+    9, 40,  // 40 noise at 0 spellpower
+    TILEG_ICE_STORM,
 },
 
 {

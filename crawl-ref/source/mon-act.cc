@@ -1847,6 +1847,8 @@ void handle_monster_move(monster* mons)
             }
         }
 
+        const bool prefer_ranged = mons_class_flag(mons->type, M_PREFER_RANGED);
+
         if (friendly_or_near)
         {
             if (_handle_potion(*mons))
@@ -1879,7 +1881,9 @@ void handle_monster_move(monster* mons)
                 return;
             }
 
-            if (_handle_reaching(mons))
+            // we want to let M_PREFER_RANGED monsters try their ranged attack
+            // first, even if within reaching range.
+            if (!prefer_ranged && _handle_reaching(mons))
             {
                 DEBUG_ENERGY_USE("_handle_reaching()");
                 return;
@@ -1890,6 +1894,12 @@ void handle_monster_move(monster* mons)
         if (handle_throw(mons, beem, false, false))
         {
             DEBUG_ENERGY_USE("_handle_throw()");
+            return;
+        }
+
+        if (friendly_or_near && prefer_ranged && _handle_reaching(mons))
+        {
+            DEBUG_ENERGY_USE("_handle_reaching()");
             return;
         }
     }
@@ -2218,7 +2228,8 @@ static void _torpor_snail_slow(monster* mons)
     {
         monster *m = *ri;
         if (m && !mons_aligned(mons, m) && !m->stasis()
-            && !m->is_stationary() && !is_sanctuary(m->pos()))
+            && !mons_is_conjured(m->type) && !m->is_stationary()
+            && !is_sanctuary(m->pos()))
         {
             m->add_ench(mon_enchant(ENCH_SLOW, 0, mons, 1));
             m->props[TORPOR_SLOWED_KEY] = true;
@@ -2264,7 +2275,7 @@ static void _post_monster_move(monster* mons)
                 if (grd(*ai) != DNGN_SHALLOW_WATER && grd(*ai) != DNGN_FLOOR
                     && you.see_cell(*ai))
                 {
-                    mprf("%s watery aura covers %s",
+                    mprf("%s watery aura covers %s.",
                          apostrophise(mons->name(DESC_THE)).c_str(),
                          feature_description_at(*ai, false, DESC_THE).c_str());
                 }

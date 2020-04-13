@@ -466,18 +466,14 @@ bool attack::distortion_affects_defender()
         BIG_DMG,
         BANISH,
         BLINK,
-        TELE_INSTANT,
-        TELE_DELAYED,
         NONE
     };
 
-    const disto_effect choice = random_choose_weighted(33, SMALL_DMG,
-                                                       22, BIG_DMG,
-                                                       5,  BANISH,
-                                                       15, BLINK,
-                                                       10, TELE_INSTANT,
-                                                       10, TELE_DELAYED,
-                                                       5,  NONE);
+    const disto_effect choice = random_choose_weighted(35, SMALL_DMG,
+                                                       25, BIG_DMG,
+                                                       10,  BANISH,
+                                                       20, BLINK,
+                                                       10,  NONE);
 
     if (simu && !(choice == SMALL_DMG || choice == BIG_DMG))
         return false;
@@ -510,23 +506,6 @@ bool attack::distortion_affects_defender()
         defender->banish(attacker, attacker->name(DESC_PLAIN, true),
                          attacker->get_experience_level());
         return true;
-    case TELE_INSTANT:
-    case TELE_DELAYED:
-        if (defender_visible)
-            obvious_effect = true;
-        if (crawl_state.game_is_sprint() && defender->is_player()
-            || defender->no_tele())
-        {
-            if (defender->is_player())
-                canned_msg(MSG_STRANGE_STASIS);
-            return false;
-        }
-
-        if (choice == TELE_INSTANT)
-            teleport_fineff::schedule(defender);
-        else
-            defender->teleport();
-        break;
     case NONE:
         // Do nothing
         break;
@@ -1795,7 +1774,7 @@ int attack::player_stab(int damage)
 
 /* Check for stab and prepare combat for stab-values
  *
- * Grant an automatic stab if paralyzed or sleeping (with highest damage value)
+ * Grant an automatic stab if paralysed or sleeping (with highest damage value)
  * stab_bonus is used as the divisor in damage calculations, so lower values
  * will yield higher damage. Normal stab chance is (stab_skill + dex + 1 / roll)
  * This averages out to about 1/3 chance for a non extended-endgame stabber.

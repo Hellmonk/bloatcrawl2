@@ -180,10 +180,6 @@ export uname_S
 #
 uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 uname_M := $(shell sh -c 'uname -m 2>/dev/null || echo not')
-uname_O := $(shell sh -c 'uname -o 2>/dev/null || echo not')
-uname_R := $(shell sh -c 'uname -r 2>/dev/null || echo not')
-uname_P := $(shell sh -c 'uname -p 2>/dev/null || echo not')
-uname_V := $(shell sh -c 'uname -v 2>/dev/null || echo not')
 
 HOST := $(shell sh -c 'cc -dumpmachine || echo unknown')
 ARCH := $(HOST)
@@ -224,7 +220,6 @@ ifdef msys
 	GAME = crawl.exe
 	bin_prefix = .
 	WIN32 = Yes
-	NO_RDYNAMIC = YesPlease
 	NO_NCURSES = YesPlease
 	NEED_LIBW32C = YesPlease
 	BUILD_PCRE = YesPlease
@@ -265,12 +260,8 @@ ifeq ($(uname_S),Darwin)
 		COPY_FONTS = yes
 	endif
 endif
-ifdef USE_ICC
-	NO_RDYNAMIC := YesPlease
-endif
 ifneq (,$(findstring CYGWIN,$(uname_S)))
 	GAME = crawl.exe
-	NO_RDYNAMIC = YesPlease
 	BUILD_PCRE = YesPlease
 	# newlib doesn't provide Posix functions with c++11
 	STDFLAG = -std=gnu++11
@@ -386,12 +377,6 @@ OBJECTS += libw32c.o
 else
 OBJECTS += libunix.o
 endif
-endif
-
-# To get stack trace symbols.
-# Note that MinGW doesn't support -rdynamic.
-ifndef NO_RDYNAMIC
-LDFLAGS += -rdynamic
 endif
 
 ifdef USE_MERGE_BASE
@@ -569,6 +554,12 @@ ifdef LTO
   endif
 endif
 
+# To get stack trace symbols.
+# Note that Msys, MinGW, ICC, and Cygwin don't support -rdynamic.
+ifeq (,$(shell echo 'int main(){return 1;}'|$(GXX) -x c++ - -o /dev/null -rdynamic 2>&1))
+  LDFLAGS += -rdynamic
+endif
+
 # Okay, we have to assume we're on something else that
 # uses standard UNIX-like methods for finding libs.
 #
@@ -610,20 +601,14 @@ ifndef LUA_PACKAGE
     ifneq ($(USE_LUAJIT),)
       ifeq ($(shell $(PKGCONFIG) luajit --exists || echo no),)
         LUA_PACKAGE = luajit
-      else
-        BUILD_LUA = yes
       endif
     else
       ifneq ($(shell $(PKGCONFIG) lua5.1 --exists || echo no),)
         ifneq ($(shell $(PKGCONFIG) lua-5.1 --exists || echo no),)
           ifneq ($(shell $(PKGCONFIG) lua51 --exists || echo no),)
-            ifneq ($(shell $(PKGCONFIG) lua --exists || echo no),)
-              BUILD_LUA = yes
-            else
+            ifeq ($(shell $(PKGCONFIG) lua --exists || echo no),)
               ifeq ($(shell $(PKGCONFIG) lua --modversion | head -c 3),5.1)
                 LUA_PACKAGE = lua
-              else
-                BUILD_LUA = yes
               endif
             endif
           else
@@ -638,6 +623,10 @@ ifndef LUA_PACKAGE
     endif
   endif
 endif
+ifndef LUA_PACKAGE
+  BUILD_LUA = yes
+endif
+
 ifndef BUILD_LUA
   ifndef LUA_PACKAGE
     LUA_PACKAGE = lua5.1
@@ -671,7 +660,6 @@ endif
 endif #ANDROID
 
 RLTILES = rltiles
-INCLUDES_L += -I$(RLTILES)
 
 ifdef WEBTILES
 DEFINES_L += -DUSE_TILE
@@ -1021,9 +1009,8 @@ ifndef NO_PKGCONFIG
   NC_CFLAGS := $(subst -I,-isystem ,$(shell $(PKGCONFIG) --cflags $(NCURSESLIB) 2>/dev/null || echo "$(NC_CFLAGS)"))
 endif
 
-CFOTHERS_L += $(NC_CFLAGS)
-
 ifndef TILES
+CFOTHERS_L += $(NC_CFLAGS)
 LIBS += $(NC_LIBS)
 endif
 
@@ -1250,7 +1237,7 @@ TITLEIMGS = denzi_dragon denzi_kitchen_duty denzi_summoner \
             peileppe_bloax_eye baconkid_duvessa_dowan ploomutoo_ijyb \
 	    froggy_thunder_fist_nikola froggy_rune_and_run_failed_on_dis \
 	    froggy_natasha_and_boris froggy_jiyva_felid \
-	    froggy_goodgod_tengu_gold Cws_Minotauros
+	    froggy_goodgod_tengu_gold Cws_Minotauros nibiki_octopode
 
 STATICFILES = $(TILEIMAGEFILES:%=webserver/game_data/static/%.png) \
               webserver/static/stone_soup_icon-32x32.png \

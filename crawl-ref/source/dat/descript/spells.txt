@@ -3,6 +3,11 @@ Abjuration spell
 
 Reduces the remaining duration of any nearby hostile summoned creatures.
 %%%%
+Absolute Zero spell
+
+Entirely removes the heat from the enemy nearest the caster, instantly
+freezing it into a block of solid ice.
+%%%%
 Acid Splash spell
 
 Spits a glob of acid at a nearby creature, covering it in corrosive slime
@@ -632,10 +637,12 @@ Conjures up a large cloud of lethally cold vapour.
 %%%%
 Frozen Ramparts spell
 
-Encases surrounding walls with a myriad of enchanted icicles for a short time.
-The icicles release explosively when a victim wanders nearby, damaging and
-encasing them in a frozen shroud that impedes movement. The caster and any
-allies can safely wander near these walls.
+Encases surrounding walls with ice for a short time. Victims that wander near
+the icy walls will be damaged, and this may temporarily slow cold-blooded
+creatures. The damage dealt bypasses any armour the target may have. Each
+victim is only ever affected by one icy wall at a time.
+
+The caster and any allies can walk safely past icy walls.
 %%%%
 Fulminant Prism spell
 

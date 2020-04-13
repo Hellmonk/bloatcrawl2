@@ -721,7 +721,7 @@ void full_describe_view()
 
             desc += "</" + colour_str +">) ";
 #endif
-            desc += feature_description_at(c, false, DESC_A, false);
+            desc += feature_description_at(c, false, DESC_A);
             if (is_unknown_stair(c) || is_unknown_transporter(c))
                 desc += " (not visited)";
             FeatureMenuEntry *me = new FeatureMenuEntry(desc, c, hotkey);
@@ -1552,7 +1552,7 @@ void direction_chooser::print_floor_description(bool boring_too) const
         _debug_describe_feature_at(target());
     else
 #endif
-    mprf(MSGCH_EXAMINE_FILTER, "%s",
+    mprf(MSGCH_EXAMINE_FILTER, "%s.",
          feature_description_at(target(), true).c_str());
 }
 
@@ -2130,7 +2130,7 @@ string get_terse_square_desc(const coord_def &gc)
     {
         if (env.map_knowledge(gc).seen())
         {
-            desc = "[" + feature_description_at(gc, false, DESC_PLAIN, false)
+            desc = "[" + feature_description_at(gc, false, DESC_PLAIN)
                        + "]";
         }
         else
@@ -2144,7 +2144,7 @@ string get_terse_square_desc(const coord_def &gc)
             desc = mitm[you.visible_igrd(gc)].name(DESC_PLAIN);
     }
     else
-        desc = feature_description_at(gc, false, DESC_PLAIN, false);
+        desc = feature_description_at(gc, false, DESC_PLAIN);
 
     return desc;
 }
@@ -2760,7 +2760,7 @@ static void _describe_oos_feature(const coord_def& where)
     if (!env.map_knowledge(where).seen())
         return;
 
-    string desc = feature_description(env.map_knowledge(where).feat());
+    string desc = feature_description(env.map_knowledge(where).feat()) + ".";
 
     if (!desc.empty())
         mprf(MSGCH_EXAMINE_FILTER, "[%s]", desc.c_str());
@@ -2776,9 +2776,7 @@ vector<dungeon_feature_type> features_by_desc(const base_pattern &pattern)
         for (int i = 0; i < NUM_FEATURES; ++i)
         {
             string fdesc =
-                feature_description(static_cast<dungeon_feature_type>(i));
-            if (fdesc.empty())
-                continue;
+                feature_description(static_cast<dungeon_feature_type>(i)) + ".";
 
             if (pattern.matches(fdesc))
                 features.push_back(dungeon_feature_type(i));
@@ -2807,8 +2805,7 @@ void describe_floor()
         break;
     }
 
-    feat = feature_description_at(you.pos(), true,
-                               DESC_A, false);
+    feat = feature_description_at(you.pos(), true, DESC_A);
     if (feat.empty())
         return;
 
@@ -2839,7 +2836,7 @@ static string _base_feature_desc(dungeon_feature_type grid, trap_type trap)
 
 string feature_description(dungeon_feature_type grid, trap_type trap,
                            const string & cover_desc,
-                           description_level_type dtype, bool add_stop)
+                           description_level_type dtype)
 {
     string desc = _base_feature_desc(grid, trap);
     desc += cover_desc;
@@ -2847,7 +2844,7 @@ string feature_description(dungeon_feature_type grid, trap_type trap,
     if (grid == DNGN_FLOOR && dtype == DESC_A)
         dtype = DESC_THE;
 
-    return thing_do_grammar(dtype, add_stop, feat_is_trap(grid), desc);
+    return thing_do_grammar(dtype, desc);
 }
 
 string raw_feature_description(const coord_def &where)
@@ -2876,7 +2873,7 @@ static bool _interesting_feature(dungeon_feature_type feat)
 #endif
 
 string feature_description_at(const coord_def& where, bool covering,
-                              description_level_type dtype, bool add_stop)
+                              description_level_type dtype)
 {
     dungeon_feature_type grid = env.map_knowledge(where).feat();
     trap_type trap = env.map_knowledge(where).trap();
@@ -2887,7 +2884,7 @@ string feature_description_at(const coord_def& where, bool covering,
     string covering_description = "";
 
     if (covering && you.see_cell(where) && is_icecovered(where))
-        covering_description = ", covered with icicles";
+        covering_description = ", covered with ice";
 
     if (covering && you.see_cell(where) && is_bloodcovered(where))
     {
@@ -2904,7 +2901,7 @@ string feature_description_at(const coord_def& where, bool covering,
     {
         marker_desc += covering_description;
 
-        return thing_do_grammar(dtype, add_stop, false, marker_desc);
+        return thing_do_grammar(dtype, marker_desc);
     }
 
     if (feat_is_door(grid))
@@ -2967,26 +2964,23 @@ string feature_description_at(const coord_def& where, bool covering,
 
         desc += covering_description;
 
-        return thing_do_grammar(dtype, add_stop, false, desc);
+        return thing_do_grammar(dtype, desc);
     }
 
     switch (grid)
     {
     case DNGN_TRAP_MECHANICAL:
-        return feature_description(grid, trap, covering_description, dtype,
-                                   add_stop);
+        return feature_description(grid, trap, covering_description, dtype);
     case DNGN_ABANDONED_SHOP:
-        return thing_do_grammar(dtype, add_stop, false, "an abandoned shop");
+        return thing_do_grammar(dtype, "an abandoned shop");
 
     case DNGN_ENTER_SHOP:
-        return shop_name(*shop_at(where)) + (add_stop ? "." : "");
+        return shop_name(*shop_at(where));
 
 #if TAG_MAJOR_VERSION == 34
     case DNGN_ENTER_PORTAL_VAULT:
         // Should have been handled at the top of the function.
-        return thing_do_grammar(
-                   dtype, add_stop, false,
-                   "UNAMED PORTAL VAULT ENTRY");
+        return thing_do_grammar(dtype, "UNAMED PORTAL VAULT ENTRY");
 #endif
 
     case DNGN_TREE:
@@ -2999,7 +2993,7 @@ string feature_description_at(const coord_def& where, bool covering,
         if (is_temp_terrain(where))
             desc += " (summoned)";
         desc += covering_description;
-        return thing_do_grammar(dtype, add_stop, false, desc);
+        return thing_do_grammar(dtype, desc);
     }
 
     case DNGN_FLOOR:
@@ -3010,8 +3004,7 @@ string feature_description_at(const coord_def& where, bool covering,
         const string featdesc = grid == grd(where)
                               ? raw_feature_description(where)
                               : _base_feature_desc(grid, trap);
-        return thing_do_grammar(dtype, add_stop, feat_is_trap(grid),
-                                featdesc + covering_description);
+        return thing_do_grammar(dtype, featdesc + covering_description);
     }
 }
 
@@ -3182,7 +3175,7 @@ static vector<string> _get_monster_desc_vector(const monster_info& mi)
     {
         descs.push_back("fire blocked by " // FIXME, renamed features
                         + feature_description(mi.fire_blocker, NUM_TRAPS, "",
-                                              DESC_A, false));
+                                              DESC_A));
     }
 
     return descs;
@@ -3305,7 +3298,7 @@ static string _get_monster_desc(const monster_info& mi)
                 + " is blocked by " // FIXME: renamed features
                 + feature_description(mi.fire_blocker, NUM_TRAPS, "",
                                       DESC_A)
-                + "\n";
+                + ".\n";
     }
 
     text += _mon_enchantments_string(mi);
@@ -3575,7 +3568,7 @@ static void _debug_describe_feature_at(const coord_def &where)
     }
 
     char32_t ch = get_cell_glyph(where).ch;
-    dprf("(%d,%d): %s - %s (%d/%s)%s%s%s%s map: %x",
+    dprf("(%d,%d): %s - %s. (%d/%s)%s%s%s%s map: %x",
          where.x, where.y,
          ch == '<' ? "<<" : stringize_glyph(ch).c_str(),
          feature_desc.c_str(),

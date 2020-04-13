@@ -222,7 +222,7 @@ static inline int _feature_traverse_cost(dungeon_feature_type feature)
     {
         return 2;
     }
-    else if (feat_is_trap(feature))
+    else if (feat_is_trap(feature) && feature != DNGN_TRAP_SHAFT)
         return 3;
 
     return 1;
@@ -270,6 +270,10 @@ bool feat_is_traversable_now(dungeon_feature_type grid, bool try_fallback)
         {
             return true;
         }
+
+        // The player can safely walk over shafts.
+        if (grid == DNGN_TRAP_SHAFT)
+            return true;
 
         // Permanently flying players can cross most hostile terrain.
         if (grid == DNGN_DEEP_WATER || grid == DNGN_LAVA)
@@ -328,8 +332,7 @@ static inline bool is_stash(const LevelStashes *ls, const coord_def& p)
 static bool _monster_blocks_travel(const monster_info *mons)
 {
     return mons
-           && (mons_class_is_stationary(mons->type)
-               || mons->type == MONS_FOXFIRE)
+           && mons_class_is_stationary(mons->type)
            && !fedhas_passthrough(mons);
 }
 
@@ -864,7 +867,7 @@ static command_type _get_non_move_command()
     if (level_target == curr)
         return CMD_NO_CMD;
 
-    // If we we're not at our running position and we're not traveled to a
+    // If we we're not at our running position and we're not travelled to a
     // transporter, simply stop running.
     if (fell_short && grd(you.pos()) != DNGN_TRANSPORTER)
         return CMD_NO_CMD;
@@ -1255,7 +1258,7 @@ coord_def travel_pathfind::pathfind(run_mode_type rmode, bool fallback_explore)
     // How many points we'll consider next iteration.
     next_iter_points = 0;
 
-    // How far we've traveled from (start_x, start_y), in moves (a diagonal move
+    // How far we've travelled from (start_x, start_y), in moves (a diagonal move
     // is no longer than an orthogonal move).
     traveled_distance = 1;
 
@@ -1493,7 +1496,7 @@ bool travel_pathfind::path_flood(const coord_def &c, const coord_def &dc)
 
                 if (need_for_greed && Options.explore_item_greed > 0)
                 {
-                    // Penalize distance to favor item pickup
+                    // Penalize distance to favour item pickup
                     dist += Options.explore_item_greed;
                 }
 
@@ -1501,7 +1504,7 @@ bool travel_pathfind::path_flood(const coord_def &c, const coord_def &dc)
                 {
                     dist += Options.explore_wall_bias * 4;
 
-                    // Favor squares directly adjacent to walls
+                    // Favour squares directly adjacent to walls
                     for (int dir = 0; dir < 8; dir += 2)
                     {
                         const coord_def ddc = dc + Compass[dir];
@@ -1521,7 +1524,7 @@ bool travel_pathfind::path_flood(const coord_def &c, const coord_def &dc)
         }
 
         // Short-circuit if we can. If traveled_distance (the current
-        // distance from the center of the floodfill) is greater
+        // distance from the centre of the floodfill) is greater
         // than the adjusted distance to the nearest greedy explore
         // target, we have a target. Note the adjusted distance is
         // the distance with explore_item_greed applied (if
@@ -2782,7 +2785,7 @@ static int _target_distance_from(const coord_def &pos)
  * populated with a floodout call to find_travel_pos starting from the player's
  * location.
  *
- * This function has undefined behavior when the target position is not
+ * This function has undefined behaviour when the target position is not
  * traversable.
  */
 static int _find_transtravel_stair(const level_id &cur,
@@ -3041,7 +3044,7 @@ static bool _find_transtravel_square(const level_pos &target, bool verbose)
 
     // either off-level, or traversable and on-level
     // TODO: actually check this when the square is off-level? The current
-    // behavior is that it will go to the level and then fail.
+    // behaviour is that it will go to the level and then fail.
     const bool maybe_traversable = (target.id != current
                                     || (in_bounds(target.pos)
                                         && feat_is_traversable_now(env.map_knowledge(target.pos).feat())));
@@ -3053,7 +3056,7 @@ static bool _find_transtravel_square(const level_pos &target, bool verbose)
                                 best_level_distance, best_stair);
         dprf("found stair at %d,%d", best_stair.x, best_stair.y);
     }
-    // even without _find_transtravel_stair called, the values are initalized
+    // even without _find_transtravel_stair called, the values are initialized
     // enough for the rest of this to go forward.
 
     if (best_stair.x != -1 && best_stair.y != -1)
@@ -4526,6 +4529,7 @@ string explore_discoveries::cleaned_feature_description(
     const coord_def &pos) const
 {
     string s = lowercase_first(feature_description_at(pos));
+    // TODO: can feature_description_at()'s return value still end in '.'?
     if (s.length() && s[s.length() - 1] == '.')
         s.erase(s.length() - 1);
     if (starts_with(s, "a "))
@@ -4656,7 +4660,7 @@ void explore_discoveries::found_feature(const coord_def &pos,
         if (!feat_stop.empty())
         {
             string desc = lowercase_first(feature_description_at(pos));
-            marked_feats.push_back(desc);
+            marked_feats.push_back(desc + ".");
             return;
         }
     }

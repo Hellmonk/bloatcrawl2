@@ -84,6 +84,7 @@
 #include "items.h"
 #include "item-use.h"
 #include "jobs.h"
+#include "known-items.h"
 #include "level-state-type.h"
 #include "libutil.h"
 #include "luaterp.h"
@@ -132,7 +133,7 @@
 #include "terrain.h"
 #include "throw.h"
 #ifdef USE_TILE
- #include "tiledef-dngn.h"
+ #include "rltiles/tiledef-dngn.h"
  #include "tilepick.h"
 #endif
 #include "timed-effects.h"
@@ -873,7 +874,7 @@ static void _center_cursor()
 }
 
 // We have to refresh the SH display if the player's incapacitated state
-// changes (getting confused/paralyzed/etc. sets SH to 0, recovering
+// changes (getting confused/paralysed/etc. sets SH to 0, recovering
 // from the condition sets SH back to normal).
 struct disable_check
 {
@@ -2230,8 +2231,6 @@ void world_reacts()
         _update_still_winds();
     if (!crawl_state.game_is_arena())
         player_reacts_to_monsters();
-
-    wu_jian_end_of_turn_effects();
 
     add_auto_excludes();
 

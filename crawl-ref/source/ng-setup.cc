@@ -32,7 +32,7 @@
 #include "spl-util.h"
 #include "sprint.h"
 #include "state.h"
-#include "tiledef-player.h"
+#include "rltiles/tiledef-player.h"
 
 #define MIN_START_STAT       3
 

@@ -175,11 +175,14 @@ enum enchant_type
     ENCH_INFESTATION,
     ENCH_STILL_WINDS,
     ENCH_RING_OF_THUNDER,
+#if TAG_MAJOR_VERSION == 34
     ENCH_WHIRLWIND_PINNED,
+#endif
     ENCH_VORTEX,
     ENCH_VORTEX_COOLDOWN,
     ENCH_VILE_CLUTCH,
     ENCH_BOL_XI_FEAR,
+    ENCH_WATERLOGGED,
     // Update enchant_names[] in mon-ench.cc when adding or removing
     // enchantments.
     NUM_ENCHANTMENTS

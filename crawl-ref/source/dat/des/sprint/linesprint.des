@@ -17,9 +17,9 @@ function line_setup(e)
   e.kfeat("x = permarock_wall")
   e.colour("x = brown")
   e.kfeat("# = permarock_wall")
-  e.lua_marker('t', props_marker { veto_dig="veto",
-                                   veto_shatter="veto",
-                                   veto_fire="veto" })
+  e.lua_marker('t', props_marker { veto_shatter="veto",
+                                   veto_fire="veto",
+                                   veto_tornado="veto" })
 end
 
 function general_item_setup(e)
@@ -873,7 +873,7 @@ KITEM:    d = plate armour plus:6 not_cursed ident:all /\
     naga barding plus:4 not_cursed ident:all w:5 /\
     centaur barding plus:4 not_cursed ident:all w:5
 KITEM:     e = potion of haste q:5 ident:all
-KITEM:     f = crystal ball of energy ident:all
+KITEM:     f = potion of magic q:5 ident:all
 : line_setup(_G)
 : general_item_setup(_G)
 MAP

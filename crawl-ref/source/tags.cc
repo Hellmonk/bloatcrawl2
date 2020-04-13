@@ -76,8 +76,8 @@
 #include "stringutil.h"
 #include "syscalls.h"
 #include "terrain.h"
-#include "tiledef-dngn.h"
-#include "tiledef-player.h"
+#include "rltiles/tiledef-dngn.h"
+#include "rltiles/tiledef-player.h"
 #include "tilepick.h"
 #include "tileview.h"
 #ifdef USE_TILE
@@ -2032,6 +2032,13 @@ static map_def unmarshall_mapdef(reader &th)
         && th.getMinorVersion() != TAG_MINOR_0_11)
 #endif
         unmarshall_vector(th, map.subvault_places, unmarshall_subvault_place);
+
+    // reload the map epilogue from the current cache in case it hasn't yet
+    // been run.
+    // it would probably be better game-design-wise to marshall the epilogue,
+    // but currently I don't think we marshall any lua code and I'm not sure
+    // this is the best practice to get into.
+    map.reload_epilogue();
     return map;
 }
 

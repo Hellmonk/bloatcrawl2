@@ -26,12 +26,12 @@
 #include "state.h"
 #include "stringutil.h"
 #include "terrain.h"
-#include "tiledef-dngn.h"
+#include "rltiles/tiledef-dngn.h"
 #include "tile-flags.h"
-#include "tiledef-gui.h"
-#include "tiledef-main.h"
-#include "tiledef-player.h"
-#include "tiledef-unrand.h"
+#include "rltiles/tiledef-gui.h"
+#include "rltiles/tiledef-main.h"
+#include "rltiles/tiledef-player.h"
+#include "rltiles/tiledef-unrand.h"
 #include "tilemcache.h"
 #include "tileview.h"
 #include "transform.h"
@@ -984,6 +984,8 @@ static tileidx_t _zombie_tile_to_spectral(const tileidx_t z_tile)
     case TILEP_MONS_ZOMBIE_HARPY:
         return TILEP_MONS_SPECTRAL_BAT;
     case TILEP_MONS_ZOMBIE_BEE:
+    case TILEP_MONS_ZOMBIE_MELIAI:
+    case TILEP_MONS_ZOMBIE_HORNET:
         return TILEP_MONS_SPECTRAL_BEE;
     case TILEP_MONS_ZOMBIE_BEETLE:
     case TILEP_MONS_ZOMBIE_ROACH:
@@ -1074,6 +1076,8 @@ static tileidx_t _zombie_tile_to_simulacrum(const tileidx_t z_tile)
     case TILEP_MONS_ZOMBIE_HARPY:
         return TILEP_MONS_SIMULACRUM_BAT;
     case TILEP_MONS_ZOMBIE_BEE:
+    case TILEP_MONS_ZOMBIE_MELIAI:
+    case TILEP_MONS_ZOMBIE_HORNET:
         return TILEP_MONS_SIMULACRUM_BEE;
     case TILEP_MONS_ZOMBIE_BEETLE:
     case TILEP_MONS_ZOMBIE_ROACH:
@@ -1252,6 +1256,7 @@ static tileidx_t _mon_to_zombie_tile(const monster_info &mon)
         { MONS_QUICKSILVER_DRAGON,      TILEP_MONS_ZOMBIE_QUICKSILVER_DRAGON },
         { MONS_LINDWURM,                TILEP_MONS_ZOMBIE_LINDWURM, },
         { MONS_MELIAI,                  TILEP_MONS_ZOMBIE_MELIAI, },
+        { MONS_HORNET,                  TILEP_MONS_ZOMBIE_HORNET, },
     };
     // per-genus zombies - use by default
     static const map<monster_type, tileidx_t> genus_tiles = {
@@ -1925,8 +1930,6 @@ tileidx_t tileidx_monster(const monster_info& mons)
         ch |= TILE_FLAG_CORRODED;
     if (mons.is(MB_SWIFT))
         ch |= TILE_FLAG_SWIFT;
-    if (mons.is(MB_PINNED))
-        ch |= TILE_FLAG_PINNED;
     if (mons.is(MB_VILE_CLUTCH))
         ch |= TILE_FLAG_VILE_CLUTCH;
     if (mons.is(MB_POSSESSABLE))
@@ -2536,17 +2539,13 @@ static tileidx_t _tileidx_misc(const item_def &item)
 #if TAG_MAJOR_VERSION == 34
     case MISC_BOTTLED_EFREET:
         return TILE_MISC_BOTTLED_EFREET;
-#endif
 
     case MISC_FAN_OF_GALES:
-        return evoker_charges(item.sub_type) ? TILE_MISC_FAN_OF_GALES
-                                             : TILE_MISC_FAN_OF_GALES_INERT;
+        return TILE_MISC_FAN_OF_GALES_INERT;
 
     case MISC_LAMP_OF_FIRE:
-        return evoker_charges(item.sub_type) ? TILE_MISC_LAMP_OF_FIRE
-                                             : TILE_MISC_LAMP_OF_FIRE_INERT;
+        return TILE_MISC_LAMP_OF_FIRE_INERT;
 
-#if TAG_MAJOR_VERSION == 34
     case MISC_STONE_OF_TREMORS:
         return TILE_MISC_STONE_OF_TREMORS_INERT;
 #endif
@@ -2566,22 +2565,26 @@ static tileidx_t _tileidx_misc(const item_def &item)
     case MISC_BOX_OF_BEASTS:
         return TILE_MISC_BOX_OF_BEASTS;
 
-    // Detault for summary menus
-    case NUM_MISCELLANY:
+#if TAG_MAJOR_VERSION == 34
     case MISC_CRYSTAL_BALL_OF_ENERGY:
         return TILE_MISC_CRYSTAL_BALL_OF_ENERGY;
+#endif
 
     case MISC_LIGHTNING_ROD:
         return evoker_charges(item.sub_type) ? TILE_MISC_LIGHTNING_ROD
                                              : TILE_MISC_LIGHTNING_ROD_INERT;
 
+#if TAG_MAJOR_VERSION == 34
     case MISC_SACK_OF_SPIDERS:
         return TILE_MISC_SACK_OF_SPIDERS;
+#endif
 
     case MISC_AIR_HORN:
         return evoker_charges(item.sub_type) ? TILE_MISC_AIR_HORN
                                              : TILE_MISC_AIR_HORN_INERT;
 
+    // Default for summary menus
+    case NUM_MISCELLANY:
     case MISC_PHANTOM_MIRROR:
         return TILE_MISC_PHANTOM_MIRROR;
 

@@ -1514,7 +1514,9 @@ bool is_stackable_item(const item_def &item)
             {
                 case MISC_PHANTOM_MIRROR:
                 case MISC_ZIGGURAT:
+#if TAG_MAJOR_VERSION == 34
                 case MISC_SACK_OF_SPIDERS:
+#endif
                 case MISC_BOX_OF_BEASTS:
                 case MISC_TIN_OF_TREMORSTONES:
                     return true;
@@ -3942,9 +3944,9 @@ colour_t item_def::miscellany_colour() const
 
     switch (sub_type)
     {
+#if TAG_MAJOR_VERSION == 34
         case MISC_FAN_OF_GALES:
             return CYAN;
-#if TAG_MAJOR_VERSION == 34
         case MISC_BOTTLED_EFREET:
             return RED;
 #endif
@@ -3960,16 +3962,18 @@ colour_t item_def::miscellany_colour() const
             return LIGHTBLUE;
         case MISC_BOX_OF_BEASTS:
             return LIGHTGREEN; // ugh, but we're out of other options
+#if TAG_MAJOR_VERSION == 34
         case MISC_CRYSTAL_BALL_OF_ENERGY:
             return LIGHTCYAN;
+#endif
         case MISC_HORN_OF_GERYON:
             return LIGHTRED;
         case MISC_LAMP_OF_FIRE:
             return YELLOW;
+#if TAG_MAJOR_VERSION == 34
         case MISC_SACK_OF_SPIDERS:
         case MISC_AIR_HORN:
             return WHITE;
-#if TAG_MAJOR_VERSION == 34
         case MISC_BUGGY_LANTERN_OF_SHADOWS:
         case MISC_BUGGY_EBONY_CASKET:
         case MISC_XOMS_CHESSBOARD:

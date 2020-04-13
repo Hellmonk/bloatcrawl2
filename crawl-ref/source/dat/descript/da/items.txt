@@ -305,12 +305,6 @@ eveningstar
 Piggene på denne morgenstjerne er exceptionelt lange, hvilket lader den
 forårsage odiøse sår.
 %%%%
-fan of gales
-
-En fortryllet vifte som er beboet af venligtsindede luftånder. Hvis man svinger
-viften slipper man et voldsomt vindstød og ånderne fri til at feje bærerens
-fjender bort.
-%%%%
 fire dragon scales
 
 En magisk rustning, som er lavet af en ildsprudende drages skæl. Den beskytter
@@ -390,11 +384,6 @@ lajatang
 
 Et meget sjældent og ekstremt effektivt eksotisk våben, bestående af en stav
 med halvmåneformede klinger i begge ender.
-%%%%
-lamp of fire
-
-En magisk lampe, som er beboet af venligtsindede ildånder. Åbner du dens hægte,
-sætter du ånderne fri til at danse på dine fjender i et flammehav.
 %%%%
 large rock
 
@@ -862,10 +851,6 @@ Denne stav øger brugerens giftige besværgelsers kraft og beskytter ham eller
 hende mod konsekvenserne af gift. Hvis brugeren er kyndig i både vækkelser og
 giftmagi, vil staven også forgifte dem, den rammer – selv hvis ofrene
 sædvanligvis er modstandsdygtige.
-%%%%
-staff of power
-
-Denne stav øger brugerens reservoir af magisk energi.
 %%%%
 staff of summoning
 

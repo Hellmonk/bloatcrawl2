@@ -1244,15 +1244,12 @@ static int _pakellas_low_misc()
 {
     // Limited uses, so any of these are fine even if they've been seen before.
     return random_choose(MISC_BOX_OF_BEASTS,
-                         MISC_SACK_OF_SPIDERS,
                          MISC_PHANTOM_MIRROR);
 }
 
 static int _pakellas_high_misc()
 {
     static const vector<int> high_miscs = {
-        MISC_FAN_OF_GALES,
-        MISC_LAMP_OF_FIRE,
         MISC_PHIAL_OF_FLOODS,
         MISC_LIGHTNING_ROD,
     };
@@ -2993,7 +2990,8 @@ void excommunication(bool voluntary, god_type new_god)
 
     case GOD_WU_JIAN:
         you.attribute[ATTR_SERPENTS_LASH] = 0;
-        you.attribute[ATTR_HEAVENLY_STORM] = 0;
+        if (you.props.exists(WU_JIAN_HEAVENLY_STORM_KEY))
+            wu_jian_end_heavenly_storm();
         break;
 
     default:

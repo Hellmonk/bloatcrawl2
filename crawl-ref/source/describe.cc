@@ -67,10 +67,10 @@
 #include "terrain.h"
 #ifdef USE_TILE_LOCAL
  #include "tilereg-crt.h"
- #include "tiledef-dngn.h"
+ #include "rltiles/tiledef-dngn.h"
 #endif
 #ifdef USE_TILE
- #include "tiledef-feat.h"
+ #include "rltiles/tiledef-feat.h"
  #include "tilepick.h"
  #include "tileview.h"
  #include "tile-flags.h"
@@ -2249,8 +2249,8 @@ static vector<pair<string,string>> _get_feature_extra_descs(const coord_def &pos
     dungeon_feature_type feat = env.map_knowledge(pos).feat();
     if (feat_is_wall(feat) && env.map_knowledge(pos).flags & MAP_ICY)
     {
-        ret.emplace_back(pair<string,string>("A covering of icicles.",
-                    getLongDescription("icicle covered")));
+        ret.emplace_back(pair<string,string>("A covering of ice.",
+                    getLongDescription("ice covered")));
     }
     else if (!feat_is_solid(feat))
     {
@@ -2287,7 +2287,7 @@ void get_feature_desc(const coord_def &pos, describe_info &inf, bool include_ext
 {
     dungeon_feature_type feat = env.map_knowledge(pos).feat();
 
-    string desc      = feature_description_at(pos, false, DESC_A, false);
+    string desc      = feature_description_at(pos, false, DESC_A);
     string db_name   = feat == DNGN_ENTER_SHOP ? "a shop" : desc;
     strip_suffix(db_name, " (summoned)");
     string long_desc = getLongDescription(db_name);
@@ -2487,7 +2487,7 @@ void describe_feature_wide(const coord_def& pos)
 void describe_feature_type(dungeon_feature_type feat)
 {
     describe_info inf;
-    string name = feature_description(feat, NUM_TRAPS, "", DESC_A, false);
+    string name = feature_description(feat, NUM_TRAPS, "", DESC_A);
     string title = uppercase_first(name);
     if (!ends_with(title, ".") && !ends_with(title, "!") && !ends_with(title, "?"))
         title += ".";
@@ -2871,7 +2871,7 @@ bool describe_item(item_def &item, function<void (string&)> fixup_desc)
         return _do_action(item, actions, lastch);
     else if (item.has_spells())
     {
-        // only continue the inventory loop if we didn't start memorizing a
+        // only continue the inventory loop if we didn't start memorising a
         // spell & didn't destroy the item for amnesia.
         return !already_learning_spell();
     }
@@ -3172,7 +3172,7 @@ static bool _get_spell_description(const spell_type spell,
     else
         description += player_spell_desc(spell);
 
-    // Don't allow memorization after death.
+    // Don't allow memorisation after death.
     // (In the post-game inventory screen.)
     if (crawl_state.player_is_dead())
         return false;
@@ -3251,7 +3251,7 @@ void get_spell_desc(const spell_type spell, describe_info &inf)
 
 /**
  * Examine a given spell. List its description and details, and handle
- * memorizing the spell in question, if the player is able & chooses to do so.
+ * memorising the spell in question, if the player is able & chooses to do so.
  *
  * @param spelled   The spell in question.
  * @param mon_owner If this spell is being examined from a monster's

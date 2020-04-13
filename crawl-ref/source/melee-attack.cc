@@ -1880,11 +1880,12 @@ void melee_attack::player_exercise_combat_skills()
 /*
  * Applies god conduct for weapon ego
  *
- * Using speed brand as a chei worshipper, or holy/unholy weapons
+ * Using speed brand as a chei worshipper, or holy/unholy/wizardly weapons etc
  */
 void melee_attack::player_weapon_upsets_god()
 {
-    if (weapon && weapon->base_type == OBJ_WEAPONS
+    if (weapon
+        && (weapon->base_type == OBJ_WEAPONS || weapon->base_type == OBJ_STAVES)
         && god_hates_item_handling(*weapon))
     {
         did_god_conduct(god_hates_item_handling(*weapon), 2);
@@ -2279,15 +2280,23 @@ bool melee_attack::apply_staff_damage()
         break;
 
     case STAFF_POISON:
-    {
-        if (random2(300) >= attacker->skill(SK_EVOCATIONS, 20) + attacker->skill(SK_POISON_MAGIC, 10))
-            return true;
+        special_damage =
+            resist_adjust_damage(defender,
+                                 BEAM_POISON,
+                                 staff_damage(SK_POISON_MAGIC));
 
-        // Base chance at 50% -- like mundane weapons.
-        if (x_chance_in_y(80 + attacker->skill(SK_POISON_MAGIC, 10), 160))
-            defender->poison(attacker, 2);
+        if (special_damage)
+        {
+            special_damage_message =
+                make_stringf(
+                    "%s envenom%s %s%s",
+                    attacker->name(DESC_THE).c_str(),
+                    attacker->is_player() ? "" : "s",
+                    defender->name(DESC_THE).c_str(),
+                    attack_strength_punctuation(special_damage).c_str());
+            special_damage_flavour = BEAM_POISON;
+        }
         break;
-    }
 
     case STAFF_DEATH:
         special_damage =
@@ -2309,7 +2318,9 @@ bool melee_attack::apply_staff_damage()
         break;
 
     case STAFF_SUMMONING:
+#if TAG_MAJOR_VERSION == 34
     case STAFF_POWER:
+#endif
     case STAFF_CONJURATION:
 #if TAG_MAJOR_VERSION == 34
     case STAFF_ENCHANTMENT:
@@ -2333,7 +2344,13 @@ bool melee_attack::apply_staff_damage()
 
         inflict_damage(special_damage, special_damage_flavour);
         if (special_damage > 0)
+        {
             defender->expose_to_element(special_damage_flavour, 2);
+            // XXX: this is messy, but poisoning from the staff of poison
+            // should happen after damage.
+            if (defender->alive() && special_damage_flavour == BEAM_POISON)
+                defender->poison(attacker, 2);
+        }
     }
 
     return true;
@@ -3641,7 +3658,7 @@ int melee_attack::calc_damage()
  * should be ambigufied and moved to the actor class
  * Should life protection protect from this?
  *
- * Should eventually remove in favor of player/monster symmetry
+ * Should eventually remove in favour of player/monster symmetry
  *
  * Called when stabbing and for bite attacks.
  *

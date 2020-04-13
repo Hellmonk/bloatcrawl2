@@ -42,10 +42,10 @@ struct direction_chooser_args;
 enum spell_highlight_colours
 {
     COL_UNKNOWN      = LIGHTGRAY,   // spells for which no known brand applies.
-    COL_UNMEMORIZED  = LIGHTBLUE,   // spell hasn't been memorized (used reading spellbooks)
-    COL_MEMORIZED    = LIGHTGRAY,   // spell has been memorized
+    COL_UNMEMORIZED  = LIGHTBLUE,   // spell hasn't been memorised (used reading spellbooks)
+    COL_MEMORIZED    = LIGHTGRAY,   // spell has been memorised
     COL_USELESS      = DARKGRAY,    // ability would have no useful effect
-    COL_INAPPLICABLE = COL_USELESS, // ability cannot be meanifully applied (eg, no targets)
+    COL_INAPPLICABLE = COL_USELESS, // ability cannot be meaningfully applied (e.g., no targets)
     COL_FORBIDDEN    = LIGHTRED,    // The player's god hates this ability
     COL_DANGEROUS    = LIGHTRED,    // ability/spell use could be dangerous
 };
@@ -71,7 +71,7 @@ int spell_difficulty(spell_type which_spell);
 int spell_power_cap(spell_type spell);
 int spell_range(spell_type spell, int pow, bool allow_bonus = true);
 int spell_noise(spell_type spell);
-int spell_effect_noise(spell_type spell);
+int spell_effect_noise(spell_type spell, bool random = true);
 
 const char *get_spell_target_prompt(spell_type which_spell);
 tileidx_t get_spell_tile(spell_type which_spell);

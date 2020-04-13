@@ -15,10 +15,11 @@
 # not raising an exception). `hasattr` is also safe.
 
 import logging
+
 try:
     from collections import OrderedDict
 except ImportError:
-    from ordereddict import OrderedDict
+    from ordereddict import OrderedDict # type: ignore
 
 dgl_mode = True
 
@@ -178,6 +179,7 @@ lobby_url = None
 # Proper SMTP settings are required for password reset to function properly.
 # if smtp_host is anything other than `localhost`, you may need to adjust the
 # timeout settings (see server.py, calls to ioloop.set_blocking_log_threshold).
+# TODO: set_blocking_log_threshold is deprecated in tornado 5+...
 # Ideally, test out these settings carefully in a non-production setting
 # before enabling this, as there's a bunch of ways for this to go wrong and you
 # don't want to get your SMTP server blacklisted.

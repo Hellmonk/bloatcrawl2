@@ -78,7 +78,7 @@ static const char *conducts[] =
     "Cause Glowing", "Use Unclean", "Use Chaos", "Desecrate Orcish Remains",
     "Kill Slime", "Kill Plant", "Was Hasty", "Attack In Sanctuary",
     "Kill Artificial", "Exploration", "Desecrate Holy Remains", "Seen Monster",
-    "Sacrificed Love", "Channel", "Hurt Foe",
+    "Sacrificed Love", "Channel", "Hurt Foe", "Use Wizardly Item",
 };
 COMPILE_CHECK(ARRAYSZ(conducts) == NUM_CONDUCTS);
 
@@ -366,6 +366,10 @@ static peeve_map divine_peeves[] =
             "you train magic skills", true,
             1, 0, nullptr, " doesn't appreciate your training magic!"
         } },
+        { DID_WIZARDLY_ITEM, {
+            "you use magical staves or pain-branded weapons", true,
+            1, 0, nullptr, " doesn't appreciate your use of wizardly items!"
+        } },
     },
     // GOD_NEMELEX_XOBEH,
     peeve_map(),
@@ -559,7 +563,7 @@ struct like_response
         if (message)
             simple_god_message(message);
 
-        // this is all very strange, but replicates legacy behavior.
+        // this is all very strange, but replicates legacy behaviour.
         // See the comment on piety_bonus above.
         int denom = piety_denom_bonus + level;
         if (xl_denom)

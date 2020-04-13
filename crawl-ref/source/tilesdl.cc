@@ -21,9 +21,9 @@
 #include "output.h"
 #include "player.h"
 #include "state.h"
-#include "tiledef-dngn.h"
-#include "tiledef-gui.h"
-#include "tiledef-main.h"
+#include "rltiles/tiledef-dngn.h"
+#include "rltiles/tiledef-gui.h"
+#include "rltiles/tiledef-main.h"
 #include "tilefont.h"
 #include "tilereg-abl.h"
 #include "tilereg-cmd.h"
@@ -870,7 +870,14 @@ void TilesFramework::do_layout()
      * this is to prevent layout code from accessing `you` while it's invalid.
      */
     if (!species_type_valid(you.species))
+    {
+        /* HACK: some code called while loading the game calls mprf(), so even
+         * if we're not ready to do an actual layout, we should still give the
+         * message region a size, to prevent a crash. */
+        m_region_msg->place(0, 0, 0);
+        m_region_msg->resize_to_fit(10000, 10000);
         return;
+    }
 
     // View size in pixels is ((dx, dy) * crawl_view.viewsz)
     const int scale = m_map_mode_enabled ? Options.tile_map_scale

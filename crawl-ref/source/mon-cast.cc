@@ -69,7 +69,7 @@
 #include "teleport.h"
 #include "terrain.h"
 #ifdef USE_TILE
-#include "tiledef-dngn.h"
+#include "rltiles/tiledef-dngn.h"
 #endif
 #include "timed-effects.h"
 #include "traps.h"
@@ -1658,7 +1658,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.pierce   = true;
         break;
 
-    // Special behavior handled in _mons_upheaval
+    // Special behaviour handled in _mons_upheaval
     // Hack so beam.cc allows us to correctly use that function
     case SPELL_UPHEAVAL:
         beam.flavour     = BEAM_RANDOM;
@@ -6991,8 +6991,7 @@ static void _speech_fill_target(string& targ_prep, string& target,
                 if (grd(pbolt.target) != DNGN_FLOOR)
                 {
                     target = feature_description(grd(pbolt.target),
-                                                 NUM_TRAPS, "", DESC_THE,
-                                                 false);
+                                                 NUM_TRAPS, "", DESC_THE);
                 }
                 else
                     target = "thin air";
@@ -7631,7 +7630,7 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_MIASMA_BREATH:
         return !foe || foe->res_rotting() || no_clouds;
 
-    case SPELL_DISPEL_UNDEAD:
+    case SPELL_DISPEL_UNDEAD_RANGE:
         // [ds] How is dispel undead intended to interact with vampires?
         // Currently if the vampire's undead state returns MH_UNDEAD it
         // affects the player.

@@ -340,14 +340,6 @@ corpse
 
 A corpse. You can butcher it to produce chunks of meat.
 %%%%
-crystal ball of energy
-
-A magical device which can be used to restore magical energy, with its
-effectiveness increasing with Evocations skill. However, it may fail and drain
-all of those energies completely, or cause other negative mental effects. When
-used with low reserves of magic it becomes increasingly likely to deplete those
-reserves.
-%%%%
 crystal plate armour
 
 An incredibly heavy but extremely effective suit of crystalline armour.
@@ -432,11 +424,6 @@ death, bearing an enormous axehead.
 falchion
 
 A long single-edged sword with a slightly curved blade.
-%%%%
-fan of gales
-
-An enchanted fan. Swinging the fan unleashes a powerful blast of wind around
-the bearer.
 %%%%
 fen folio
 
@@ -573,11 +560,6 @@ lajatang
 A very rare and extremely effective weapon, featuring a pole with half-moon
 blades at both ends.
 %%%%
-lamp of fire
-
-A magical lamp which can be aimed at a creature to unleash trails of searing
-flame around the target.
-%%%%
 large rock
 
 A very large and very heavy stone. {{
@@ -663,8 +645,10 @@ weaker than the creature it mirrors.
 phial of floods
 
 An enchanted vessel brimming over with elemental water. Removing the stopper
-unleashes a torrent of water from the phial and sets free the water elementals
-that dwell within it.
+unleashes a torrent of water from the phial, dealing damage to the target and
+flooding the nearby area. Any creatures within the flooded area are also
+engulfed in water, silencing them temporarily. The strength of the torrent and
+the duration of the flooding are increased with Evocations skill.
 %%%%
 plate armour
 
@@ -900,13 +884,6 @@ rune of zot
 
 A talisman which allows entry into the Realm of Zot.
 %%%%
-sack of spiders
-
-A woven silk bag. Opening it will release a number of spiders and other
-insects, as well as creating webs nearby. Evocations skill increases its
-effectiveness. There is a one in three chance of accidentally destroying the
-sack when using it.
-%%%%
 sacred scourge
 
 A blessed weapon, woven by the saints in Heaven and hated by the unholy. It is
@@ -1108,12 +1085,8 @@ staff of poison
 
 A staff that increases the power of poisoning spells cast by its wielder, and
 protects them from the effects of poison. If the wielder is skilled in
-Evocations and Poison Magic, they can poison creatures struck by it — even if
-the victims are normally resistant.
-%%%%
-staff of power
-
-A staff that provides an increased reservoir of magical power to its wielder.
+Evocations and Poison Magic, they can inflict poison damage on creatures struck
+by it.
 %%%%
 staff of summoning
 

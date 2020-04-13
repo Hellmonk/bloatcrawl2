@@ -1,7 +1,11 @@
-import os
-import subprocess
 import errno
 import fcntl
+import os
+import subprocess
+
+import tornado
+import tornado.ioloop
+from tornado.ioloop import IOLoop
 
 BUFSIZ = 1024
 
@@ -10,7 +14,7 @@ def _set_nonblocking(fd):
     fcntl.fcntl(fd, fcntl.F_SETFL, flags | os.O_NONBLOCK)
 
 """A non-blocking version of subprocess.check_output on the tornado ioloop."""
-def check_output(call, callback, ioloop):
+def check_output(call, callback):
     out_r, out_w = os.pipe()
     nul_f = open(os.devnull, 'w')
     p = subprocess.Popen(call, stdout=out_w, stderr=nul_f)
@@ -24,7 +28,7 @@ def check_output(call, callback, ioloop):
             p.poll()
 
         if p.returncode is not None:
-            ioloop.remove_handler(out_r)
+            IOLoop.current().remove_handler(out_r)
             try:
                 buf = os.read(out_r, BUFSIZ)
             except (IOError, OSError) as e:
@@ -33,16 +37,16 @@ def check_output(call, callback, ioloop):
 
             if buf:
                 data.append(buf)
-            callback("".join(data), p.returncode)
+            callback(tornado.escape.to_unicode(b"".join(data)), p.returncode)
 
     def _handle_read(fd, events):
-        if events & ioloop.READ:
+        if events & IOLoop.READ:
             try:
                 buf = os.read(out_r, BUFSIZ)
             except (IOError, OSError) as e:
-                if e.args[0] == errno.EBADF:
+                if e.args.errno == errno.EBADF:
                     _poll()
-                elif e.args[0] not in (errno.EWOULDBLOCK, errno.EAGAIN):
+                elif e.args.errno not in (errno.EWOULDBLOCK, errno.EAGAIN):
                     raise
 
             if not buf:
@@ -50,8 +54,8 @@ def check_output(call, callback, ioloop):
             else:
                 data.append(buf)
 
-        if events & ioloop.ERROR:
+        if events & IOLoop.ERROR:
             _poll()
 
-    ioloop.add_handler(out_r, _handle_read,
-                       ioloop.ERROR | ioloop.READ)
+    IOLoop.current().add_handler(out_r, _handle_read,
+                                 IOLoop.ERROR | IOLoop.READ)

@@ -3,10 +3,10 @@
 #include "tiledgnbuf.h"
 
 #include "tile-flags.h"
-#include "tiledef-dngn.h"
-#include "tiledef-icons.h"
-#include "tiledef-main.h"
-#include "tiledef-player.h"
+#include "rltiles/tiledef-dngn.h"
+#include "rltiles/tiledef-icons.h"
+#include "rltiles/tiledef-main.h"
+#include "rltiles/tiledef-player.h"
 #include "tiledoll.h"
 #include "tilemcache.h"
 #include "tilepick.h"
@@ -578,11 +578,6 @@ void DungeonCellBuffer::pack_foreground(int x, int y, const packed_cell &cell)
     if (fg & TILE_FLAG_SWIFT)
     {
         m_buf_icons.add(TILEI_SWIFT, x, y, -status_shift, 0);
-        status_shift += 6;
-    }
-    if (fg & TILE_FLAG_PINNED)
-    {
-        m_buf_icons.add(TILEI_PINNED, x, y, -status_shift, 0);
         status_shift += 6;
     }
     if (fg & TILE_FLAG_RECALL)

@@ -89,7 +89,7 @@
 #include "stringutil.h"
 #include "terrain.h"
 #ifdef USE_TILE
-#include "tiledef-dngn.h"
+#include "rltiles/tiledef-dngn.h"
 #include "tilepick.h"
 #endif
 #include "transform.h"
@@ -821,11 +821,8 @@ static void _decrement_durations()
     else if (!sanguine_armour_is_valid && you.duration[DUR_SANGUINE_ARMOUR])
         you.duration[DUR_SANGUINE_ARMOUR] = 1; // expire
 
-    if (you.attribute[ATTR_HEAVENLY_STORM]
-        && !you.duration[DUR_HEAVENLY_STORM])
-    {
-        end_heavenly_storm(); // we shouldn't hit this, but just in case
-    }
+    if (you.duration[DUR_HEAVENLY_STORM])
+        wu_jian_heaven_tick();
 
     // these should be after decr_ambrosia, transforms, liquefying, etc.
     for (int i = 0; i < NUM_DURATIONS; ++i)

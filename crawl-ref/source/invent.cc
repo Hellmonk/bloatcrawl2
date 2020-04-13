@@ -28,6 +28,7 @@
 #include "item-use.h"
 #include "item-prop.h"
 #include "item-status-flag-type.h"
+#include "known-items.h"
 #include "libutil.h"
 #include "macro.h"
 #include "message.h"
@@ -41,9 +42,9 @@
 #include "terrain.h"
 #include "throw.h"
 #ifdef USE_TILE
- #include "tiledef-icons.h"
- #include "tiledef-main.h"
- #include "tiledef-dngn.h"
+ #include "rltiles/tiledef-icons.h"
+ #include "rltiles/tiledef-main.h"
+ #include "rltiles/tiledef-dngn.h"
  #include "tilepick.h"
 #endif
 
@@ -2067,7 +2068,6 @@ static bool _item_ally_only(const item_def &item)
         case MISC_PHANTOM_MIRROR:
         case MISC_HORN_OF_GERYON:
         case MISC_BOX_OF_BEASTS:
-        case MISC_SACK_OF_SPIDERS:
             return true;
         default:
             return false;

@@ -621,7 +621,7 @@ bool can_cast_spells(bool quiet, bool exegesis)
         return false;
     }
 
-    // Check that we have a spell memorized. Divine Exegesis does not need this
+    // Check that we have a spell memorised. Divine Exegesis does not need this
     // condition, but we can't just check you.divine_exegesis in all cases, as
     // it may not be set yet. Check a passed parameter instead.
     if (!exegesis && !you.spell_no)
@@ -726,6 +726,15 @@ bool cast_a_spell(bool check_range, spell_type spell)
                         you.last_cast_spell = spl;
                         break;
                     }
+                }
+
+                // We allow setting last cast spell by Divine Exegesis, but we
+                // don't allow recasting it with the UI unless we actually have
+                // the spell memorized.
+                if (you.last_cast_spell != SPELL_NO_SPELL
+                    && !you.has_spell(you.last_cast_spell))
+                {
+                    you.last_cast_spell = SPELL_NO_SPELL;
                 }
 
                 if (you.last_cast_spell == SPELL_NO_SPELL
@@ -1942,6 +1951,9 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     case SPELL_HAILSTORM:
         return cast_hailstorm(powc, fail);
 
+    case SPELL_ABSOLUTE_ZERO:
+        return cast_absolute_zero(powc, fail);
+
     case SPELL_ISKENDERUNS_MYSTIC_BLAST:
         return cast_imb(powc, fail);
 
@@ -2122,7 +2134,7 @@ static string _spell_failure_rate_description(spell_type spell)
 string spell_noise_string(spell_type spell, int chop_wiz_display_width)
 {
     const int casting_noise = spell_noise(spell);
-    int effect_noise = spell_effect_noise(spell);
+    int effect_noise = spell_effect_noise(spell, false);
     zap_type zap = spell_to_zap(spell);
     if (effect_noise == 0 && zap != NUM_ZAPS)
     {

@@ -938,6 +938,7 @@ staff09
 
 # These must be in the same order as the enum in item-prop-enum.h!
 i-staff_wizardry STAFF_WIZARDRY STAFF_ID_FIRST
+# Remove power when TAG_MAJOR_VERSION > 34
 i-staff_power STAFF_POWER
 i-staff_fire STAFF_FIRE
 i-staff_cold STAFF_COLD
@@ -988,11 +989,15 @@ misc_orb2
 uncollected_orb UNCOLLECTED_ORB
 
 #OBJ_MISCELLANY
+# Remove bottle when TAG_MAJOR_VERSION > 34
 misc_bottle MISC_BOTTLED_EFREET
 %rim 0
+# Remove crystal ball when TAG_MAJOR_VERSION > 34
 misc_crystal MISC_CRYSTAL_BALL_OF_ENERGY UNSEEN_MISC
+# Remove fan when TAG_MAJOR_VERSION > 34
 misc_fan MISC_FAN_OF_GALES
 misc_fan_inert MISC_FAN_OF_GALES_INERT
+# Remove lamp when TAG_MAJOR_VERSION > 34
 misc_lamp MISC_LAMP_OF_FIRE
 misc_lamp_inert MISC_LAMP_OF_FIRE_INERT
 # Remove stone when TAG_MAJOR_VERSION > 34
@@ -1012,6 +1017,7 @@ misc_box MISC_BOX_OF_BEASTS
 misc_ancient_crate MISC_ANCIENT_CRATE
 misc_dusty_tome MISC_DUSTY_TOME
 %rim 0
+# Remove when TAG_MAJOR_VERSION > 34
 misc_sack MISC_SACK_OF_SPIDERS
 misc_phantom_mirror MISC_PHANTOM_MIRROR
 misc_zigfig MISC_ZIGGURAT

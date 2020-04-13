@@ -63,7 +63,7 @@
 #include "stairs.h"
 #include "state.h"
 #include "stringutil.h"
-#include "tiledef-dngn.h"
+#include "rltiles/tiledef-dngn.h"
 #include "tilepick.h"
 #include "tileview.h"
 #include "timed-effects.h"
@@ -247,6 +247,12 @@ set<string> &get_uniq_map_names()
  *********************************************************************/
 bool builder(bool enable_random_maps)
 {
+#ifndef DEBUG_FULL_DUNGEON_SPAM
+    // hide builder debug spam by default -- this is still collected by a tee
+    // and accessible via &ctrl-l without this #define.
+    no_messages quiet(MSGCH_DIAGNOSTICS);
+#endif
+
     // Re-check whether we're in a valid place, it leads to obscure errors
     // otherwise.
     ASSERT_RANGE(you.where_are_you, 0, NUM_BRANCHES);
@@ -1456,8 +1462,7 @@ void fixup_misplaced_items()
 
             mprf(MSGCH_ERROR, "Item %s buggily placed in feature %s at (%d, %d).",
                  item.name(DESC_PLAIN).c_str(),
-                 feature_description_at(item.pos, false, DESC_PLAIN,
-                                        false).c_str(),
+                 feature_description_at(item.pos, false, DESC_PLAIN).c_str(),
                  item.pos.x, item.pos.y);
         }
         else
@@ -3798,12 +3803,14 @@ static void _builder_monsters()
     {
         mgen_data mg;
 
+        // On D:1, we want monsters out of LOS distance from the player's
+        // starting position, and we don't generate them awake.
+        if (env.absdepth0 == 0)
+            mg.proximity = PROX_AWAY_FROM_DUNGEON_ENTRANCE;
         // Chance to generate the monster awake, but away from level stairs.
-        // D:1 is excluded from this chance since the player can't escape
-        // upwards and is especially vulnerable.
-        if (player_in_connected_branch()
-            && env.absdepth0 > 0
-            && one_chance_in(8))
+        else if (player_in_connected_branch()
+                 && env.absdepth0 > 0
+                 && one_chance_in(8))
         {
             mg.proximity = PROX_AWAY_FROM_STAIRS;
         }

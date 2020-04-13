@@ -30,6 +30,7 @@
 #include "items.h"
 #include "item-use.h"
 #include "invent.h"
+#include "known-items.h"
 #include "libutil.h"
 #include "macro.h"
 #include "message.h"
@@ -641,13 +642,7 @@ static int _acquirement_staff_subtype(bool /*divine*/, int & /*quantity*/,
         return result;
 
     // Otherwise pick a non-enhancer staff.
-    switch (random2(5))
-    {
-    case 0: case 1: result = STAFF_WIZARDRY;   break;
-    case 2: case 3: result = STAFF_ENERGY;     break;
-    case 4: result = STAFF_POWER;              break;
-    }
-    return result;
+    return coinflip() ? STAFF_WIZARDRY : STAFF_ENERGY;
 }
 
 /**
@@ -657,38 +652,20 @@ static int _acquirement_staff_subtype(bool /*divine*/, int & /*quantity*/,
 static int _acquirement_misc_subtype(bool /*divine*/, int & quantity,
                                      int /*agent*/)
 {
-    // Give a crystal ball based on both evocations and either spellcasting or
-    // invocations if we haven't seen one.
-    int skills = _skill_rdiv(SK_EVOCATIONS)
-        * max(_skill_rdiv(SK_SPELLCASTING), _skill_rdiv(SK_INVOCATIONS));
-    if (x_chance_in_y(skills, MAX_SKILL_LEVEL * MAX_SKILL_LEVEL)
-        && !you.seen_misc[MISC_CRYSTAL_BALL_OF_ENERGY])
-    {
-        return MISC_CRYSTAL_BALL_OF_ENERGY;
-    }
-
     const bool NO_LOVE = you.get_mutation_level(MUT_NO_LOVE);
 
     const vector<pair<int, int> > choices =
     {
         // These have charges, so give them a constant weight.
-        {MISC_BOX_OF_BEASTS,
-                                       (NO_LOVE ?     0 :  7)},
-        {MISC_SACK_OF_SPIDERS,
-                                       (NO_LOVE ?     0 :  7)},
-        {MISC_PHANTOM_MIRROR,
-                                       (NO_LOVE ?     0 :  7)},
+        {MISC_BOX_OF_BEASTS,            (NO_LOVE ? 0 : 10)},
+        {MISC_PHANTOM_MIRROR,           (NO_LOVE ? 0 : 10)},
         // Tremorstones are better for heavily armoured characters.
-        {MISC_TIN_OF_TREMORSTONES, 3 + _skill_rdiv(SK_ARMOUR) / 3 },
+        {MISC_TIN_OF_TREMORSTONES, 5 + _skill_rdiv(SK_ARMOUR) / 3 },
         // The player never needs more than one.
         {MISC_LIGHTNING_ROD,
-            (you.seen_misc[MISC_LIGHTNING_ROD] ?      0 : 17)},
-        {MISC_LAMP_OF_FIRE,
-            (you.seen_misc[MISC_LAMP_OF_FIRE] ?       0 : 17)},
+            (you.seen_misc[MISC_LIGHTNING_ROD] ?   0 : 20)},
         {MISC_PHIAL_OF_FLOODS,
-            (you.seen_misc[MISC_PHIAL_OF_FLOODS] ?    0 : 17)},
-        {MISC_FAN_OF_GALES,
-            (you.seen_misc[MISC_FAN_OF_GALES] ?       0 : 17)},
+            (you.seen_misc[MISC_PHIAL_OF_FLOODS] ? 0 : 20)},
 
     };
 
@@ -697,8 +674,7 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & quantity,
     if (choice != nullptr && *choice == MISC_TIN_OF_TREMORSTONES)
         quantity = 2; // not quite worth it alone
 
-    // Could be nullptr if all the weights were 0.
-    return choice ? *choice : MISC_CRYSTAL_BALL_OF_ENERGY;
+    return *choice;
 }
 
 /**
@@ -1220,23 +1196,9 @@ static string _why_reject(const item_def &item, int agent)
         return "Destroying unusable weapon or armour!";
     }
 
-    // Trog does not gift the Wrath of Trog, nor weapons of pain
-    // (which work together with Necromantic magic).
-    // nor fancy magic staffs (wucad mu, majin-bo, staff of battle, elem
-    // staff, staff of olgreb)
-    if (agent == GOD_TROG)
-    {
-        if (is_unrandom_artefact(item, UNRAND_TROG)
-            || is_unrandom_artefact(item, UNRAND_WUCAD_MU)
-            || is_unrandom_artefact(item, UNRAND_MAJIN)
-            || is_unrandom_artefact(item, UNRAND_BATTLE)
-            || is_unrandom_artefact(item, UNRAND_ELEMENTAL_STAFF)
-            || is_unrandom_artefact(item, UNRAND_OLGREB)
-            || get_weapon_brand(item) == SPWPN_PAIN)
-        {
-            return "Destroying a weapon Trog hates!";
-        }
-    }
+    // Trog does not gift the Wrath of Trog.
+    if (agent == GOD_TROG && is_unrandom_artefact(item, UNRAND_TROG))
+        return "Destroying Trog-gifted Wrath of Trog!";
 
     // Pain brand is useless if you've sacrificed Necromacy.
     if (you.get_mutation_level(MUT_NO_NECROMANCY_MAGIC)
@@ -1253,19 +1215,6 @@ static string _why_reject(const item_def &item, int agent)
         ASSERT(item.base_type == OBJ_BOOKS);
         return "Destroying sif-gifted rarebook!";
     }
-
-#if TAG_MAJOR_VERSION == 34
-    // The crystal ball case should be handled elsewhere, but just in
-    // case, it's also handled here.
-    if (agent == GOD_PAKELLAS)
-    {
-        if (item.base_type == OBJ_MISCELLANY
-            && item.sub_type == MISC_CRYSTAL_BALL_OF_ENERGY)
-        {
-            return "Destroying CBoE that Pakellas hates!";
-        }
-    }
-#endif
 
     return ""; // all OK
 }
@@ -1629,6 +1578,17 @@ void AcquireMenu::update_help()
                                    : "examine item")));
 }
 
+static void _create_acquirement_item(item_def &item)
+{
+    if (is_unrandom_artefact(item))
+        set_unique_item_status(item, UNIQ_EXISTS);
+
+    if (copy_item_to_grid(item, you.pos()))
+        canned_msg(MSG_SOMETHING_APPEARS);
+    else
+        canned_msg(MSG_NOTHING_HAPPENS);
+}
+
 bool AcquireMenu::acquire_selected()
 {
     vector<MenuEntry*> selected = selected_entries();
@@ -1656,14 +1616,8 @@ bool AcquireMenu::acquire_selected()
     }
 
     item_def &acq_item = *static_cast<item_def*>(entry.data);
+    _create_acquirement_item(acq_item);
 
-    if (is_unrandom_artefact(acq_item))
-        set_unique_item_status(acq_item, UNIQ_EXISTS);
-
-    if (copy_item_to_grid(acq_item, you.pos()))
-        canned_msg(MSG_SOMETHING_APPEARS);
-    else
-        canned_msg(MSG_NOTHING_HAPPENS);
     acq_items.clear();
     return false;
 }
@@ -1795,6 +1749,23 @@ bool acquirement_menu()
         _make_acquirement_items();
 
     auto &acq_items = you.props[ACQUIRE_ITEMS_KEY].get_vector();
+
+#ifdef CLUA_BINDINGS
+    int index = 0;
+    if (!clua.callfn("c_choose_acquirement", ">d", &index))
+    {
+        if (!clua.error.empty())
+            mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
+    }
+    else if (index >= 1 && index <= acq_items.size())
+    {
+        _create_acquirement_item(acq_items[index - 1]);
+
+        acq_items.clear();
+        you.props.erase(ACQUIRE_ITEMS_KEY);
+        return true;
+    }
+#endif
 
     AcquireMenu acq_menu(acq_items);
     acq_menu.show();

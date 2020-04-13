@@ -320,19 +320,27 @@ bool is_channeling_item(const item_def& item, bool calc_unid)
     if (!calc_unid && !item_type_known(item))
         return false;
 
-    return item.base_type == OBJ_STAVES && item.sub_type == STAFF_ENERGY
-           || item.base_type == OBJ_MISCELLANY
-              && item.sub_type == MISC_CRYSTAL_BALL_OF_ENERGY;
+    return item.base_type == OBJ_STAVES && item.sub_type == STAFF_ENERGY;
 }
 
 bool is_wizardly_item(const item_def& item, bool calc_unid)
 {
-    UNUSED(calc_unid);
-
-    if (is_unrandom_artefact(item, UNRAND_BATTLE))
+    if ((calc_unid || item_brand_known(item))
+        && get_weapon_brand(item) == SPWPN_PAIN)
+    {
         return true;
+    }
 
-    return false;
+    if (is_unrandom_artefact(item, UNRAND_WUCAD_MU)
+        || is_unrandom_artefact(item, UNRAND_MAJIN)
+        || is_unrandom_artefact(item, UNRAND_BATTLE)
+        || is_unrandom_artefact(item, UNRAND_ELEMENTAL_STAFF)
+        || is_unrandom_artefact(item, UNRAND_OLGREB))
+    {
+        return true;
+    }
+
+    return item.base_type == OBJ_STAVES;
 }
 
 /**
@@ -400,11 +408,13 @@ vector<conduct_type> item_conducts(const item_def &item)
         conducts.push_back(DID_SPELL_MEMORISE);
 
     if ((item.sub_type == BOOK_MANUAL && item_type_known(item)
-        && is_magic_skill((skill_type)item.plus))
-        || is_wizardly_item(item))
+         && is_magic_skill((skill_type)item.plus)))
     {
         conducts.push_back(DID_SPELL_PRACTISE);
     }
+
+    if (is_wizardly_item(item, false))
+        conducts.push_back(DID_WIZARDLY_ITEM);
 
     if (_is_potentially_hasty_item(item) || is_hasty_item(item, false))
         conducts.push_back(DID_HASTY);

@@ -726,9 +726,7 @@ unsigned int item_value(item_def item, bool ident)
             valued += 5000;
             break;
 
-        case MISC_FAN_OF_GALES:
         case MISC_PHIAL_OF_FLOODS:
-        case MISC_LAMP_OF_FIRE:
         case MISC_LIGHTNING_ROD:
             valued += 400;
             break;
@@ -738,7 +736,6 @@ unsigned int item_value(item_def item, bool ident)
             break;
 
         case MISC_BOX_OF_BEASTS:
-        case MISC_SACK_OF_SPIDERS:
         case MISC_AIR_HORN:
             valued += 200;
             break;
@@ -1799,14 +1796,8 @@ bool ShoppingList::cull_identical_items(const item_def& item, int cost)
         break;
     case OBJ_MISCELLANY:
         // ... and a few of these.
-        switch (item.sub_type)
-        {
-            case MISC_CRYSTAL_BALL_OF_ENERGY:
-                break;
-            default:
-                if (!is_xp_evoker(item))
-                    return 0;
-        }
+        if (!is_xp_evoker(item))
+            return 0;
         break;
     default:
         return 0;

@@ -23,8 +23,6 @@
             <input class="text" type="password" name="password" id="password">
             <input class="button" type="submit" name="submit" id="submit" value="Login">
           </form>
-          <input type="checkbox" name="remember_me" id="remember_me">
-          <label for="remember_me">Stay logged in</label>
           <span class="extra_links">|
           <a id="reg_link" href="javascript:">Register</a>
 {% if getattr(config, "allow_password_reset", False) %}
@@ -142,6 +140,25 @@
 
       <div id="banner">{% include banner.html %}</div>
 
+      <div>
+        <div id="admin_panel_button" style="display:none;">
+          <span><a href="javascript:">Toggle admin panel</a></span>
+        </div>
+        <div id="admin_panel" style="display: none;">
+          <div><span><b>Admin panel</b></span></div>
+          <hr />
+          <div id="admin_announcements">
+            <span>Enter text to broadcast to all players. Please do not use this frivolously!</span>
+            <form>
+              <label for="announcement_text">Announcement: </label>
+              <input class="text" type="text" name="announcement_text" id="announcement_text" />
+              <span><a href="javascript:" id="announcement_submit">send announcement</a></span>
+            </form>
+            <div id="admin_panel_log"></div>
+          </div>
+        </div>
+      </div>
+
       <div id="play_now"></div>
 
       <br>
@@ -220,6 +237,7 @@
         <img style="display:none;" alt="" src="{{ static_url("title_froggy_natasha_and_boris.png") }}">
         <img style="display:none;" alt="" src="{{ static_url("title_froggy_rune_and_run_failed_on_dis.png") }}">
         <img style="display:none;" alt="" src="{{ static_url("title_froggy_thunder_fist_nikola.png") }}">
+        <img style="display:none;" alt="" src="{{ static_url("title_nibiki_octopode.png") }}">
         <img style="display:none;" alt="" src="{{ static_url("title_omndra_zot_demon.png") }}">
         <img style="display:none;" alt="" src="{{ static_url("title_peileppe_bloax_eye.png") }}">
         <img style="display:none;" alt="" src="{{ static_url("title_ploomutoo_ijyb.png") }}">

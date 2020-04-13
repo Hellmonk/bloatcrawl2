@@ -686,7 +686,8 @@ bool monster::is_silenced() const
 {
     return silenced(pos())
             || has_ench(ENCH_MUTE)
-            || has_ench(ENCH_WATER_HOLD)
+            || (has_ench(ENCH_WATER_HOLD)
+                || has_ench(ENCH_WATERLOGGED))
                && !res_water_drowning();
 }
 
@@ -3022,7 +3023,7 @@ bool monster::cannot_act() const
 
 bool monster::cannot_move() const
 {
-    return cannot_act() || has_ench(ENCH_WHIRLWIND_PINNED);
+    return cannot_act();
 }
 
 bool monster::asleep() const
@@ -4508,7 +4509,7 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
            did_hurt_conduct(DID_HURT_FOE, *this, amount);
         }
 
-        // Handle pain bond behavior here. Is technically passive damage.
+        // Handle pain bond behaviour here. Is technically passive damage.
         // radiate_pain_bond may do additional damage by recursively looping
         // back to the original trigger.
         if (has_ench(ENCH_PAIN_BOND) && flavour != BEAM_SHARED_PAIN)
@@ -5544,7 +5545,7 @@ void monster::apply_location_effects(const coord_def &oldpos,
             if (you.see_cell(pos()) && !visible_to(&you))
             {
                 string desc =
-                    feature_description_at(pos(), false, DESC_THE, false);
+                    feature_description_at(pos(), false, DESC_THE);
                 mprf("The bloodstain on %s disappears!", desc.c_str());
             }
         }

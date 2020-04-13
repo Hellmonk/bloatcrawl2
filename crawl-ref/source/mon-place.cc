@@ -48,7 +48,7 @@
 #include "stringutil.h"
 #include "terrain.h"
 #ifdef USE_TILE
- #include "tiledef-player.h"
+ #include "rltiles/tiledef-player.h"
 #endif
 #include "tilepick.h"
 #include "traps.h"
@@ -605,6 +605,19 @@ static bool _valid_monster_generation_location(const mgen_data &mg,
         for (distance_iterator di(mg_pos, false, false, LOS_RADIUS); di; ++di)
             if (feat_is_stone_stair(grd(*di)))
                 return false;
+    }
+    // Check that the location is not proximal to an area where the player
+    // begins the game.
+    else if (mg.proximity == PROX_AWAY_FROM_DUNGEON_ENTRANCE
+             && env.absdepth0 == 0)
+    {
+        for (distance_iterator di(mg_pos, false, false, LOS_RADIUS); di; ++di)
+            if (feat_is_branch_exit(grd(*di))
+                // We may be checking before branch exit cleanup.
+                || feat_is_stone_stair_up(grd(*di)))
+            {
+                return false;
+            }
     }
 
     // Don't generate monsters on top of teleport traps.
@@ -2188,7 +2201,7 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
     { BAND_KOBOLD_DEMONOLOGIST, {{{MONS_KOBOLD, 4},
                                   {MONS_BIG_KOBOLD, 2},
                                   {MONS_KOBOLD_DEMONOLOGIST, 1}}}},
-    // Favor tougher naga suited to melee, compared to normal naga bands
+    // Favour tougher naga suited to melee, compared to normal naga bands
     { BAND_GUARDIAN_SERPENT,    {{{MONS_NAGA_MAGE, 5}, {MONS_NAGA_WARRIOR, 10}},
 
                                  {{MONS_NAGA_MAGE, 5}, {MONS_NAGA_WARRIOR, 10},

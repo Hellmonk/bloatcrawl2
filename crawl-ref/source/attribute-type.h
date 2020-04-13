@@ -94,8 +94,10 @@ enum attribute_type
     ATTR_DIVINE_ENERGY,        // Divine energy from Sif to cast with no MP.
 #endif
     ATTR_SERPENTS_LASH,        // Remaining instant movement actions.
+#if TAG_MAJOR_VERSION == 34
     ATTR_HEAVENLY_STORM,       // Strength of Heavenly Storm slaying.
     ATTR_WALL_JUMP_READY,      // Ready to perform a wall jump.
+#endif
     ATTR_DEATHS_DOOR_HP,       // How much HP we should have under Death's Door
     ATTR_BOL_XI_SHUFFLE_XP,    // XP gained since last Bol Xi shuffle (only counts up when you are a Bol Xi)
     NUM_ATTRIBUTES

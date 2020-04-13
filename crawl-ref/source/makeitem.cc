@@ -1596,10 +1596,9 @@ static void _generate_staff_item(item_def& item, bool allow_uniques,
         }
         while (item_type_removed(OBJ_STAVES, item.sub_type));
 
-        // staves of energy are 25% less common, wizardry/power
-        // are more common
+        // staves of energy are 25% less common, wizardry is more common
         if (item.sub_type == STAFF_ENERGY && one_chance_in(4))
-            item.sub_type = random_choose(STAFF_WIZARDRY, STAFF_POWER);
+            item.sub_type = STAFF_WIZARDRY;
     }
     else
         item.sub_type = force_type;
@@ -1772,13 +1771,9 @@ static void _generate_misc_item(item_def& item, int force_type)
         item.sub_type = force_type;
     else
     {
-        item.sub_type = random_choose(MISC_FAN_OF_GALES,
-                                      MISC_LAMP_OF_FIRE,
-                                      MISC_PHIAL_OF_FLOODS,
+        item.sub_type = random_choose(MISC_PHIAL_OF_FLOODS,
                                       MISC_LIGHTNING_ROD,
                                       MISC_BOX_OF_BEASTS,
-                                      MISC_SACK_OF_SPIDERS,
-                                      MISC_CRYSTAL_BALL_OF_ENERGY,
                                       MISC_PHANTOM_MIRROR,
                                       MISC_AIR_HORN,
                                       MISC_TIN_OF_TREMORSTONES);

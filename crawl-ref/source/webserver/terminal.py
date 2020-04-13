@@ -1,26 +1,29 @@
-import pty
-import termios
-import os
 import fcntl
-import struct
+import os
+import pty
 import resource
 import signal
+import struct
 import sys
+import termios
 import time
+
+import tornado.ioloop
+from tornado.escape import to_unicode
+from tornado.ioloop import IOLoop
 
 BUFSIZ = 2048
 
 class TerminalRecorder(object):
-    def __init__(self, command, filename, id_header, logger, io_loop, termsize):
-        self.io_loop = io_loop
+    def __init__(self, command, filename, id_header, logger, termsize):
         self.command = command
         if filename:
-            self.ttyrec = open(filename, "w", 0)
+            self.ttyrec = open(filename, "wb", 0)
         else:
             self.ttyrec = None
         self.id = id
         self.returncode = None
-        self.output_buffer = ""
+        self.output_buffer = b""
         self.termsize = termsize
 
         self.pid = None
@@ -32,7 +35,7 @@ class TerminalRecorder(object):
         self.error_callback = None
 
         self.errpipe_read = None
-        self.error_buffer = ""
+        self.error_buffer = b""
 
         self.logger = logger
 
@@ -81,16 +84,16 @@ class TerminalRecorder(object):
         # We're the parent
         os.close(errpipe_write)
 
-        self.io_loop.add_handler(self.child_fd,
-                                 self._handle_read,
-                                 self.io_loop.ERROR | self.io_loop.READ)
+        IOLoop.current().add_handler(self.child_fd,
+                                     self._handle_read,
+                                     IOLoop.ERROR | IOLoop.READ)
 
-        self.io_loop.add_handler(self.errpipe_read,
-                                 self._handle_err_read,
-                                 self.io_loop.READ)
+        IOLoop.current().add_handler(self.errpipe_read,
+                                     self._handle_err_read,
+                                     IOLoop.READ)
 
     def _handle_read(self, fd, events):
-        if events & self.io_loop.READ:
+        if events & IOLoop.READ:
             buf = os.read(fd, BUFSIZ)
 
             if len(buf) > 0:
@@ -104,11 +107,11 @@ class TerminalRecorder(object):
 
             self.poll()
 
-        if events & self.io_loop.ERROR:
+        if events & IOLoop.ERROR:
             self.poll()
 
     def _handle_err_read(self, fd, events):
-        if events & self.io_loop.READ:
+        if events & IOLoop.READ:
             buf = os.read(fd, BUFSIZ)
 
             if len(buf) > 0:
@@ -129,33 +132,33 @@ class TerminalRecorder(object):
         self.ttyrec.write(data)
 
     def _do_output_callback(self):
-        pos = self.output_buffer.find("\n")
+        pos = self.output_buffer.find(b"\n")
         while pos >= 0:
             line = self.output_buffer[:pos]
             self.output_buffer = self.output_buffer[pos + 1:]
 
             if len(line) > 0:
-                if line[-1] == "\r": line = line[:-1]
+                if line[-1] == b"\r": line = line[:-1]
 
                 if self.output_callback:
-                    self.output_callback(line)
+                    self.output_callback(to_unicode(line))
 
-            pos = self.output_buffer.find("\n")
+            pos = self.output_buffer.find(b"\n")
 
     def _log_error_output(self):
-        pos = self.error_buffer.find("\n")
+        pos = self.error_buffer.find(b"\n")
         while pos >= 0:
             line = self.error_buffer[:pos]
             self.error_buffer = self.error_buffer[pos + 1:]
 
             if len(line) > 0:
-                if line[-1] == "\r": line = line[:-1]
+                if line[-1] == b"\r": line = line[:-1]
 
-                self.logger.info("ERR: %s", line)
+                self.logger.info("ERR: %s", to_unicode(line))
                 if self.error_callback:
-                    self.error_callback(line)
+                    self.error_callback(to_unicode(line))
 
-            pos = self.error_buffer.find("\n")
+            pos = self.error_buffer.find(b"\n")
 
 
     def send_signal(self, signal):
@@ -174,8 +177,8 @@ class TerminalRecorder(object):
                     raise RuntimeError("Unknown child exit status!")
 
             if self.returncode is not None:
-                self.io_loop.remove_handler(self.child_fd)
-                self.io_loop.remove_handler(self.errpipe_read)
+                IOLoop.current().remove_handler(self.child_fd)
+                IOLoop.current().remove_handler(self.errpipe_read)
 
                 os.close(self.child_fd)
                 os.close(self.errpipe_read)

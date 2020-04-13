@@ -22,6 +22,7 @@
 #include "english.h"
 #include "env.h"
 #include "fight.h"
+#include "fineff.h"
 #include "food.h"
 #include "fprop.h"
 #include "god-conduct.h"
@@ -783,7 +784,8 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
 
     if (hp_gain && !you.duration[DUR_DEATHS_DOOR] && you.species != SP_UNFATHOMED_DWARF)
     {
-        mpr("You feel life coursing into your body.");
+        mprf("You feel life coursing into your body%s",
+             attack_strength_punctuation(hp_gain).c_str());
         inc_hp(hp_gain);
     }
 
@@ -3365,20 +3367,17 @@ void actor_apply_toxic_bog(actor * act)
 */
 spret cast_frozen_ramparts(int pow, bool fail)
 {
-    vector<coord_def> walls;
-    for (distance_iterator di(you.pos(), false, false, FROZEN_RAMPARTS_RADIUS);
-            di; ++di)
+    vector<coord_def> wall_locs;
+    for (radius_iterator ri(you.pos(),
+                spell_range(SPELL_FROZEN_RAMPARTS, -1, false), C_SQUARE,
+                LOS_NO_TRANS, true); ri; ++ri)
     {
-        const auto feat = grd(*di);
-        if (you.see_cell(*di)
-            && feat_is_wall(feat)
-            && !feat_is_permarock(feat))
-        {
-            walls.push_back(*di);
-        }
+        const auto feat = grd(*ri);
+        if (feat_is_wall(feat))
+            wall_locs.push_back(*ri);
     }
 
-    if (walls.empty())
+    if (wall_locs.empty())
     {
         mpr("There are no walls around you to affect.");
         return spret::abort;
@@ -3386,16 +3385,85 @@ spret cast_frozen_ramparts(int pow, bool fail)
 
     fail_check();
 
-    for (auto wall : walls)
-        env.pgrid(wall) |= FPROP_ICY;
+    for (auto pos: wall_locs)
+    {
+        if (in_bounds(pos))
+            noisy(spell_effect_noise(SPELL_FROZEN_RAMPARTS), pos);
+        env.pgrid(pos) |= FPROP_ICY;
+    }
 
     env.level_state |= LSTATE_ICY_WALL;
     you.props[FROZEN_RAMPARTS_KEY] = you.pos();
 
-    mpr("The walls around you are covered in icicles.");
-    noisy(spell_effect_noise(SPELL_FROZEN_RAMPARTS), you.pos());
-
+    mpr("The walls around you are covered in ice.");
     you.duration[DUR_FROZEN_RAMPARTS] = random_range(40 + pow,
                                                      80 + pow * 3 / 2);
+    return spret::success;
+}
+
+//returns the closest target to the player
+static monster* _closest_target_in_range(int radius)
+{
+    for (distance_iterator di(you.pos(), true, true, radius); di; ++di)
+    {
+        monster *mon = monster_at(*di);
+        if (mon
+            && you.see_cell_no_trans(mon->pos())
+            && !mon->wont_attack()
+            && !mons_is_firewood(*mon))
+        {
+            return mon;
+        }
+    }
+
+    return nullptr;
+}
+
+spret cast_absolute_zero(int pow, bool fail, bool tracer)
+{
+    monster* const mon = _closest_target_in_range(
+            spell_range(SPELL_ABSOLUTE_ZERO, pow));
+
+    if (tracer)
+    {
+        if (!mon)
+            return spret::abort;
+        else
+            return spret::success;
+    }
+
+    if (mon && you.can_see(*mon) && stop_attack_prompt(mon, false, mon->pos()))
+        return spret::abort;
+
+    fail_check();
+
+    if (!mon)
+        canned_msg(MSG_NOTHING_HAPPENS);
+    else
+    {
+        targeter_radius hitfunc(&you, LOS_NO_TRANS);
+        flash_view_delay(UA_PLAYER, LIGHTCYAN, 100, &hitfunc);
+
+        god_conduct_trigger conducts[3];
+        set_attack_conducts(conducts, *mon, you.can_see(*mon));
+
+        if (mon->type == MONS_ROYAL_JELLY && !mon->is_summoned())
+        {
+            // need to do this here, because react_to_damage is never called
+            mprf("A cloud of jellies burst out of %s as it chills to"
+                 " absolute zero!", mon->name(DESC_THE, false).c_str());
+            trj_spawn_fineff::schedule(&you, mon, mon->pos(), mon->hit_points);
+        }
+        else
+        {
+            mprf("You chill %s to absolute zero!",
+                 you.can_see(*mon) ? mon->name(DESC_THE).c_str() : "something");
+        }
+
+        const coord_def pos = mon->pos();
+        glaciate_freeze(mon, KILL_YOU, actor_to_death_source(&you));
+        noisy(spell_effect_noise(SPELL_ABSOLUTE_ZERO), pos, you.mid);
+    }
+
     return spret::success;
 }

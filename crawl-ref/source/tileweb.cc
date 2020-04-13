@@ -42,11 +42,11 @@
 #include "throw.h"
 #include "tile-flags.h"
 #include "tile-player-flag-cut.h"
-#include "tiledef-dngn.h"
-#include "tiledef-gui.h"
-#include "tiledef-icons.h"
-#include "tiledef-main.h"
-#include "tiledef-player.h"
+#include "rltiles/tiledef-dngn.h"
+#include "rltiles/tiledef-gui.h"
+#include "rltiles/tiledef-icons.h"
+#include "rltiles/tiledef-main.h"
+#include "rltiles/tiledef-player.h"
 #include "tilepick.h"
 #include "tilepick-p.h"
 #include "tileview.h"
@@ -408,6 +408,19 @@ wint_t TilesFramework::_handle_control_message(sockaddr_un addr, string data)
 
         if (Options.note_chat_messages)
             take_note(Note(NOTE_MESSAGE, MSGCH_PLAIN, 0, content->string_));
+    }
+    else if (msgtype == "server_announcement")
+    {
+        JsonWrapper content = json_find_member(obj.node, "content");
+        content.check(JSON_STRING);
+        string m = "<red>Serverwide announcement:</red> ";
+        m += content->string_;
+
+        mprf(MSGCH_DGL_MESSAGE, "%s", m.c_str());
+        // The following two lines are a magic incantation to get this mprf
+        // to actually render without waiting on player inout
+        flush_prev_message();
+        c = CK_REDRAW;
     }
     else if (msgtype == "click_travel" &&
              mouse_control::current_mode() == MOUSE_MODE_COMMAND)

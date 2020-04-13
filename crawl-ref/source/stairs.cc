@@ -151,7 +151,7 @@ static bool _stair_moves_pre(dungeon_feature_type stair)
         return false;
 
     // Get feature name before sliding stair over.
-    string stair_str = feature_description_at(you.pos(), false, DESC_THE, false);
+    string stair_str = feature_description_at(you.pos(), false, DESC_THE);
 
     if (!slide_feature_over(you.pos()))
         return false;
@@ -1107,7 +1107,7 @@ static void _update_level_state()
             // FPROP_ICY from walls in some cases, so we detect invalid walls
             // and remove the flag.
             if (have_ramparts
-                && ramparts_pos.distance_from(*ri) <= FROZEN_RAMPARTS_RADIUS
+                && ramparts_pos.distance_from(*ri) <= 3
                 && cell_see_cell(*ri, ramparts_pos, LOS_NO_TRANS))
             {
 #endif

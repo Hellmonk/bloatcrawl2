@@ -936,8 +936,7 @@ void bolt::affect_wall()
         {
             const string prompt =
                 make_stringf("Are you sure you want to burn %s?",
-                             feature_description_at(pos(), false, DESC_THE,
-                                                    false).c_str());
+                             feature_description_at(pos(), false, DESC_THE).c_str());
 
             if (yesno(prompt.c_str(), false, 'n'))
                 dont_stop_trees = true;
@@ -1166,12 +1165,12 @@ void bolt::do_fire()
             else
             {
                 prompt += "the targeted "
-                        + feature_description_at(target, false, DESC_PLAIN, false);
+                        + feature_description_at(target, false, DESC_PLAIN);
             }
 
             prompt += " is blocked by "
                     + (feat_is_solid(feat) ?
-                        feature_description_at(pos(), false, DESC_A, false) :
+                        feature_description_at(pos(), false, DESC_A) :
                         monster_at(pos())->name(DESC_A));
 
             prompt += ". Continue anyway?";
@@ -4231,7 +4230,7 @@ void bolt::enchantment_affect_monster(monster* mon)
     extra_range_used += range_used_on_hit();
 }
 
-static void _glaciate_freeze(monster* mon, killer_type englaciator,
+void glaciate_freeze(monster* mon, killer_type englaciator,
                              int kindex)
 {
     const coord_def where = mon->pos();
@@ -4631,7 +4630,18 @@ void bolt::affect_monster(monster* mon)
 
     if (flavour == BEAM_MISSILE && item)
     {
-        ranged_attack attk(agent(true), mon, item, use_target_as_pos, agent());
+        actor *ag = agent(true);
+        // if the agent is now dead, check to see if we can get a usable agent
+        // by factoring in reflections. This case will cause
+        // "INVALID YOU_FAULTLESS" to show up in dprfs and mess up the to-hit,
+        // but it otherwise works.
+        // TODO Possibly what should happen is that the thrower's death should
+        // be special-cased as a fineff, but this seemed very tricky to
+        // implement...
+        if (!ag)
+            ag = agent(false);
+        ASSERT(ag);
+        ranged_attack attk(ag, mon, item, use_target_as_pos, agent());
         attk.attack();
         // fsim purposes - throw_it detects if an attack connected through
         // hit_verb
@@ -4858,7 +4868,7 @@ void bolt::affect_monster(monster* mon)
             && x_chance_in_y(3, 5))
         {
             // Includes monster_die as part of converting to block of ice.
-            _glaciate_freeze(mon, thrower, kindex);
+            glaciate_freeze(mon, thrower, kindex);
         }
         // Prevent spore explosions killing plants from being registered
         // as a Fedhas misconduct. Deaths can trigger the ally dying or

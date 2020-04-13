@@ -34,6 +34,8 @@ bool simple_monster_message(const monster& mons, const char *event,
                             msg_channel_type channel = MSGCH_PLAIN,
                             int param = 0,
                             description_level_type descrip = DESC_THE);
+
+string god_speaker(god_type which_deity = you.religion);
 void simple_god_message(const char *event, god_type which_deity = you.religion);
 void wu_jian_sifu_message(const char *event);
 
@@ -116,9 +118,12 @@ class no_messages
 public:
     no_messages();
     no_messages(bool really_suppress);
+    no_messages(msg_channel_type _channel);
     ~no_messages();
 private:
     bool msuppressed;
+    msg_channel_type channel;
+    msg_colour_type prev_colour;
 };
 
 void webtiles_send_messages(); // does nothing unless USE_TILE_WEB is defined

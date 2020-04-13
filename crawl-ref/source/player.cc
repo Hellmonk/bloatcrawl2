@@ -113,7 +113,7 @@ static void _moveto_maybe_repel_stairs()
     if (x_chance_in_y(pct, 100))
     {
         const string stair_str = feature_description_at(you.pos(), false,
-                                                        DESC_THE, false);
+                                                        DESC_THE);
         const string prep = feat_preposition(new_grid, true, &you);
 
         if (slide_feature_over(you.pos()))
@@ -209,8 +209,7 @@ bool check_moveto_trap(const coord_def& p, const string &move_verb,
                               (trap->type == TRAP_ALARM
                                || trap->type == TRAP_PLATE) ? "onto"
                               : "into",
-                              feature_description_at(p, false, DESC_BASENAME,
-                                                     false).c_str());
+                              feature_description_at(p, false, DESC_BASENAME).c_str());
         if (!yesno(prompt.c_str(), true, 'n'))
         {
             canned_msg(MSG_OK);
@@ -1337,7 +1336,7 @@ int player_hunger_rate()
 
 /**
  * How many spell levels does the player have total, including those used up
- * by memorized spells?
+ * by memorised spells?
  */
 int player_total_spell_levels()
 {
@@ -1346,7 +1345,7 @@ int player_total_spell_levels()
 
 /**
  * How many spell levels does the player currently have available for
- * memorizing new spells?
+ * memorising new spells?
  */
 int player_spell_levels()
 {
@@ -2322,7 +2321,7 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
 }
 
 /**
- * What is the player's bonus to EV from dodging when not paralyzed, after
+ * What is the player's bonus to EV from dodging when not paralysed, after
  * accounting for size & body armour penalties?
  *
  * First, calculate base dodge bonus (linear with dodging * stepdowned dex),
@@ -3053,7 +3052,7 @@ int xp_to_level_diff(int xp, int scale)
                 + (adjusted_xp - (int) exp_needed(adjusted_level)) * scale /
                     ((int) exp_needed(adjusted_level + 1)
                                     - (int) exp_needed(adjusted_level));
-        // TODO: this would be more usable with better rounding behavior
+        // TODO: this would be more usable with better rounding behaviour
         return adjusted_level_scaled - cur_level_scaled;
     } else
         return adjusted_level - projected_level;
@@ -4052,7 +4051,8 @@ int slaying_bonus(bool ranged)
     if (you.duration[DUR_HORROR])
         ret -= you.props[HORROR_PENALTY_KEY].get_int();
 
-    ret += you.attribute[ATTR_HEAVENLY_STORM];
+    if (you.props.exists(WU_JIAN_HEAVENLY_STORM_KEY))
+        ret += you.props[WU_JIAN_HEAVENLY_STORM_KEY].get_int();
 
     ret += extinguisher_slaying_bonus();
 
@@ -4448,7 +4448,7 @@ int get_real_mp(bool include_items)
     enp += highest_skill + min(8 * scale, min(highest_skill, scaled_xl)) / 2;
 
     // Analogous to ROBUST/FRAIL
-    enp *= 100  + (you.get_mutation_level(MUT_HIGH_MAGIC) * 10)
+    enp *= 100 + (you.get_mutation_level(MUT_HIGH_MAGIC) * 10)
                + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
                - (you.get_mutation_level(MUT_LOW_MAGIC) * 10);
     enp /= 100 * scale;
@@ -4461,11 +4461,8 @@ int get_real_mp(bool include_items)
     // Now applied after scaling so that power items are more useful -- bwr
     if (include_items)
     {
-        enp +=  9 * you.wearing(EQ_RINGS, RING_MAGICAL_POWER);
-        enp +=      you.scan_artefacts(ARTP_MAGICAL_POWER);
-
-        if (you.wearing(EQ_STAFF, STAFF_POWER))
-            enp += 15;
+        enp += 9 * you.wearing(EQ_RINGS, RING_MAGICAL_POWER);
+        enp +=     you.scan_artefacts(ARTP_MAGICAL_POWER);
     }
 
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
@@ -4751,7 +4748,7 @@ int get_player_poisoning()
 
 // The amount of aut needed for poison to end if
 // you.duration[DUR_POISONING] == dur, assuming no Chei/DD shenanigans.
-// This function gives the following behavior:
+// This function gives the following behaviour:
 // * 1/15 of current poison is removed every 10 aut normally
 // * but speed of poison is capped between 0.025 and 1.000 HP/aut
 static double _poison_dur_to_aut(double dur)
@@ -5287,8 +5284,8 @@ void dec_frozen_ramparts(int delay)
         const auto &pos = you.props[FROZEN_RAMPARTS_KEY].get_coord();
         ASSERT(in_bounds(pos));
 
-        for (distance_iterator di(pos, false, false, FROZEN_RAMPARTS_RADIUS);
-                di; di++)
+        for (distance_iterator di(pos, false, false,
+                    spell_range(SPELL_FROZEN_RAMPARTS, -1, false)); di; di++)
         {
             env.pgrid(*di) &= ~FPROP_ICY;
             env.map_knowledge(*di).flags &= ~MAP_ICY;
@@ -5309,8 +5306,8 @@ bool invis_allowed(bool quiet, string *fail_reason)
 
     if (you.haloed() && you.halo_radius() != -1)
     {
-        bool divine = you.attribute[ATTR_HEAVENLY_STORM] > 0 ||
-                you.religion == GOD_SHINING_ONE;
+        bool divine = you.props.exists(WU_JIAN_HEAVENLY_STORM_KEY)
+                      || you.religion == GOD_SHINING_ONE;
         bool weapon = player_equip_unrand(UNRAND_EOS);
         string reason;
 
@@ -6508,7 +6505,7 @@ vector<mutation_ac_changes> all_mutation_ac_changes = {
     ,mutation_ac_changes(MUT_SHAGGY_FUR,             mutation_activity_type::PARTIAL, ONE_TWO_THREE)
     ,mutation_ac_changes(MUT_PHYSICAL_VULNERABILITY, mutation_activity_type::PARTIAL, {-5,-10,-15})
     // Scale mutations are more easily disabled (forms etc.). This appears to be for flavour reasons.
-    // Preserved behavior from before mutation ac was turned to data.
+    // Preserved behaviour from before mutation ac was turned to data.
     ,mutation_ac_changes(MUT_IRIDESCENT_SCALES,      mutation_activity_type::FULL,    {2, 4, 6})
     ,mutation_ac_changes(MUT_RUGGED_BROWN_SCALES,    mutation_activity_type::FULL,    ONE_TWO_THREE)
     ,mutation_ac_changes(MUT_ICY_BLUE_SCALES,        mutation_activity_type::FULL,    TWO_THREE_FOUR)
@@ -8905,8 +8902,8 @@ void player_end_berserk()
 
     if (one_chance_in(10 + you.get_mutation_level(MUT_BERSERK) * 25))
     {
-        // Note the beauty of Trog! They get an extra save that's at
-        // the very least 20% and goes up to 100%.
+        // Note the beauty of Trog! They get an extra save that
+        // goes up to 100% at 6 stars of piety.
         if (have_passive(passive_t::extend_berserk)
             && x_chance_in_y(you.piety, piety_breakpoint(5)))
         {

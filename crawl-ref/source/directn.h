@@ -277,7 +277,7 @@ private:
 
     bool unrestricted;
 public:
-    // TODO: fix the weird behavior that led to this hack
+    // TODO: fix the weird behaviour that led to this hack
     bool needs_path;            // Determine a ray while we're at it?
 };
 
@@ -305,14 +305,12 @@ string get_monster_equipment_desc(const monster_info& mi,
                                   bool print_attitude = false);
 
 string feature_description_at(const coord_def& where, bool covering = false,
-                              description_level_type dtype = DESC_A,
-                              bool add_stop = true);
+                              description_level_type dtype = DESC_A);
 string raw_feature_description(const coord_def& where);
 string feature_description(dungeon_feature_type grid,
                            trap_type trap = NUM_TRAPS,
                            const string & cover_desc = "",
-                           description_level_type dtype = DESC_A,
-                           bool add_stop = true);
+                           description_level_type dtype = DESC_A);
 
 vector<dungeon_feature_type> features_by_desc(const base_pattern &pattern);
 
