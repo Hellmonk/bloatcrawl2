@@ -598,7 +598,9 @@ bool is_missile_brand_ok(int type, int brand, bool strict)
         break;
 
     case SPMSL_CURARE:
+#if TAG_MAJOR_VERSION == 34
     case SPMSL_PARALYSIS:
+#endif
     case SPMSL_FRENZY:
         return type == MI_DART;
 
@@ -695,7 +697,10 @@ static void _generate_missile_item(item_def& item, int force_type,
     // Reduced quantity if special.
     if (item.sub_type == MI_JAVELIN || item.sub_type == MI_BOOMERANG
         || (item.sub_type == MI_DART && get_ammo_brand(item) != SPMSL_POISONED)
-        || get_ammo_brand(item) == SPMSL_RETURNING)
+#if TAG_MAJOR_VERSION == 34
+        || get_ammo_brand(item) == SPMSL_RETURNING
+#endif
+        )
     {
         item.quantity = random_range(2, 8);
     }
@@ -1613,8 +1618,11 @@ static void _generate_rune_item(item_def& item, int force_type)
     {
         vector<int> possibles;
         for (int i = 0; i < NUM_RUNE_TYPES; i++)
-            if (!item_type_removed(OBJ_RUNES, i) && !you.runes[i])
+            if (!item_type_removed(OBJ_RUNES, i) && !you.runes[i]
+                && i != RUNE_ELF && i != RUNE_FOREST)
+            {
                 possibles.push_back(i);
+            }
 
         item.sub_type = possibles.empty()
                       ? RUNE_DEMONIC

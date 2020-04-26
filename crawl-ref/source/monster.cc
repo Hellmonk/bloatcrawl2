@@ -228,6 +228,9 @@ void monster::ensure_has_client_id()
 
 mon_attitude_type monster::temp_attitude() const
 {
+    if (has_ench(ENCH_INSANE))
+        return ATT_NEUTRAL;
+
     if (has_ench(ENCH_HEXED))
     {
         actor *agent = monster_by_mid(get_ench(ENCH_HEXED).source);
@@ -2759,10 +2762,6 @@ bool monster::go_frenzy(actor *source)
 
     const int duration = 16 + random2avg(13, 2);
 
-    // store the attitude for later retrieval
-    props["old_attitude"] = short(attitude);
-
-    attitude = ATT_NEUTRAL;
     add_ench(mon_enchant(ENCH_INSANE, 0, source, duration * BASELINE_DELAY));
     if (holiness() & MH_NATURAL)
     {
@@ -3175,25 +3174,14 @@ int monster::shield_bypass_ability(int) const
     return 15 + get_hit_dice() * 2 / 3;
 }
 
-int monster::missile_deflection() const
+bool monster::missile_repulsion() const
 {
-    if (has_ench(ENCH_DEFLECT_MISSILES))
-        return 2;
-    else if (has_ench(ENCH_REPEL_MISSILES) || scan_artefacts(ARTP_RMSL))
-        return 1;
-    else
-        return 0;
+    return has_ench(ENCH_REPEL_MISSILES) || scan_artefacts(ARTP_RMSL);
 }
 
-void monster::ablate_deflection()
+void monster::ablate_repulsion()
 {
-    // TODO: deduplicate this code
-    if (has_ench(ENCH_DEFLECT_MISSILES))
-    {
-        if (one_chance_in(2 + spell_hd()))
-            del_ench(ENCH_DEFLECT_MISSILES);
-    }
-    else if (has_ench(ENCH_REPEL_MISSILES))
+    if (has_ench(ENCH_REPEL_MISSILES))
     {
         if (one_chance_in(2 + spell_hd()))
             del_ench(ENCH_REPEL_MISSILES);
@@ -4733,7 +4721,7 @@ bool monster::is_trap_safe(const coord_def& where, bool just_check) const
 
     // Hostile monsters are not afraid of non-mechanical traps.
     // But, in the arena Zot traps affect all monsters.
-    if (trap.category() != DNGN_TRAP_MECHANICAL)
+    if (!trap.is_mechanical())
         return !crawl_state.game_is_arena() || trap.type != TRAP_ZOT;
 
     // Net traps always target the player, let's use them!
@@ -5832,11 +5820,6 @@ bool monster::can_drink_potion(potion_type ptype) const
         case POT_CURING:
         case POT_HEAL_WOUNDS:
             return !(holiness() & (MH_NONLIVING | MH_PLANT));
-#if TAG_MAJOR_VERSION == 34
-        case POT_BLOOD:
-        case POT_BLOOD_COAGULATED:
-            return mons_species() == MONS_VAMPIRE;
-#endif
         case POT_BERSERK_RAGE:
             return can_go_berserk();
         case POT_HASTE:
@@ -5848,6 +5831,7 @@ bool monster::can_drink_potion(potion_type ptype) const
             return true;
         default:
             break;
+        CASE_REMOVED_POTIONS(ptype)
     }
 
     return false;
@@ -5864,11 +5848,6 @@ bool monster::should_drink_potion(potion_type ptype) const
                || has_ench(ENCH_CONFUSION);
     case POT_HEAL_WOUNDS:
         return hit_points <= max_hit_points / 2;
-#if TAG_MAJOR_VERSION == 34
-    case POT_BLOOD:
-    case POT_BLOOD_COAGULATED:
-        return hit_points <= max_hit_points / 2;
-#endif
     case POT_BERSERK_RAGE:
         // this implies !berserk()
         return !has_ench(ENCH_MIGHT) && !has_ench(ENCH_HASTE)
@@ -5886,6 +5865,7 @@ bool monster::should_drink_potion(potion_type ptype) const
                && (you.can_see_invisible(false) || !friendly());
     default:
         break;
+    CASE_REMOVED_POTIONS(ptype)
     }
 
     return false;
@@ -5919,17 +5899,6 @@ bool monster::drink_potion_effect(potion_type pot_eff, bool card)
             simple_monster_message(*this, " is healed!");
         break;
 
-#if TAG_MAJOR_VERSION == 34
-    case POT_BLOOD:
-    case POT_BLOOD_COAGULATED:
-        if (mons_species() == MONS_VAMPIRE)
-        {
-            heal(10 + random2avg(28, 3));
-            simple_monster_message(*this, " is healed!");
-        }
-        break;
-#endif
-
     case POT_BERSERK_RAGE:
         enchant_actor_with_flavour(this, this, BEAM_BERSERK);
         break;
@@ -5952,6 +5921,7 @@ bool monster::drink_potion_effect(potion_type pot_eff, bool card)
 
     default:
         return false;
+    CASE_REMOVED_POTIONS(pot_eff)
     }
 
     return !card;

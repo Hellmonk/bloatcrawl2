@@ -2,7 +2,6 @@
 airstrike AIRSTRIKE
 chain_lightning CHAIN_LIGHTNING
 conjure_ball_lightning CONJURE_BALL_LIGHTNING
-deflect_missiles DEFLECT_MISSILES
 lightning_bolt LIGHTNING_BOLT
 repel_missiles REPEL_MISSILES
 shock SHOCK
@@ -81,6 +80,7 @@ metabolic_englaciation METABOLIC_ENGLACIATION
 ozocubus_armour OZOCUBUS_ARMOUR
 ozocubus_refrigeration OZOCUBUS_REFRIGERATION
 throw_frost THROW_FROST
+frozen_ramparts FROZEN_RAMPARTS
 hailstorm HAILSTORM
 
 %sdir gui/spells/necromancy

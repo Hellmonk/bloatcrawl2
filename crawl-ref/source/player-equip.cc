@@ -15,6 +15,7 @@
 #include "god-item.h"
 #include "god-passive.h"
 #include "hints.h"
+#include "invent.h"
 #include "item-name.h"
 #include "item-prop.h"
 #include "item-status-flag-type.h"
@@ -22,15 +23,17 @@
 #include "item-use.h"
 #include "libutil.h"
 #include "macro.h" // command_to_string
+#include "monster.h"
 #include "message.h"
 #include "nearby-danger.h"
 #include "notes.h"
 #include "player-stats.h"
 #include "religion.h"
 #include "shopping.h"
-#include "spl-miscast.h"
 #include "spl-summoning.h"
+#include "spl-transloc.h"
 #include "spl-wpnench.h"
+#include "stringutil.h"
 #include "xom.h"
 
 static void _mark_unseen_monsters();
@@ -127,6 +130,8 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
 static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
                                       equipment_type slot);
 static void _equip_use_warning(const item_def& item);
+static void _equip_regeneration_item(const item_def& item);
+static void _deactivate_regeneration_item(const item_def& item, bool meld);
 
 static void _assert_valid_slot(equipment_type eq, equipment_type slot)
 {
@@ -239,6 +244,13 @@ static void _equip_artefact_effect(item_def &item, bool *show_msgs, bool unmeld,
     {
         canned_msg(proprt[ARTP_MAGICAL_POWER] > 0 ? MSG_MANA_INCREASE
                                                   : MSG_MANA_DECREASE);
+    }
+
+    if (proprt[ARTP_REGENERATION] && !unmeld
+        // If regen is an intrinsic property too, don't double print messages
+        && !armour_type_prop(item.sub_type, ARMF_REGENERATION))
+    {
+        _equip_regeneration_item(item);
     }
 
     // Modify ability scores.
@@ -368,6 +380,9 @@ static void _unequip_artefact_effect(item_def &item,
 
     if (proprt[ARTP_SEE_INVISIBLE])
         _mark_unseen_monsters();
+
+    if (proprt[ARTP_REGENERATION])
+        _deactivate_regeneration_item(item, meld);
 
     if (is_unrandom_artefact(item))
     {
@@ -693,34 +708,9 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
                 break;
 
             case SPWPN_DISTORTION:
-                // Removing the translocations skill reduction of effect,
-                // it might seem sensible, but this brand is supposed
-                // to be dangerous because it does large bonus damage,
-                // as well as free teleport other side effects, and
-                // even with the miscast effects you can rely on the
-                // occasional spatial bonus to mow down some opponents.
-                // It's far too powerful without a real risk, especially
-                // if it's to be allowed as a player spell. -- bwr
-
-                // int effect = 9 -
-                //        random2avg(you.skills[SK_TRANSLOCATIONS] * 2, 2);
-
                 if (!meld)
-                {
-                    if (have_passive(passive_t::safe_distortion))
-                    {
-                        simple_god_message(" absorbs the residual spatial "
-                                           "distortion as you unwield your "
-                                           "weapon.");
-                        break;
-                    }
-                    // Makes no sense to discourage unwielding a temporarily
-                    // branded weapon since you can wait it out. This also
-                    // fixes problems with unwield prompts (mantis #793).
-                    MiscastEffect(&you, nullptr, {miscast_source::wield},
-                                  spschool::translocation, 9, 90,
-                                  "a distortion unwield");
-                }
+                    unwield_distortion();
+
                 break;
 
             case SPWPN_ANTIMAGIC:
@@ -916,6 +906,9 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
         }
     }
 
+    if (armour_type_prop(arm.sub_type, ARMF_REGENERATION) && !unmeld)
+        _equip_regeneration_item(arm);
+
     if (is_artefact(arm))
     {
         bool show_msgs = true;
@@ -1085,6 +1078,9 @@ static void _unequip_armour_effect(item_def& item, bool meld,
         break;
     }
 
+    if (armour_type_prop(item.sub_type, ARMF_REGENERATION))
+        _deactivate_regeneration_item(item, meld);
+
     if (is_artefact(item))
         _unequip_artefact_effect(item, nullptr, meld, slot, false);
 }
@@ -1135,40 +1131,55 @@ static void _remove_amulet_of_harm()
     drain_player(150, false, true);
 }
 
-static void _equip_amulet_of_regeneration()
+static void _equip_regeneration_item(const item_def &item)
 {
-    if (you.get_mutation_level(MUT_NO_REGENERATION) > 0)
-        mpr("The amulet feels cold and inert.");
-    else if (you.hp == you.hp_max)
+    equipment_type eq_slot = item_equip_slot(item);
+    // currently regen is only on the amulet and armour
+    bool plural = eq_slot == EQ_GLOVES || eq_slot == EQ_BOOTS;
+    string item_name = is_artefact(item) ? get_artefact_name(item)
+                                         : eq_slot == EQ_AMULET
+                                         ? "amulet"
+                                         : eq_slot == EQ_BODY_ARMOUR
+                                         ? "armour"
+                                         : item_slot_name(eq_slot);
+
+    if (you.get_mutation_level(MUT_NO_REGENERATION))
     {
-        you.props[REGEN_AMULET_ACTIVE] = 1;
-        mpr("The amulet throbs as it attunes itself to your uninjured body.");
+        mprf("The %s feel%s cold and inert.", item_name.c_str(),
+             plural ? "" : "s");
+        return;
     }
-    else
+    if (you.hp == you.hp_max)
     {
-        mpr("You sense that the amulet cannot attune itself to your injured"
-            " body.");
-        you.props[REGEN_AMULET_ACTIVE] = 0;
+        mprf("The %s throb%s to your uninjured body.", item_name.c_str(),
+             plural ? " as they attune themselves" : "s as it attunes itself");
+        you.activated.set(eq_slot);
+        return;
     }
+    mprf("The %s cannot attune %s to your injured body.", item_name.c_str(),
+         plural ? "themselves" : "itself");
+    you.activated.set(eq_slot, false);
+    return;
 }
 
 static void _equip_amulet_of_the_acrobat()
 {
     if (you.hp == you.hp_max)
     {
-        you.props[ACROBAT_AMULET_ACTIVE] = 1;
+        you.activated.set(EQ_AMULET);
         mpr("You feel ready to tumble and roll out of harm's way.");
     }
     else
     {
+        you.activated.set(EQ_AMULET, false);
         mpr("Your injuries prevent the amulet from attuning itself.");
-        you.props[ACROBAT_AMULET_ACTIVE] = 0;
     }
 }
 
 bool acrobat_boost_active()
 {
-    return you.props[ACROBAT_AMULET_ACTIVE].get_int() == 1
+    return you.activated[EQ_AMULET]
+           && you.wearing(EQ_AMULET, AMU_ACROBAT)
            && you.duration[DUR_ACROBAT]
            && (!you.caught())
            && (!you.is_constricted());
@@ -1290,7 +1301,7 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
 
     case AMU_REGENERATION:
         if (!unmeld)
-            _equip_amulet_of_regeneration();
+            _equip_regeneration_item(item);
         break;
 
     case AMU_ACROBAT:
@@ -1350,6 +1361,12 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         auto_assign_item_slot(item);
 }
 
+static void _deactivate_regeneration_item(const item_def &item, bool meld)
+{
+    if (!meld)
+        you.activated.set(get_item_slot(item), false);
+}
+
 static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
                                       equipment_type slot)
 {
@@ -1368,7 +1385,15 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
     case RING_STEALTH:
     case RING_TELEPORTATION:
     case RING_WIZARDRY:
+        break;
+
     case AMU_REGENERATION:
+        _deactivate_regeneration_item(item, meld);
+        break;
+
+    case AMU_ACROBAT:
+        if (!meld)
+            you.activated.set(EQ_AMULET, false);
         break;
 
     case RING_SEE_INVISIBLE:
@@ -1466,5 +1491,38 @@ static void _mark_unseen_monsters()
             (*mi)->unseen_pos = (*mi)->pos();
         }
 
+    }
+}
+
+// This brand is supposed to be dangerous because it does large
+// bonus damage, as well as banishment and other side effects,
+// and you can rely on the occasional spatial bonus to mow down
+// some opponents. It's far too powerful without a real risk.
+// -- bwr [ed: ebering]
+void unwield_distortion(bool brand)
+{
+    if (have_passive(passive_t::safe_distortion))
+    {
+        simple_god_message(make_stringf(" absorbs the residual spatial "
+                           "distortion as you %s your "
+                           "weapon.", brand ? "rebrand" : "unwield").c_str());
+        return;
+    }
+    // Makes no sense to discourage unwielding a temporarily
+    // branded weapon since you can wait it out. This also
+    // fixes problems with unwield prompts (mantis #793).
+    if (coinflip())
+        you_teleport_now(false, true, "Space warps around you!");
+    else if (coinflip())
+    {
+        you.banish(nullptr,
+                   make_stringf("%sing a weapon of distortion",
+                                brand ? "rebrand" : "unwield").c_str(),
+                   you.get_experience_level(), true);
+    }
+    else
+    {
+        mpr("Space warps into you!");
+        contaminate_player(random2avg(18000, 3), true);
     }
 }

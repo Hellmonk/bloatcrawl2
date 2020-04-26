@@ -339,7 +339,7 @@ static const mon_spellbook mspell_list[] =
       {
        { SPELL_LIGHTNING_BOLT, 16, MON_SPELL_WIZARD },
        { SPELL_AIRSTRIKE, 32, MON_SPELL_WIZARD },
-       { SPELL_DEFLECT_MISSILES, 16, MON_SPELL_WIZARD },
+       { SPELL_REPEL_MISSILES, 16, MON_SPELL_WIZARD },
       }
     },
 
@@ -360,7 +360,7 @@ static const mon_spellbook mspell_list[] =
       {
        { SPELL_WIND_BLAST, 50, MON_SPELL_NATURAL | MON_SPELL_BREATH },
        { SPELL_AIRSTRIKE, 29, MON_SPELL_NATURAL },
-       { SPELL_DEFLECT_MISSILES, 29, MON_SPELL_NATURAL },
+       { SPELL_REPEL_MISSILES, 29, MON_SPELL_NATURAL },
       }
     },
 
@@ -1406,6 +1406,12 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    {  MST_NAMELESS,
+      {
+       { SPELL_ABJURATION, 60, MON_SPELL_NATURAL },
+      }
+    },
+
     // ('Y') Bovids and elephants.
     {  MST_CATOBLEPAS,
       {
@@ -1763,7 +1769,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_MASS_CONFUSION, 11, MON_SPELL_WIZARD },
        { SPELL_STRIP_RESISTANCE, 11, MON_SPELL_WIZARD },
        { SPELL_HASTE, 11, MON_SPELL_WIZARD },
-       { SPELL_DEFLECT_MISSILES, 11, MON_SPELL_WIZARD },
+       { SPELL_REPEL_MISSILES, 11, MON_SPELL_WIZARD },
        { SPELL_INVISIBILITY, 11, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
       }
     },
@@ -1968,7 +1974,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_LIGHTNING_BOLT, 14, MON_SPELL_WIZARD },
        { SPELL_AIRSTRIKE, 14, MON_SPELL_WIZARD },
        { SPELL_AIR_ELEMENTALS, 14, MON_SPELL_WIZARD },
-       { SPELL_DEFLECT_MISSILES, 14, MON_SPELL_WIZARD },
+       { SPELL_REPEL_MISSILES, 14, MON_SPELL_WIZARD },
       }
     },
 

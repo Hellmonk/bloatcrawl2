@@ -1167,15 +1167,20 @@ static int _player_bonus_regen()
     int rr = 0;
 
     // Jewellery.
-    if (you.props[REGEN_AMULET_ACTIVE].get_int() == 1)
+    if (you.activated[EQ_AMULET])
         rr += REGEN_PIP * you.wearing(EQ_AMULET, AMU_REGENERATION);
 
-    // Artefacts
-    rr += REGEN_PIP * you.scan_artefacts(ARTP_REGENERATION);
-
-    // Troll leather
-    if (you.wearing(EQ_BODY_ARMOUR, ARM_TROLL_LEATHER_ARMOUR))
-        rr += REGEN_PIP;
+    // Artefacts (artp_regen is only on armour) and troll leather armour
+    for (int slot = EQ_MIN_ARMOUR; slot <= EQ_MAX_ARMOUR; ++slot)
+    {
+        if (you.melded[slot] || you.equip[slot] == -1 || !you.activated[slot])
+            continue;
+        const item_def &arm = you.inv[you.equip[slot]];
+        if (armour_type_prop(arm.sub_type, ARMF_REGENERATION))
+            rr += REGEN_PIP;
+        if (is_artefact(arm))
+            rr += REGEN_PIP * artefact_property(arm, ARTP_REGENERATION);
+    }
 
     // Fast heal mutation.
     rr += you.get_mutation_level(MUT_REGENERATION) * REGEN_PIP;
@@ -1259,61 +1264,6 @@ int player_mp_regen()
     return regen_amount;
 }
 
-// Some amulets need to be worn while at full health before they begin to
-// function.
-void update_amulet_attunement_by_health()
-{
-    // amulet of regeneration
-    // You must be wearing the amulet and able to regenerate to get benefits.
-    if (you.wearing(EQ_AMULET, AMU_REGENERATION)
-        && you.get_mutation_level(MUT_NO_REGENERATION) == 0)
-    {
-        // If you hit max HP, turn on the amulet.
-        if (you.hp == you.hp_max
-            && you.props[REGEN_AMULET_ACTIVE].get_int() == 0)
-        {
-            you.props[REGEN_AMULET_ACTIVE] = 1;
-            mpr("Your amulet attunes itself to your body and you begin to "
-                "regenerate more quickly.");
-        }
-    }
-    else
-        you.props[REGEN_AMULET_ACTIVE] = 0;
-
-    // amulet of the acrobat
-    if (you.wearing(EQ_AMULET, AMU_ACROBAT))
-    {
-        if (you.hp == you.hp_max
-            && you.props[ACROBAT_AMULET_ACTIVE].get_int() == 0)
-        {
-            you.props[ACROBAT_AMULET_ACTIVE] = 1;
-            mpr("Your amulet attunes itself to your body. You feel like "
-                "doing cartwheels.");
-        }
-    }
-    else
-        you.props[ACROBAT_AMULET_ACTIVE] = 0;
-}
-
-// Amulet of magic regeneration needs to be worn while at full magic before it
-// begins to function.
-void update_mana_regen_amulet_attunement()
-{
-    if (you.wearing(EQ_AMULET, AMU_MANA_REGENERATION)
-        && player_regenerates_mp())
-    {
-        if (you.magic_points == you.max_magic_points
-            && you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 0)
-        {
-            you.props[MANA_REGEN_AMULET_ACTIVE] = 1;
-            mpr("Your amulet attunes itself to your body and you begin to "
-                "regenerate magic more quickly.");
-        }
-    }
-    else
-        you.props[MANA_REGEN_AMULET_ACTIVE] = 0;
-}
-
 int player_hunger_rate()
 {
     int hunger = 3;
@@ -1351,28 +1301,11 @@ int player_spell_levels()
 {
     int sl = min(player_total_spell_levels(), 99);
 
-#if TAG_MAJOR_VERSION == 34
-    bool fireball = false;
-    bool delayed_fireball = false;
-#endif
-
     for (const spell_type spell : you.spells)
     {
-#if TAG_MAJOR_VERSION == 34
-        if (spell == SPELL_FIREBALL)
-            fireball = true;
-        else if (spell == SPELL_DELAYED_FIREBALL)
-            delayed_fireball = true;
-#endif
         if (spell != SPELL_NO_SPELL)
             sl -= spell_difficulty(spell);
     }
-
-#if TAG_MAJOR_VERSION == 34
-    // Fireball is free for characters with delayed fireball
-    if (fireball && delayed_fireball)
-        sl += spell_difficulty(SPELL_FIREBALL);
-#endif
 
     // Note: This can happen because of draining. -- bwr
     if (sl < 0)
@@ -2207,7 +2140,7 @@ bool player_is_shapechanged()
 
 void update_acrobat_status()
 {
-    if (you.props[ACROBAT_AMULET_ACTIVE].get_int() != 1)
+    if (!you.wearing(EQ_AMULET, AMU_ACROBAT) || !you.activated[EQ_AMULET])
         return;
 
     // Acrobat duration goes slightly into the next turn, giving the
@@ -5572,6 +5505,7 @@ player::player()
     equip.init(-1);
     melded.reset();
     unrand_reacts.reset();
+    activated.reset();
     last_unequip = -1;
 
     symbol          = MONS_PLAYER;
@@ -6164,33 +6098,12 @@ void player::shield_block_succeeded(actor *foe)
         count_action(CACT_BLOCK, -1, BLOCK_OTHER); // non-shield block
 }
 
-int player::missile_deflection() const
+bool player::missile_repulsion() const
 {
-    if (attribute[ATTR_DEFLECT_MISSILES])
-        return 2;
-
-    if (get_mutation_level(MUT_DISTORTION_FIELD) == 3
+    return get_mutation_level(MUT_DISTORTION_FIELD) == 3
         || you.wearing_ego(EQ_ALL_ARMOUR, SPARM_REPULSION)
         || scan_artefacts(ARTP_RMSL, true)
-        || have_passive(passive_t::upgraded_storm_shield))
-    {
-        return 1;
-    }
-
-    return 0;
-}
-
-void player::ablate_deflection()
-{
-    if (attribute[ATTR_DEFLECT_MISSILES])
-    {
-        const int power = calc_spell_power(SPELL_DEFLECT_MISSILES, true);
-        if (one_chance_in(2 + power / 8))
-        {
-            attribute[ATTR_DEFLECT_MISSILES] = 0;
-            mprf(MSGCH_DURATION, "You feel less protected from missiles.");
-        }
-    }
+        || have_passive(passive_t::upgraded_storm_shield);
 }
 
 /**

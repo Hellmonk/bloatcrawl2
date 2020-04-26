@@ -659,45 +659,22 @@ const char* potion_type_name(int potiontype)
     case POT_MIGHT:             return "might";
     case POT_STABBING:          return "stabbing";
     case POT_BRILLIANCE:        return "brilliance";
-#if TAG_MAJOR_VERSION == 34
-    case POT_GAIN_STRENGTH:     return "gain strength";
-    case POT_GAIN_DEXTERITY:    return "gain dexterity";
-    case POT_GAIN_INTELLIGENCE: return "gain intelligence";
-    case POT_STRONG_POISON:     return "strong poison";
-    case POT_PORRIDGE:          return "porridge";
-    case POT_SLOWING:           return "slowing";
-#endif
     case POT_FLIGHT:            return "flight";
-#if TAG_MAJOR_VERSION == 34
-    case POT_POISON:            return "poison";
-#endif
     case POT_CANCELLATION:      return "cancellation";
     case POT_AMBROSIA:          return "ambrosia";
     case POT_INVISIBILITY:      return "invisibility";
     case POT_DEGENERATION:      return "degeneration";
-#if TAG_MAJOR_VERSION == 34
-    case POT_DECAY:             return "decay";
-#endif
     case POT_EXPERIENCE:        return "experience";
     case POT_MAGIC:             return "magic";
-#if TAG_MAJOR_VERSION == 34
-    case POT_RESTORE_ABILITIES: return "restore abilities";
-#endif
     case POT_BERSERK_RAGE:      return "berserk rage";
-#if TAG_MAJOR_VERSION == 34
-    case POT_CURE_MUTATION:     return "cure mutation";
-#endif
     case POT_MUTATION:          return "mutation";
-#if TAG_MAJOR_VERSION == 34
-    case POT_BLOOD:             return "blood";
-    case POT_BLOOD_COAGULATED:  return "coagulated blood";
-#endif
     case POT_RESISTANCE:        return "resistance";
     case POT_LIGNIFY:           return "lignification";
-#if TAG_MAJOR_VERSION == 34
-    case POT_BENEFICIAL_MUTATION: return "beneficial mutation";
-#endif
-    default:                    return "bugginess";
+
+    // FIXME: Remove this once known-items no longer uses this as a sentinel.
+    default:
+                                return "bugginess";
+    CASE_REMOVED_POTIONS(potiontype);
     }
 }
 
@@ -1046,7 +1023,7 @@ static const char* _book_type_name(int booktype)
     case BOOK_FIRE:                   return "Fire";
     case BOOK_ICE:                    return "Ice";
     case BOOK_SPATIAL_TRANSLOCATIONS: return "Spatial Translocations";
-    case BOOK_ENCHANTMENTS:           return "Enchantments";
+    case BOOK_HEXES:                  return "Hexes";
     case BOOK_TEMPESTS:               return "the Tempests";
     case BOOK_DEATH:                  return "Death";
     case BOOK_MISFORTUNE:             return "Misfortune";
@@ -2702,23 +2679,14 @@ bool is_good_item(const item_def &item)
             return false;
         switch (item.sub_type)
         {
-#if TAG_MAJOR_VERSION == 34
-        case POT_CURE_MUTATION:
-        case POT_GAIN_STRENGTH:
-        case POT_GAIN_INTELLIGENCE:
-        case POT_GAIN_DEXTERITY:
-#endif
         case POT_EXPERIENCE:
             return true;
-#if TAG_MAJOR_VERSION == 34
-        case POT_BENEFICIAL_MUTATION:
-            return you.undead_state() != US_HUNGRY_DEAD; // Mummies are already handled
         case POT_MUTATION:
             return species_is_turtle(you.species)
-                   && you.undead_state() != US_HUNGRY_DEAD;
-#endif
+                   && you.undead_state() != US_HUNGRY_DEAD; // Mummies are already handled
         default:
             return false;
+        CASE_REMOVED_POTIONS(item.sub_type)
         }
     default:
         return false;
@@ -2729,12 +2697,9 @@ bool is_good_item(const item_def &item)
  * Is an item strictly harmful?
  *
  * @param item The item being queried.
- * @param temp Should temporary conditions such as transformations and
- *             vampire hunger levels be taken into account?  Religion (but
- *             not its absence) is considered to be permanent here.
  * @return True if the item is known to have only harmful effects.
  */
-bool is_bad_item(const item_def &item, bool temp)
+bool is_bad_item(const item_def &item)
 {
     if (!item_type_known(item))
         return false;
@@ -2764,23 +2729,11 @@ bool is_bad_item(const item_def &item, bool temp)
 
         switch (item.sub_type)
         {
-#if TAG_MAJOR_VERSION == 34
-        case POT_SLOWING:
-            return !you.stasis();
-#endif
         case POT_DEGENERATION:
             return true;
-#if TAG_MAJOR_VERSION == 34
-        case POT_DECAY:
-            return you.res_rotting(temp) <= 0;
-        case POT_STRONG_POISON:
-        case POT_POISON:
-            // Poison is not that bad if you're poison resistant.
-            return player_res_poison(false) <= 0
-                   || !temp && you.undead_state() == US_SEMI_UNDEAD;
-#endif
         default:
             return false;
+        CASE_REMOVED_POTIONS(item.sub_type);
         }
     case OBJ_JEWELLERY:
         // Potentially useful. TODO: check the properties.
@@ -2997,7 +2950,7 @@ bool is_useless_item(const item_def &item, bool temp)
             return false;
 
         // A bad item is always useless.
-        if (is_bad_item(item, temp))
+        if (is_bad_item(item))
             return true;
 
         switch (item.sub_type)
@@ -3057,7 +3010,7 @@ bool is_useless_item(const item_def &item, bool temp)
             return false;
 
         // A bad item is always useless.
-        if (is_bad_item(item, temp))
+        if (is_bad_item(item))
             return true;
 
         switch (item.sub_type)
@@ -3066,14 +3019,6 @@ bool is_useless_item(const item_def &item, bool temp)
             return !you.can_go_berserk(true, true, true, nullptr, temp);
         case POT_HASTE:
             return you.stasis() || you.get_mutation_level(MUT_ALWAYS_FAST);
-
-#if TAG_MAJOR_VERSION == 34
-        case POT_CURE_MUTATION:
-        case POT_BENEFICIAL_MUTATION:
-        case POT_GAIN_STRENGTH:
-        case POT_GAIN_INTELLIGENCE:
-        case POT_GAIN_DEXTERITY:
-#endif
         case POT_MUTATION:
             return !you.can_safely_mutate(temp);
 
@@ -3085,29 +3030,13 @@ bool is_useless_item(const item_def &item, bool temp)
         case POT_FLIGHT:
             return you.permanent_flight()
                    || you.racial_permanent_flight();
-
-#if TAG_MAJOR_VERSION == 34
-        case POT_PORRIDGE:
-            return you.undead_state() == US_SEMI_UNDEAD
-                    || you.get_mutation_level(MUT_CARNIVOROUS) > 0;
-        case POT_BLOOD_COAGULATED:
-        case POT_BLOOD:
-            return you.undead_state() != US_SEMI_UNDEAD;
-        case POT_DECAY:
-            return you.res_rotting(temp) > 0;
-        case POT_STRONG_POISON:
-        case POT_POISON:
-            // If you're poison resistant, poison is only useless.
-            return !is_bad_item(item, temp);
-        case POT_SLOWING:
-            return you.species == SP_FORMICID;
-#endif
         case POT_HEAL_WOUNDS:
             return !you.can_potion_heal();
         case POT_INVISIBILITY:
             return _invisibility_is_useless(temp);
         case POT_DEGENERATION:
             return you.species == SP_ANCIENT_GNOLL;
+        CASE_REMOVED_POTIONS(item.sub_type)
         }
 
         return false;
@@ -3120,7 +3049,7 @@ bool is_useless_item(const item_def &item, bool temp)
         if (is_artefact(item))
             return false;
 
-        if (is_bad_item(item, temp))
+        if (is_bad_item(item))
             return true;
 
         switch (item.sub_type)
@@ -3176,7 +3105,7 @@ bool is_useless_item(const item_def &item, bool temp)
             return you_worship(GOD_TROG);
 
         case RING_TELEPORTATION:
-            return !is_bad_item(item, temp);
+            return !is_bad_item(item);
 
         case RING_FLIGHT:
             return you.permanent_flight()
@@ -3349,7 +3278,7 @@ string item_prefix(const item_def &item, bool temp)
         prefixes.push_back("good_item");
     if (is_dangerous_item(item, temp))
         prefixes.push_back("dangerous_item");
-    if (is_bad_item(item, temp))
+    if (is_bad_item(item))
         prefixes.push_back("bad_item");
     if (is_useless_item(item, temp))
         prefixes.push_back("useless_item");
@@ -3385,12 +3314,6 @@ string item_prefix(const item_def &item, bool temp)
         break;
 
     case OBJ_POTIONS:
-        if (is_good_god(you.religion) && item_type_known(item)
-            && is_blood_potion(item))
-        {
-            prefixes.push_back("evil_eating");
-            prefixes.push_back("forbidden");
-        }
         if (is_preferred_food(item))
         {
             prefixes.push_back("preferred");
@@ -3468,10 +3391,9 @@ void init_item_name_cache()
 
     for (int i = 0; i < NUM_OBJECT_CLASSES; i++)
     {
-        object_class_type base_type = static_cast<object_class_type>(i);
-        const int num_sub_types = get_max_subtype(base_type);
+        const object_class_type base_type = static_cast<object_class_type>(i);
 
-        for (int sub_type = 0; sub_type < num_sub_types; sub_type++)
+        for (const auto sub_type : all_item_subtypes(base_type))
         {
             if (base_type == OBJ_BOOKS)
             {

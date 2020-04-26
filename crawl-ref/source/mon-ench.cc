@@ -452,8 +452,6 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
             else
                 attitude = ATT_HOSTILE;
         }
-        else
-            attitude = static_cast<mon_attitude_type>(props["old_attitude"].get_short());
         mons_att_changed(this);
         break;
 
@@ -933,11 +931,6 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
     case ENCH_REPEL_MISSILES:
         if (!quiet)
             simple_monster_message(*this, " is no longer repelling missiles.");
-        break;
-
-    case ENCH_DEFLECT_MISSILES:
-        if (!quiet)
-            simple_monster_message(*this, " is no longer deflecting missiles.");
         break;
 
     case ENCH_RESISTANCE:
@@ -1969,8 +1962,9 @@ static const char *enchant_names[] =
 #if TAG_MAJOR_VERSION == 34
     "eat_items",
 #endif
-    "aquatic_land", "spore_production",
+    "aquatic_land",
 #if TAG_MAJOR_VERSION == 34
+    "spore_production",
     "slouch",
 #endif
     "swift", "tide",
@@ -2032,12 +2026,13 @@ static const char *enchant_names[] =
 #endif
     "sap magic", "shroud", "phantom_mirror", "bribed", "permabribed",
     "corrosion", "gold_lust", "drained", "repel missiles",
-    "deflect missiles",
 #if TAG_MAJOR_VERSION == 34
+    "deflect missiles",
     "negative_vuln", "condensation_shield",
 #endif
-    "resistant", "hexed", "corpse_armour",
+    "resistant", "hexed",
 #if TAG_MAJOR_VERSION == 34
+    "corpse_armour",
     "chanting_fire_storm", "chanting_word_of_entropy",
 #endif
     "aura_of_brilliance", "empowered_spells", "gozag_incite", "pain_bond",

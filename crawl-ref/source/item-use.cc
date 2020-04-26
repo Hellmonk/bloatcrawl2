@@ -2365,7 +2365,7 @@ void drink(item_def* potion)
 
     const bool alreadyknown = item_type_known(*potion);
 
-    if (alreadyknown && is_bad_item(*potion, true))
+    if (alreadyknown && is_bad_item(*potion))
     {
         canned_msg(MSG_UNTHINKING_ACT);
         return;
@@ -3118,7 +3118,7 @@ void read(item_def* scroll)
             return;
         }
         else if ((is_dangerous_item(*scroll, true)
-                  || is_bad_item(*scroll, true))
+                  || is_bad_item(*scroll))
                  && Options.bad_item_prompt
                  && !yesno(make_stringf("Really %s?",
                                         verb_object.c_str()).c_str(),

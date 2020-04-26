@@ -1989,6 +1989,10 @@ mon_attack_def mons_attack_spec(const monster& m, int attk_number,
             attk.damage = max(1, you.skill_rdiv(SK_UNARMED_COMBAT, 10, 20));
     }
 
+    // summoning miscast monster; hd scaled with miscast severity
+    if (mon.type == MONS_NAMELESS && attk_number == 0)
+        attk.damage = mon.get_hit_dice() * 2;
+
     if (!base_flavour)
     {
         // TODO: randomization here is not the greatest way of doing any of
@@ -5235,8 +5239,7 @@ bool mons_is_avatar(monster_type mc)
 
 bool mons_is_player_shadow(const monster& mon)
 {
-    return mon.type == MONS_PLAYER_SHADOW
-           && mon.mname.empty();
+    return mon.type == MONS_PLAYER_SHADOW;
 }
 
 bool mons_has_attacks(const monster& mon)
@@ -5325,10 +5328,13 @@ void update_monster_symbol(monster_type mtype, cglyph_t md)
         monster_symbols[mtype].colour = md.col;
 }
 
-void normalize_spell_freq(monster_spells &spells, int hd)
+int spell_freq_for_hd(int hd)
 {
-    const unsigned int total_freq = (hd + 50);
+    return hd + 50;
+}
 
+void normalize_spell_freq(monster_spells &spells, int total_freq)
+{
     // Not using std::accumulate because slot.freq is only a uint8_t.
     unsigned int total_given_freq = 0;
     for (const auto &slot : spells)

@@ -1,8 +1,11 @@
 name: Build
 
 on:
-  - push
-  - pull_request
+  push: {}
+  pull_request: {}
+  release:
+    types:
+      - created
 
 jobs:
   linting:
@@ -17,7 +20,7 @@ jobs:
         run: util/checkwhite -n
         working-directory: crawl-ref/source
   build_linux:
-    name: "${{ matrix.compiler }} ${{ matrix.build_opts }} ${{ matrix.debug }}"
+    name: Linux ${{ matrix.compiler }} ${{ matrix.build_opts }} ${{ matrix.debug }} tag_upgrade=${{ matrix.tag_upgrade }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -32,15 +35,36 @@ jobs:
         debug:
           - ""
           - FULLDEBUG=1
+        tag_upgrade:
+          - false
         exclude:
-          # Only build non-debug with GCC
+          # Limit Clang jobs:
+          # 1. Only build fulldebug
           - compiler: clang
             debug: ""
+          # 2. Skip webtiles builds (all webtiles servers use GCC)
+          - compiler: clang
+            build_opts: WEBTILES=1 USE_DGAMELAUNCH=1
+          - compiler: clang
+            build_opts: WEBTILES=1
+        include:
+          - compiler: gcc
+            build_opts: ""
+            debug: FULLDEBUG=1
+            tag_upgrade: true
+          - compiler: gcc
+            build_opts: WEBTILES=1 USE_DGAMELAUNCH=1
+            debug: FULLDEBUG=1
+            tag_upgrade: true
+          - compiler: gcc
+            build_opts: TILES=1
+            debug: FULLDEBUG=1
+            tag_upgrade: true
     steps:
       - uses: actions/checkout@v2
-      - name: Set fake version
-        run: echo "1.0.0" > util/release_ver
-        working-directory: crawl-ref/source
+        with:
+          fetch-depth: 0 # all history
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Install dependencies
         run: ./deps.py --compiler ${{ matrix.compiler }} --build-opts "${{ matrix.build_opts }}"
         working-directory: .github/workflows
@@ -50,10 +74,12 @@ jobs:
         uses: actions/cache@v1
         with:
           path: $HOME/.ccache
-          key: ccache-linux-${{ matrix.compiler }}-${{ matrix.build_opts }}-${{ matrix.debug }}
+          key: ccache-linux-${{ matrix.compiler }}-${{ matrix.tag_upgrade }}-${{ matrix.build_opts }}-${{ matrix.debug }}
           restore-keys: |
-            ccache-linux-${{ matrix.compiler }}-${{ matrix.build_opts }}-${{ matrix.debug }}
-            ccache-linux-${{ matrix.compiler }}-${{ matrix.build_opts }}-
+            ccache-linux-${{ matrix.compiler }}-${{ matrix.tag_upgrade }}-${{ matrix.build_opts }}-${{ matrix.debug }}
+            ccache-linux-${{ matrix.compiler }}-${{ matrix.tag_upgrade }}-${{ matrix.build_opts }}-${{ matrix.debug }}
+            ccache-linux-${{ matrix.compiler }}-${{ matrix.tag_upgrade }}-${{ matrix.build_opts }}-
+            ccache-linux-${{ matrix.compiler }}-${{ matrix.tag_upgrade }}-
             ccache-linux-${{ matrix.compiler }}-
       # ccache uses ~110mb to store the output from a single crawl compile
       # (including submodules) (when compressed)
@@ -70,38 +96,62 @@ jobs:
         run: |
           ccache -s
           ls -l /usr/lib/ccache
+      - name: Run tag upgrade scripts
+        if: matrix.tag_upgrade == true
+        run: |
+          if ! grep -q '#define TAG_MAJOR_VERSION 34' tag-version.h ; then
+            echo "::error ::CI job for TAG_MAJOR_VERSION testing needs to be updated for new major tag"
+            exit 1
+          fi
+          sed -i'' -e 's/^#define TAG_MAJOR_VERSION 34$/#define TAG_MAJOR_VERSION 35/' tag-version.h
+          util/tag-major-upgrade -t 35
+          util/tag-35-upgrade.py
+        working-directory: crawl-ref/source
       - run: make -j$(nproc) ${{ matrix.build_opts }} ${{ matrix.debug }}
         working-directory: crawl-ref/source
       - name: Print ccache stats
         run: ccache -s
 
   build_macos:
-    name: "clang macOS"
+    name: macOS ${{ matrix.build_type }}
     runs-on: macos-latest
+    strategy:
+      matrix:
+        build_type:
+          - tiles
+          - console
+        build_opts:
+          - ""
+          - TILES=y
+        exclude:
+          - build_type: tiles
+            build_opts: ""
+          - build_type: console
+            build_opts: TILES=y
     steps:
       - uses: actions/checkout@v2
-      - name: Checkout submodules (for crosscompile)
+        with:
+          fetch-depth: 0 # all history
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Checkout submodules
         shell: bash
         run: |
           auth_header="$(git config --local --get http.https://github.com/.extraheader)"
           git submodule sync --recursive
           git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-      - name: Set fake version
-        run: echo "1.0.0" > util/release_ver
-        working-directory: crawl-ref/source
       - name: Install Dependencies
         run: |
           brew install ccache
-          sudo easy_install pip
-          sudo pip install PyYAML
+          sudo pip3 install PyYAML
       - name: Add ccache to PATH
         run: echo "::add-path::/usr/local/opt/ccache/libexec"
       - name: Cache compilation
         uses: actions/cache@v1
         with:
           path: $HOME/.ccache
-          key: ccache-macos-clang
+          key: ccache-macos-clang-${{ matrix.build_type }}
           restore-keys: |
+            ccache-macos-clang-${{ matrix.build_type }}
             ccache-macos-clang
       # ccache uses ~110mb to store the output from a single crawl compile
       # (including submodules) (when compressed)
@@ -118,25 +168,41 @@ jobs:
         run: |
           ccache -s
           ls -l /usr/local/opt/ccache/libexec
-      - run: make -j$(nproc)
+      - run: make -j$(sysctl -n hw.ncpu) mac-app-${{ matrix.build_type }} ${{matrix.build_opts }}
         working-directory: crawl-ref/source
       - name: Print ccache stats
         run: ccache -s
+      - name: Add build to release
+        if: github.event.release.tag_name != null
+        # Go back to the upstream action (svenstaro/upload-release-action) once this PR merges:
+        # https://github.com/svenstaro/upload-release-action/pull/13
+        uses: alexjurkiewicz/upload-release-action@6408db765e9a0413e6c5b8231ecd3eb45352cc99
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          file: crawl-ref/source/mac-app-zips/latest.zip
+          asset_name: dcss-$tag-macos-${{ matrix.build_type}}.zip
 
   build_mingw64_crosscompile:
-    name: "gcc mingw64 crosscompile"
+    name: mingw64 ${{ matrix.build_type }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_type:
+          - tiles
+          - console
+          - installer
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # all history
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Checkout submodules (for crosscompile)
         shell: bash
         run: |
           auth_header="$(git config --local --get http.https://github.com/.extraheader)"
           git submodule sync --recursive
           git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-      - name: Set fake version
-        run: echo "1.0.0" > util/release_ver
-        working-directory: crawl-ref/source
       - name: Install dependencies
         run: ./deps.py --crosscompile
         working-directory: .github/workflows
@@ -146,8 +212,9 @@ jobs:
         uses: actions/cache@v1
         with:
           path: $HOME/.ccache
-          key: ccache-mingw64
+          key: ccache-mingw64-${{ matrix.build_type }}
           restore-keys: |
+            ccache-mingw64-${{ matrix.build_type }}
             ccache-mingw64
       # ccache uses ~110mb to store the output from a single crawl compile
       # (including submodules) (when compressed)
@@ -164,18 +231,44 @@ jobs:
         run: |
           ccache -s
           ls -l /usr/lib/ccache
-      - run: make -j$(nproc) CROSSHOST=i686-w64-mingw32 package-windows-zips
+      - run: make -j$(nproc) CROSSHOST=i686-w64-mingw32 package-windows-${{ matrix.build_type }}
         working-directory: crawl-ref/source
       - name: Print ccache stats
         run: ccache -s
+      # The zip & installer targets create different sorts of names, so we need
+      # a little shell script magic here.
+      - name: Determine release file names
+        if: github.event.release.tag_name != null
+        id: release-names
+        run: |
+          if [[ ${{ matrix.build_type }} != installer ]] ; then
+            source='crawl-ref/source/stone_soup-latest-${{ matrix.build_type}}-win32.zip'
+            dest='dcss-$tag-win32-${{ matrix.build_type}}.zip'
+          else
+            source='crawl-ref/source/stone_soup-latest-win32-installer.exe'
+            dest='dcss-$tag-win32-installer.exe'
+          fi
+          echo "::set-output name=source::$source"
+          echo "::set-output name=dest::$dest"
+      - name: Add build to release
+        if: github.event.release.tag_name != null
+        # Go back to the upstream action (svenstaro/upload-release-action) once this PR merges:
+        # https://github.com/svenstaro/upload-release-action/pull/13
+        uses: alexjurkiewicz/upload-release-action@6408db765e9a0413e6c5b8231ecd3eb45352cc99
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          file: ${{ steps.release-names.outputs.source }}
+          asset_name: ${{ steps.release-names.outputs.dest }}
+
   codecov_catch2:
     name: Catch2 (GCC/Linux) + Codecov
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set fake version
-        run: echo "1.0.0" > util/release_ver
-        working-directory: crawl-ref/source
+        with:
+          fetch-depth: 0 # all history
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Install dependencies
         run: ./deps.py --coverage
         working-directory: .github/workflows

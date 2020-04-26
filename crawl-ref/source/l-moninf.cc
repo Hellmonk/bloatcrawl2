@@ -20,7 +20,9 @@
 #include "math.h" // ceil
 #include "spl-zap.h" // calc_spell_power
 #include "evoke.h" // wand_mp_cost
+#if TAG_MAJOR_VERSION == 34
 #include "god-abil.h" // pakellas_effective_hex_power
+#endif
 #include "describe.h" // describe_info, get_monster_db_desc
 
 #define MONINF_METATABLE "monster.info"
@@ -34,7 +36,9 @@ void lua_push_moninf(lua_State *ls, monster_info *mi)
 
 #define MONINF(ls, n, var) \
     monster_info *var = *(monster_info **) \
-        luaL_checkudata(ls, n, MONINF_METATABLE)
+        luaL_checkudata(ls, n, MONINF_METATABLE); \
+    if (!var) \
+        return 0
 
 #define MIRET1(type, field, cfield) \
     static int moninf_get_##field(lua_State *ls) \
@@ -273,8 +277,12 @@ static int moninf_get_defeat_mr(lua_State *ls)
     }
     zap_type zap = spell_to_zap(spell);
     int eff_power = zap == NUM_ZAPS ? power : zap_ench_power(zap, power, false);
+#if TAG_MAJOR_VERSION == 34
     int adj_power = is_evoked ? pakellas_effective_hex_power(eff_power) : eff_power;
     int success = hex_success_chance(mr, adj_power, 100);
+#else
+    int success = hex_success_chance(mr, eff_power, 100);
+#endif
     lua_pushnumber(ls, success);
     return 1;
 }

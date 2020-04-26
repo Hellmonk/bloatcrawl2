@@ -2075,7 +2075,7 @@ item_def *auto_assign_item_slot(item_def& item)
         }
         if (newslot != -1 && newslot != item.link)
         {
-            swap_inv_slots(item.link, newslot, true);
+            swap_inv_slots(item.link, newslot, you.num_turns);
             return &you.inv[newslot];
         }
     }
@@ -3968,9 +3968,9 @@ colour_t item_def::miscellany_colour() const
 #endif
         case MISC_HORN_OF_GERYON:
             return LIGHTRED;
+#if TAG_MAJOR_VERSION == 34
         case MISC_LAMP_OF_FIRE:
             return YELLOW;
-#if TAG_MAJOR_VERSION == 34
         case MISC_SACK_OF_SPIDERS:
         case MISC_AIR_HORN:
             return WHITE;
@@ -4295,7 +4295,7 @@ bool get_item_by_name(item_def *item, const char* specs,
         type_wanted = -1;
         size_t best_index  = 10000;
 
-        for (int i = 0; i < get_max_subtype(item->base_type); ++i)
+        for (const auto i : all_item_subtypes(item->base_type))
         {
             item->sub_type = i;
             size_t pos = lowercase_string(item->name(DESC_PLAIN)).find(specs);
@@ -4451,17 +4451,6 @@ bool get_item_by_name(item_def *item, const char* specs,
 
     case OBJ_POTIONS:
         item->quantity = 12;
-        if (is_blood_potion(*item))
-        {
-            const char* prompt;
-            prompt = "# turns away from rotting? "
-                     "[ENTER for fully fresh] ";
-            int age = prompt_for_int(prompt, false);
-
-            if (age <= 0)
-                age = -1;
-            init_perishable_stack(*item, age);
-        }
         break;
 
     case OBJ_FOOD:
@@ -4515,7 +4504,7 @@ bool get_item_by_exact_name(item_def &item, const char* name)
 
         if (!item.sub_type)
         {
-            for (int j = 0; j < get_max_subtype(item.base_type); ++j)
+            for (const auto j : all_item_subtypes(item.base_type))
             {
                 item.sub_type = j;
                 if (lowercase_string(item.name(DESC_DBNAME)) == name_lc)

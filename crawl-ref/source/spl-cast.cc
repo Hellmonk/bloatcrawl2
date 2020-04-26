@@ -1480,11 +1480,12 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
                                "death!", GOD_KIKUBAAQUDGHA);
 
             // The spell still goes through, but you get a miscast anyway.
-            MiscastEffect(&you, nullptr,
-                          {miscast_source::god, GOD_KIKUBAAQUDGHA},
-                          spschool::necromancy,
-                          (you.experience_level / 2) + (spell_difficulty(spell) * 2),
-                          random2avg(88, 3), "the malice of Kikubaaqudgha");
+            miscast_effect(you, nullptr,
+                           {miscast_source::god, GOD_KIKUBAAQUDGHA},
+                           spschool::necromancy,
+                           spell_difficulty(spell),
+                           you.experience_level,
+                           "the malice of Kikubaaqudgha");
         }
         else if (vehumet_supports_spell(spell)
                  && !you_worship(GOD_VEHUMET)
@@ -1496,10 +1497,11 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
                                "destruction!", GOD_VEHUMET);
 
             // The spell still goes through, but you get a miscast anyway.
-            MiscastEffect(&you, nullptr, {miscast_source::god, GOD_VEHUMET},
-                          spschool::conjuration,
-                          (you.experience_level / 2) + (spell_difficulty(spell) * 2),
-                          random2avg(88, 3), "the malice of Vehumet");
+            miscast_effect(you, nullptr, {miscast_source::god, GOD_VEHUMET},
+                           spschool::conjuration,
+                           spell_difficulty(spell),
+                           you.experience_level,
+                           "the malice of Vehumet");
         }
 
         const int spfail_chance = raw_spell_fail(spell);
@@ -1561,22 +1563,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         mprf("You miscast %s.", spell_title(spell));
         flush_input_buffer(FLUSH_ON_FAILURE);
         learned_something_new(HINT_SPELL_MISCAST);
-
-        // All spell failures give a bit of magical radiation.
-        // Failure is a function of power squared multiplied by how
-        // badly you missed the spell. High power spells can be
-        // quite nasty: 9 * 9 * 90 / 500 = 15 points of
-        // contamination!
-        int nastiness = spell_difficulty(spell) * spell_difficulty(spell)
-                        * fail + 250;
-
-        const int cont_points = 2 * nastiness;
-
-        // miscasts are uncontrolled
-        contaminate_player(cont_points, true);
-
-        MiscastEffect(&you, nullptr, {miscast_source::spell}, spell,
-                      spell_difficulty(spell), fail);
+        miscast_effect(spell, fail);
 
         return spret::fail;
     }
@@ -1855,10 +1842,6 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     case SPELL_NECROMUTATION:
         return cast_transform(powc, transformation::lich, fail);
 
-    // General enhancement.
-    case SPELL_DEFLECT_MISSILES:
-        return deflection(powc, fail);
-
     case SPELL_SWIFTNESS:
         return cast_swiftness(powc, fail);
 
@@ -1995,7 +1978,7 @@ static int _tetrahedral_number(int n)
 // the probability that random2avg(100,3) < raw_fail.
 // Should probably use more constants, though I doubt the spell
 // success algorithms will really change *that* much.
-// Called only by failure_rate_to_int and get_miscast_chance.
+// Called only by failure_rate_to_int and _chance_of_fail_level
 static double _get_true_fail_rate(int raw_fail)
 {
     // Need 3*random2avg(100,3) = random2(101) + random2(101) + random2(100)
@@ -2031,48 +2014,98 @@ static double _get_true_fail_rate(int raw_fail)
     return double(outcomes - _tetrahedral_number(300 - target)) / outcomes;
 }
 
-/**
- * Compute the chance of getting a miscast effect of a given severity or higher.
- * @param spell     The spell to be checked.
- * @param severity  Check the chance of getting a miscast this severe or higher.
- * @return          The chance of this kind of miscast.
- */
-double get_miscast_chance(spell_type spell, int severity)
+// Compute the chance raw_fail - spfl = fail for positive values of fail
+// This uses _get_true_fail_rate, which calculates the probability that
+// spfl < target.
+static double _chance_of_fail_level(int raw_fail, int fail)
+{
+    const int target = raw_fail - fail ;
+
+    if (target < 0)
+        return 0.0;
+
+    // the chance that spfl < target + 1 minus the chance spfl < target
+    return _get_true_fail_rate(target + 1) - _get_true_fail_rate(target);
+}
+
+const double fail_hp_fraction[] =
+{
+    .05,
+    .15,
+    .25,
+    .5,
+};
+
+double expected_miscast_damage(spell_type spell)
 {
     int raw_fail = raw_spell_fail(spell);
     int level = spell_difficulty(spell);
-    if (severity <= 0)
-        return _get_true_fail_rate(raw_fail);
-    double C = 70000.0 / (150 * level * (10 + level));
-    double chance = 0.0;
-    int k = severity + 1;
-    while ((C * k) <= raw_fail)
+
+    // Impossible to get a damaging miscast
+    if (level * level * raw_fail <= MISCAST_THRESHOLD)
+        return 0.0;
+
+    double total_miscast_chance = 0.0;
+    double total_weighted_scaled_damage = 0.0;
+
+    for (int f = 1; f <= raw_fail; ++f)
     {
-        chance += _get_true_fail_rate((int) (raw_fail + 1 - (C * k)))
-            * severity / (k * (k - 1));
-        k++;
+        double chance = _chance_of_fail_level(raw_fail, f);
+        total_miscast_chance += chance;
+        // Account for small effect cutoff
+        if (level * level * f > MISCAST_THRESHOLD)
+            total_weighted_scaled_damage += chance * (level * level * f) / 2.0;
     }
-    return chance;
+
+    return total_weighted_scaled_damage / total_miscast_chance;
+}
+
+
+/**
+ * Compute the tier of expected severity of a miscast
+ * @param spell     The spell to be checked.
+ *
+ * Tiers are defined by the relation between the expected miscast damage
+ * (given a miscast occurs):
+ *
+ * - safe, no chance of dangerous effect
+ * - slightly dangerous, Edam <= 5% mhp
+ * - dangerous, Edam <= 15% mhp
+ * - quite dangerous, Edam <= 25% mhp
+ * - extremely dangerous, larger Edam
+ *
+ * The miscast code uses
+ *     dam = div_rand_round(roll_dice(level, level * fail), 30)
+ * Here we compute the expected value of dam * 30 and compare to 30 * max hp
+ */
+int fail_severity(spell_type spell)
+{
+    int raw_fail = raw_spell_fail(spell);
+    int level = spell_difficulty(spell);
+
+    // Impossible to get a damaging miscast
+    if (level * level * raw_fail <= 150)
+        return 0;
+
+    double expected_damage = expected_miscast_damage(spell);
+
+    for (int i = 0; i < 4; ++i)
+        if (expected_damage / (MISCAST_DIVISOR * get_real_hp(true)) <= fail_hp_fraction[i])
+            return i + 1;
+
+    return 5;
 }
 
 const char *fail_severity_adjs[] =
 {
     "safe",
-    "slightly dangerous",
+    "mildly dangerous",
+    "dangerous",
     "quite dangerous",
-    "very dangerous",
+    "extremely dangerous",
+    "potentially lethal",
 };
 COMPILE_CHECK(ARRAYSZ(fail_severity_adjs) > 3);
-
-int fail_severity(spell_type spell)
-{
-    const double chance = get_miscast_chance(spell);
-
-    return (chance < 0.001) ? 0 :
-           (chance < 0.005) ? 1 :
-           (chance < 0.025) ? 2
-                            : 3;
-}
 
 // Chooses a colour for the failure rate display for a spell. The colour is
 // based on the chance of getting a severity >= 2 miscast.
@@ -2080,9 +2113,11 @@ int failure_rate_colour(spell_type spell)
 {
     const int severity = fail_severity(spell);
     return severity == 0 ? LIGHTGREY :
-           severity == 1 ? YELLOW :
-           severity == 2 ? LIGHTRED
-                         : RED;
+           severity == 1 ? WHITE :
+           severity == 2 ? YELLOW :
+           severity == 3 ? LIGHTRED :
+           severity == 4 ? RED
+                         : MAGENTA;
 }
 
 //Converts the raw failure rate into a number to be displayed.
@@ -2300,39 +2335,79 @@ void spell_skills(spell_type spell, set<skill_type> &skills)
             skills.insert(spell_type2skill(bit));
 }
 
+/* How to regenerate this:
+   comm -2 -3 \
+    <(clang -P -E -nostdinc -nobuiltininc spell-type.h -DTAG_MAJOR_VERSION=34 | sort) \
+    <(clang -P -E -nostdinc -nobuiltininc spell-type.h -DTAG_MAJOR_VERSION=35 | sort) \
+    | grep SPELL
+*/
 const set<spell_type> removed_spells =
 {
 #if TAG_MAJOR_VERSION == 34
-    SPELL_ABJURATION,
+    SPELL_BOLT_OF_INACCURACY,
+    SPELL_CHANT_FIRE_STORM,
     SPELL_CIGOTUVIS_DEGENERATION,
+    SPELL_CIGOTUVIS_EMBRACE,
     SPELL_CONDENSATION_SHIELD,
     SPELL_CONTROL_TELEPORT,
+    SPELL_CONTROL_UNDEAD,
+    SPELL_CONTROL_WINDS,
+    SPELL_CORRUPT_BODY,
+    SPELL_CURE_POISON,
+    SPELL_DEFLECT_MISSILES,
+    SPELL_DELAYED_FIREBALL,
     SPELL_DEMONIC_HORDE,
+    SPELL_DRACONIAN_BREATH,
+    SPELL_EPHEMERAL_INFUSION,
     SPELL_EVAPORATE,
+    SPELL_EXPLOSIVE_BOLT,
+    SPELL_FAKE_RAKSHASA_SUMMON,
     SPELL_FIRE_BRAND,
+    SPELL_FIRE_CLOUD,
+    SPELL_FLY,
     SPELL_FORCEFUL_DISMISSAL,
     SPELL_FREEZING_AURA,
+    SPELL_FRENZY,
     SPELL_FULSOME_DISTILLATION,
+    SPELL_GRAND_AVATAR,
+    SPELL_HASTE_PLANTS,
+    SPELL_HOLY_LIGHT,
+    SPELL_HOLY_WORD,
+    SPELL_HOMUNCULUS,
+    SPELL_HUNTING_CRY,
+    SPELL_IGNITE_POISON_SINGLE,
     SPELL_INSULATION,
+    SPELL_IRON_ELEMENTALS,
     SPELL_LETHAL_INFUSION,
+    SPELL_MELEE,
+    SPELL_MIASMA_CLOUD,
+    SPELL_MISLEAD,
+    SPELL_PHASE_SHIFT,
+    SPELL_POISON_CLOUD,
     SPELL_POISON_WEAPON,
+    SPELL_REARRANGE_PIECES,
+    SPELL_REGENERATION,
+    SPELL_RESURRECT,
+    SPELL_SACRIFICE,
     SPELL_SEE_INVISIBLE,
+    SPELL_SERPENT_OF_HELL_BREATH_REMOVED,
+    SPELL_SHAFT_SELF,
+    SPELL_SILVER_BLAST,
     SPELL_SINGULARITY,
     SPELL_SONG_OF_SHIELDING,
-    SPELL_SUMMON_SCORPIONS,
-    SPELL_SUMMON_ELEMENTAL,
-    SPELL_TWISTED_RESURRECTION,
-    SPELL_SURE_BLADE,
-    SPELL_FLY,
+    SPELL_STEAM_CLOUD,
     SPELL_STONESKIN,
-    SPELL_SUMMON_SWARM,
-    SPELL_PHASE_SHIFT,
-    SPELL_MASS_CONFUSION,
-    SPELL_CURE_POISON,
-    SPELL_CONTROL_UNDEAD,
-    SPELL_CIGOTUVIS_EMBRACE,
-    SPELL_DELAYED_FIREBALL,
-    SPELL_REGENERATION,
+    SPELL_STRIKING,
+    SPELL_SUMMON_ELEMENTAL,
+    SPELL_SUMMON_RAKSHASA,
+    SPELL_SUMMON_SCORPIONS,
+    SPELL_SUMMON_TWISTER,
+    SPELL_SUNRAY,
+    SPELL_SURE_BLADE,
+    SPELL_THROW,
+    SPELL_VAMPIRE_SUMMON,
+    SPELL_WARP_BRAND,
+    SPELL_WEAVE_SHADOWS,
 #endif
 };
 

@@ -80,13 +80,12 @@ int ranged_attack::calc_to_hit(bool random)
     }
 
     int hit = orig_to_hit;
-    const int defl = defender->missile_deflection();
-    if (defl)
+    if (defender->missile_repulsion())
     {
         if (random)
-            hit = random2(hit / defl);
+            hit = random2(hit);
         else
-            hit = (hit - 1) / (2 * defl);
+            hit = (hit - 1) / 2;
     }
 
     return hit;
@@ -219,25 +218,16 @@ bool ranged_attack::handle_phase_dodged()
     const int orig_ev_margin =
         test_hit(orig_to_hit, ev, !attacker->is_player());
 
-    if (defender->missile_deflection() && orig_ev_margin >= 0)
+    if (defender->missile_repulsion() && orig_ev_margin >= 0)
     {
         if (needs_message && defender_visible)
         {
-            if (defender->missile_deflection() >= 2)
-            {
-                mprf("%s %s %s!",
-                     defender->name(DESC_THE).c_str(),
-                     defender->conj_verb("deflect").c_str(),
-                     projectile->name(DESC_THE).c_str());
-            }
-            else
-                mprf("%s is repelled.", projectile->name(DESC_THE).c_str());
-
-            defender->ablate_deflection();
+            mprf("%s is repelled.", projectile->name(DESC_THE).c_str());
+            defender->ablate_repulsion();
         }
 
         if (defender->is_player())
-            count_action(CACT_DODGE, DODGE_DEFLECT);
+            count_action(CACT_DODGE, DODGE_REPEL);
 
         return true;
     }
@@ -717,10 +707,6 @@ bool ranged_attack::apply_missile_brand()
         mpr(special_damage_message);
 
         special_damage_message.clear();
-        // Don't do message-only miscasts along with a special
-        // damage message.
-        if (miscast_level == 0)
-            miscast_level = -1;
     }
 
     if (special_damage > 0)

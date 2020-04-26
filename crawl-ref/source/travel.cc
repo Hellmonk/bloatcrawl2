@@ -214,11 +214,8 @@ static inline bool _is_safe_cloud(const coord_def& c)
 static inline int _feature_traverse_cost(dungeon_feature_type feature)
 {
     if (feat_is_closed_door(feature)
-        // Higher cost for shallow water if species doesn't like water or if
-        // they are merfolk, since those will prefer to avoid melding their
-        // boots during travel.
-        || feature == DNGN_SHALLOW_WATER
-           && (!player_likes_water(true) || you.species == SP_MERFOLK))
+        // Higher cost for shallow water if species doesn't like water
+        || feature == DNGN_SHALLOW_WATER && (!player_likes_water(true)))
     {
         return 2;
     }
@@ -290,7 +287,7 @@ bool feat_is_traversable(dungeon_feature_type feat, bool try_fallback)
     if (feat_is_trap(feat) && feat != DNGN_PASSAGE_OF_GOLUBRIA)
     {
         if (ignore_player_traversability)
-            return !(feat == DNGN_TRAP_SHAFT || feat == DNGN_TRAP_TELEPORT);
+            return !(feat == DNGN_TRAP_SHAFT || feat == DNGN_TRAP_TELEPORT || feat == DNGN_TRAP_TELEPORT_PERMANENT);
         return false;
     }
 #if TAG_MAJOR_VERSION == 34

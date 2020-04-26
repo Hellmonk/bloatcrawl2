@@ -327,7 +327,7 @@ static void marshallGhost(writer &th, const ghost_demon &ghost);
 static ghost_demon unmarshallGhost(reader &th);
 
 static void marshallSpells(writer &, const monster_spells &);
-static void unmarshallSpells(reader &, monster_spells &
+void unmarshallSpells(reader &, monster_spells &
 #if TAG_MAJOR_VERSION == 34
                              , unsigned hd
 #endif
@@ -1429,6 +1429,8 @@ static void tag_construct_you(writer &th)
         marshallByte(th, you.equip[i]);
     for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
         marshallBoolean(th, you.melded[i]);
+    for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
+        marshallBoolean(th, you.activated[i]);
 
     ASSERT_RANGE(you.magic_points, 0, you.max_magic_points + 1);
     marshallUByte(th, you.magic_points);
@@ -2418,6 +2420,92 @@ static void _fixup_library_spells(FixedBitVector<NUM_SPELLS>& lib)
 }
 #endif
 
+void unmarshall_vehumet_spells(reader &th, set<spell_type>& old_gifts,
+        set<spell_type>& gifts)
+{
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() >= TAG_MINOR_VEHUMET_SPELL_GIFT
+        && th.getMinorVersion() != TAG_MINOR_0_11)
+    {
+#endif
+        const auto num_old_gifts = unmarshallUByte(th);
+        for (int i = 0; i < num_old_gifts; ++i)
+        {
+            const auto spell = unmarshallSpellType(th);
+            if (!spell_removed(spell))
+                old_gifts.insert(spell);
+        }
+
+#if TAG_MAJOR_VERSION == 34
+        if (th.getMinorVersion() < TAG_MINOR_VEHUMET_MULTI_GIFTS)
+        {
+            const auto spell = unmarshallSpellType(th);
+            if (!spell_removed(spell))
+                gifts.insert(spell);
+        }
+        else
+        {
+#endif
+            const auto num_gifts = unmarshallUByte(th);
+            for (int i = 0; i < num_gifts; ++i)
+            {
+                const auto spell = unmarshallSpellType(th);
+                if (!spell_removed(spell))
+                    gifts.insert(spell);
+            }
+#if TAG_MAJOR_VERSION == 34
+        }
+    }
+#endif
+}
+
+FixedVector<spell_type, MAX_KNOWN_SPELLS> unmarshall_player_spells(reader &th)
+{
+    FixedVector<spell_type, MAX_KNOWN_SPELLS> spells(SPELL_NO_SPELL);
+
+    const auto count = unmarshallUByte(th);
+    ASSERT(count >= 0);
+
+    for (int i = 0; i < count && i < MAX_KNOWN_SPELLS; ++i)
+    {
+        spells[i] = unmarshallSpellType(th);
+#if TAG_MAJOR_VERSION == 34
+        spells[i] = _fixup_positional_player_spell(spells[i]);
+#endif
+        if (spell_removed(spells[i]))
+            spells[i] = SPELL_NO_SPELL;
+    }
+
+    for (int i = MAX_KNOWN_SPELLS; i < count; ++i)
+        unmarshallSpellType(th);
+
+    return spells;
+}
+
+FixedVector<int, 52> unmarshall_player_spell_letter_table(reader &th)
+{
+    FixedVector<int, 52> spell_letter_table;
+
+    const auto count = unmarshallByte(th);
+    ASSERT(count == (int)spell_letter_table.size());
+
+    for (int i = 0; i < count; i++)
+    {
+        int s = unmarshallByte(th);
+        ASSERT_RANGE(s, -1, MAX_KNOWN_SPELLS);
+        spell_letter_table[i] = s;
+    }
+
+    return spell_letter_table;
+}
+
+
+void remove_removed_library_spells(FixedBitVector<NUM_SPELLS>& lib)
+{
+    for (int i = 0; i < NUM_SPELLS; ++i)
+        lib.set(i, lib[i] && !spell_removed(static_cast<spell_type>(i)));
+}
+
 static void tag_read_you(reader &th)
 {
     int count;
@@ -2530,6 +2618,17 @@ static void tag_read_you(reader &th)
         you.melded.set(i, unmarshallBoolean(th));
     for (int i = count; i < NUM_EQUIP; ++i)
         you.melded.set(i, false);
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() >= TAG_MINOR_TRACK_REGEN_ITEMS)
+    {
+#endif
+        for (int i = 0; i < count; ++i)
+            you.activated.set(i, unmarshallBoolean(th));
+        for (int i = count; i < NUM_EQUIP; ++i)
+            you.activated.set(i, false);
+#if TAG_MAJOR_VERSION == 34
+    }
+#endif
 
     you.magic_points              = unmarshallUByte(th);
     you.max_magic_points          = unmarshallByte(th);
@@ -2653,37 +2752,14 @@ static void tag_read_you(reader &th)
         }
     }
 #endif
-    // how many spells?
-    you.spell_no = 0;
-    count = unmarshallUByte(th);
-    ASSERT(count >= 0);
-    for (int i = 0; i < count && i < MAX_KNOWN_SPELLS; ++i)
-    {
-        you.spells[i] = unmarshallSpellType(th);
-#if TAG_MAJOR_VERSION == 34
-        you.spells[i] = _fixup_positional_player_spell(you.spells[i]);
-#endif
-        if (you.spells[i] != SPELL_NO_SPELL)
-            you.spell_no++;
-    }
-    for (int i = MAX_KNOWN_SPELLS; i < count; ++i)
-    {
-#if TAG_MAJOR_VERSION == 34
-        if (th.getMinorVersion() < TAG_MINOR_SHORT_SPELL_TYPE)
-            unmarshallUByte(th);
-        else
-#endif
-            unmarshallShort(th);
-    }
 
-    count = unmarshallByte(th);
-    ASSERT(count == (int)you.spell_letter_table.size());
-    for (int i = 0; i < count; i++)
-    {
-        int s = unmarshallByte(th);
-        ASSERT_RANGE(s, -1, MAX_KNOWN_SPELLS);
-        you.spell_letter_table[i] = s;
-    }
+    remove_removed_library_spells(you.spell_library);
+    remove_removed_library_spells(you.hidden_spells);
+
+    you.spells = unmarshall_player_spells(th);
+    you.spell_letter_table = unmarshall_player_spell_letter_table(th);
+    you.spell_no = count_if(begin(you.spells), end(you.spells),
+            [](const spell_type spell) { return spell != SPELL_NO_SPELL; });
 
     count = unmarshallByte(th);
     ASSERT(count == (int)you.ability_letter_table.size());
@@ -2757,28 +2833,7 @@ static void tag_read_you(reader &th)
         you.ability_letter_table[i] = static_cast<ability_type>(a);
     }
 
-#if TAG_MAJOR_VERSION == 34
-    if (th.getMinorVersion() >= TAG_MINOR_VEHUMET_SPELL_GIFT
-        && th.getMinorVersion() != TAG_MINOR_0_11)
-    {
-#endif
-        count = unmarshallUByte(th);
-        for (int i = 0; i < count; ++i)
-            you.old_vehumet_gifts.insert(unmarshallSpellType(th));
-
-#if TAG_MAJOR_VERSION == 34
-        if (th.getMinorVersion() < TAG_MINOR_VEHUMET_MULTI_GIFTS)
-            you.vehumet_gifts.insert(unmarshallSpellType(th));
-        else
-        {
-#endif
-            count = unmarshallUByte(th);
-            for (int i = 0; i < count; ++i)
-                you.vehumet_gifts.insert(unmarshallSpellType(th));
-#if TAG_MAJOR_VERSION == 34
-        }
-    }
-#endif
+    unmarshall_vehumet_spells(th, you.old_vehumet_gifts, you.vehumet_gifts);
     EAT_CANARY;
 
     // how many skills?
@@ -4796,20 +4851,44 @@ void unmarshallItem(reader &th, item_def &item)
             item.flags |= ISFLAG_KNOW_TYPE;
     }
 
-    if (item.is_type(OBJ_POTIONS, POT_WATER)
-        || item.is_type(OBJ_POTIONS, POT_POISON))
+    if (item.base_type == OBJ_POTIONS)
     {
-        item.sub_type = POT_DEGENERATION;
-    }
+        switch (item.sub_type)
+        {
+            case POT_GAIN_STRENGTH:
+            case POT_GAIN_DEXTERITY:
+            case POT_GAIN_INTELLIGENCE:
+            case POT_POISON:
+            case POT_SLOWING:
+            case POT_PORRIDGE:
+            case POT_DECAY:
+            case POT_WATER:
+            case POT_RESTORE_ABILITIES:
+            case POT_STRONG_POISON:
+            case POT_BLOOD:
+            case POT_BLOOD_COAGULATED:
+                item.sub_type = POT_DEGENERATION;
+                break;
+            case POT_CURE_MUTATION:
+            case POT_BENEFICIAL_MUTATION:
+                item.sub_type = POT_MUTATION;
+                break;
+            case POT_DUMMY_AGILITY:
+                item.sub_type = POT_STABBING;
+                break;
+            default:
+                break;
+        }
 
-    if (item.is_type(OBJ_POTIONS, POT_CURE_MUTATION)
-        || item.is_type(OBJ_POTIONS, POT_BENEFICIAL_MUTATION))
-    {
-        item.sub_type = POT_MUTATION;
+        // Check on save load that the above switch has
+        // converted all removed potion types.
+        switch (item.sub_type)
+        {
+            default:
+                break;
+            CASE_REMOVED_POTIONS(item.sub_type)
+        }
     }
-
-    if (item.is_type(OBJ_POTIONS, POT_DUMMY_AGILITY))
-        item.sub_type = POT_STABBING;
 
     if (item.is_type(OBJ_STAVES, STAFF_CHANNELING))
         item.sub_type = STAFF_ENERGY;
@@ -6238,7 +6317,7 @@ static void tag_read_level_items(reader &th)
         if (th.getMinorVersion() == TAG_MINOR_0_11 && trap.type >= TRAP_TELEPORT)
             trap.type = (trap_type)(trap.type - 1);
         if (th.getMinorVersion() < TAG_MINOR_REVEAL_TRAPS)
-            grd(trap.pos) = trap.category();
+            grd(trap.pos) = trap.feature();
         if (th.getMinorVersion() < TAG_MINOR_TRAPS_DETERM
             || th.getMinorVersion() == TAG_MINOR_0_11)
         {
@@ -6750,6 +6829,15 @@ void unmarshallMonster(reader &th, monster& m)
         m.props[BEOGH_RANGE_WPN_GIFT_KEY] = true;
     }
 
+    // fixup for versions of frenzy that involved a permanent attitude change,
+    // with the original attitude stored in a prop.
+    if (m.props.exists("old_attitude"))
+    {
+        m.attitude = static_cast<mon_attitude_type>(
+                                        m.props["old_attitude"].get_short());
+        m.props.erase("old_attitude");
+    }
+
     if (th.getMinorVersion() < TAG_MINOR_LEVEL_XP_VAULTS
         && m.props.exists("map"))
     {
@@ -7099,41 +7187,18 @@ static const int NUM_MONSTER_SPELL_SLOTS = 6;
 
 static void _fixup_spells(monster_spells &spells, int hd)
 {
-    unsigned count = 0;
-    for (size_t i = 0; i < spells.size(); i++)
-    {
-        if (spells[i].spell == SPELL_NO_SPELL)
-            continue;
+    for (auto& slot : spells)
+        slot.flags |= MON_SPELL_WIZARD;
 
-        count++;
-
-        spells[i].flags |= MON_SPELL_WIZARD;
-
-        if (i == NUM_MONSTER_SPELL_SLOTS - 1)
-            spells[i].flags |= MON_SPELL_EMERGENCY;
-    }
-
-    if (!count)
-    {
-        spells.clear();
-        return;
-    }
-
-    erase_if(spells, [](const mon_spell_slot &t) {
-        return t.spell == SPELL_NO_SPELL;
-    });
-
-    if (!spells.size())
-        return;
+    if (spells.size() >= NUM_MONSTER_SPELL_SLOTS)
+        spells[NUM_MONSTER_SPELL_SLOTS-1].flags |= MON_SPELL_EMERGENCY;
 
     for (auto& slot : spells)
         slot.freq = (hd + 50) / spells.size();
-
-    normalize_spell_freq(spells, hd);
 }
 #endif
 
-static void unmarshallSpells(reader &th, monster_spells &spells
+void unmarshallSpells(reader &th, monster_spells &spells
 #if TAG_MAJOR_VERSION == 34
                              , unsigned hd
 #endif
@@ -7172,8 +7237,8 @@ static void unmarshallSpells(reader &th, monster_spells &spells
         if (th.getMinorVersion() >= TAG_MINOR_MONSTER_SPELL_SLOTS)
         {
 #endif
-        spells[j].freq = unmarshallByte(th);
-        spells[j].flags.flags = unmarshallShort(th);
+            spells[j].freq = unmarshallByte(th);
+            spells[j].flags.flags = unmarshallShort(th);
 #if TAG_MAJOR_VERSION == 34
             if (th.getMinorVersion() < TAG_MINOR_DEMONIC_SPELLS)
             {
@@ -7185,14 +7250,30 @@ static void unmarshallSpells(reader &th, monster_spells &spells
             }
         }
 #endif
+
+        if (spell_removed(spells[j].spell))
+            spells[j].spell = SPELL_NO_SPELL;
     }
+
+    int total_given_freq = 0;
+    for (const auto &slot : spells)
+        total_given_freq += slot.freq;
+
+    erase_if(spells, [](const mon_spell_slot &t) {
+        return t.spell == SPELL_NO_SPELL;
+    });
 
 #if TAG_MAJOR_VERSION == 34
     // This will turn all old spells into wizard spells, which
     // isn't right but is the simplest way to do this.
     if (th.getMinorVersion() < TAG_MINOR_MONSTER_SPELL_SLOTS)
+    {
         _fixup_spells(spells, hd);
+        total_given_freq = spell_freq_for_hd(hd);  // would be zero otherwise
+    }
 #endif
+
+    normalize_spell_freq(spells, total_given_freq);
 }
 
 static void marshallGhost(writer &th, const ghost_demon &ghost)

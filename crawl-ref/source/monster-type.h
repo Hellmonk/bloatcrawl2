@@ -844,6 +844,7 @@ enum monster_type                      // menv[].type
 #if TAG_MAJOR_VERSION > 34
     MONS_FULMINANT_PRISM,
     MONS_BATTLESPHERE,
+    MONS_FOXFIRE,
 #endif
     MONS_PILLAR_OF_SALT,
 #if TAG_MAJOR_VERSION > 34
@@ -868,6 +869,7 @@ enum monster_type                      // menv[].type
     MONS_TEST_SPAWNER,
 #if TAG_MAJOR_VERSION > 34
     MONS_TEST_STATUE,
+    MONS_NAMELESS,              // summoning miscast
 #endif
 
     // Add new monsters here:
@@ -1053,6 +1055,7 @@ enum monster_type                      // menv[].type
     MONS_FOXFIRE,
     MONS_GIAGGOSTUONO,
     MONS_MAGGIE,
+    MONS_NAMELESS,
 #endif
 
     NUM_MONSTERS,               // used for polymorph

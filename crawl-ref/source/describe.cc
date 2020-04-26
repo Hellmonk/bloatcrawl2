@@ -57,7 +57,9 @@
 #include "religion.h"
 #include "skills.h"
 #include "species.h"
+#include "spl-cast.h"
 #include "spl-book.h"
+#include "spl-miscast.h"
 #include "spl-summoning.h"
 #include "spl-util.h"
 #include "spl-wpnench.h"
@@ -2140,28 +2142,6 @@ string get_item_description(const item_def &item, bool verbose,
         break;
 
     case OBJ_POTIONS:
-#ifdef DEBUG_BLOOD_POTIONS
-        // List content of timer vector for blood potions.
-        if (!dump && is_blood_potion(item))
-        {
-            item_def stack = static_cast<item_def>(item);
-            CrawlHashTable &props = stack.props;
-            if (!props.exists("timer"))
-                description << "\nTimers not yet initialized.";
-            else
-            {
-                CrawlVector &timer = props["timer"].get_vector();
-                ASSERT(!timer.empty());
-
-                description << "\nQuantity: " << stack.quantity
-                            << "        Timer size: " << (int) timer.size();
-                description << "\nTimers:\n";
-                for (const CrawlStoreValue& store : timer)
-                    description << store.get_int() << "  ";
-            }
-        }
-#endif
-
     case OBJ_SCROLLS:
     case OBJ_ORBS:
     case OBJ_GOLD:
@@ -2385,6 +2365,8 @@ void describe_feature_wide(const coord_def& pos)
             f.tile = tile_def(TILE_UMBRA, TEX_FEAT);
         else if  (desc.first == "Liquefied ground.")
             f.tile = tile_def(TILE_LIQUEFACTION, TEX_FLOOR);
+        else if (desc.first == "A covering of ice.")
+            f.tile = tile_def(TILE_FLOOR_ICY, TEX_FLOOR);
         else
             f.tile = tile_def(env.tile_bk_cloud(pos) & ~TILE_FLAG_FLYING, TEX_DEFAULT);
 #endif
@@ -3022,6 +3004,57 @@ int hex_chance(const spell_type spell, const int hd)
 }
 
 /**
+ * Describe miscast effects from a spell
+ *
+ * @param spell
+ */
+static string _miscast_damage_string(spell_type spell)
+{
+    const map <spschool, string> damage_flavor = {
+        { spschool::conjuration, "irresistible" },
+        { spschool::necromancy, "draining" },
+        { spschool::fire, "fire" },
+        { spschool::ice, "cold" },
+        { spschool::air, "electric" },
+        { spschool::earth, "fragmentation" },
+        { spschool::poison, "poison" },
+    };
+
+    const map <spschool, string> special_flavor = {
+        { spschool::summoning, "summon a nameless horror" },
+        { spschool::transmutation, "polymorph you" },
+        { spschool::translocation, "dimensionally anchor you" },
+    };
+
+    spschools_type disciplines = get_spell_disciplines(spell);
+    vector <string> descs;
+
+    for (const auto flav : special_flavor)
+        if (disciplines & flav.first)
+            descs.push_back(flav.second);
+
+    if (disciplines & (spschool::charms | spschool::hexes))
+        descs.push_back("debuff and slow you");
+
+    int dam = div_round_up(expected_miscast_damage(spell), MISCAST_DIVISOR);
+    vector <string> dam_flavors;
+    for (const auto flav : damage_flavor)
+        if (disciplines & flav.first)
+            dam_flavors.push_back(flav.second);
+
+    if (!dam_flavors.empty())
+    {
+        descs.push_back(make_stringf("deal an average of %d %s damage", dam,
+                                     comma_separated_line(dam_flavors.begin(),
+                                                         dam_flavors.end(),
+                                                         " or ").c_str()));
+    }
+
+    return (descs.size() > 1 ? "either " : "")
+         + comma_separated_line(descs.begin(), descs.end(), " or ", "; ");
+}
+
+/**
  * Describe mostly non-numeric player-specific information about a spell.
  *
  * (E.g., your god's opinion of it, whether it's in a high-level book that
@@ -3036,6 +3069,11 @@ static string _player_spell_desc(spell_type spell)
         return ""; // all info is player-dependent
 
     ostringstream description;
+
+    description << "Miscasting this spell will cause magic contamination"
+                << (fail_severity(spell) ?
+                    " and also " + _miscast_damage_string(spell) : "")
+                << ".\n";
 
     if (spell == SPELL_SPELLFORGED_SERVITOR)
     {

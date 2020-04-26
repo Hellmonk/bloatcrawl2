@@ -72,7 +72,7 @@ These instructions may work for other DPKG-based distros.
 
 ```sh
 sudo apt install build-essential libncursesw5-dev bison flex liblua5.1-0-dev \
-libsqlite3-dev libz-dev pkg-config python-yaml binutils-gold
+libsqlite3-dev libz-dev pkg-config python3-yaml binutils-gold
 
 # Dependencies for tiles builds
 sudo apt install libsdl2-image-dev libsdl2-mixer-dev libsdl2-dev \
@@ -87,7 +87,7 @@ These instructions may work for other RPM-based distros.
 
 ```sh
 sudo dnf install gcc gcc-c++ make bison flex ncurses-devel compat-lua-devel \
-sqlite-devel zlib-devel pkgconfig python-yaml
+sqlite-devel zlib-devel pkgconfig python3-yaml
 
 # Dependencies for tiles builds:
 sudo dnf install SDL2-devel SDL2_image-devel libpng-devel freetype-devel \
@@ -104,7 +104,7 @@ You need the following dependencies:
 * gcc / clang
 * perl
 * pkg-config
-* Python and PyYAML
+* Python 3 and PyYAML
 * libncurses
 * flex / bison (optional)
 
@@ -219,7 +219,7 @@ from within the MSYS2 Shell.
     ```sh
     pacman -S mingw-w64-x86_64-python-yaml
     # or
-    pacman -S mingw64/mingw-w64-x86_64-python-pip
+    pacman -S mingw-w64-x86_64-python-pip
     pip install pyyaml
     ```
 
@@ -249,8 +249,7 @@ from within the MSYS2 Shell.
     ```
 
     If you want a debug build, add the target `debug` to the above commands (eg
-    `make debug TILES=y`) For building packages, see instructions in the
-    release guide.
+    `make debug TILES=y`).
 
 7. When the build process finishes, you can run crawl.exe directly from the
    source directory in the MSYS2 shell. For Tiles, type `./crawl.exe`, and for
@@ -258,6 +257,24 @@ from within the MSYS2 Shell.
    window (the Windows version of DCSS requires a command.exe shell and will
    not run in an MSYS2 shell). Both versions can also be started by
    double-clicking `crawl.exe` using the graphical file explorer.
+
+8. If you want to build the installer or zipped packages instead,
+   you need to install zip and nsis:
+
+    ```sh
+    pacman -S zip
+    # and
+    pacman -S mingw-w64-x86_64-nsis
+    ```
+
+    Then build by running:
+
+    ```sh
+    # installer
+    make package-windows-installer
+    # zips
+    make package-windows-zips
+    ```
 
 ### Windows Subsystem for Linux (WSL)
 

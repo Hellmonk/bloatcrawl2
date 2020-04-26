@@ -86,7 +86,7 @@ MAKEFLAGS += -rR # This only works for recursive makes, i.e. contribs ...
         clean-catch2 clean-plug-and-play-tests \
 		clean-coverage clean-coverage-full \
         distclean debug debug-lite profile package-source source \
-        build-windows package-windows docs greet api api-dev android FORCE \
+        build-windows package-windows-installer docs greet api api-dev android FORCE \
         monster catch2-tests plug-and-play-tests
 
 include Makefile.obj
@@ -163,6 +163,11 @@ DOXYGEN = doxygen
 DOXYGEN_SIMPLE_CONF = crawl_simple.doxy
 DOXYGEN_ALL_CONF = crawl_all.doxy
 DOXYGEN_HTML_GEN = html/
+# Prefer python3, if available
+PYTHON = python
+ifneq (, $(shell which python3 2>&1))
+	PYTHON = python3
+endif
 
 export AR
 export RANLIB
@@ -305,28 +310,6 @@ else
 LIBLUA := contrib/install/$(ARCH)/lib/liblua.a
 endif
 LIBZ := contrib/install/$(ARCH)/lib/libz.a
-
-ifndef CROSSHOST
-	# FreeBSD keeps all of its userland includes in /usr/local so
-	# look there
-	ifeq ($(uname_S),FreeBSD)
-		SQLITE_INCLUDE_DIR := /usr/local/include
-	else
-		SQLITE_INCLUDE_DIR := /usr/include
-	endif
-else
-	# This is totally wrong, works only with some old-style setups, and
-	# on some architectures of Debian/new FHS multiarch -- excluding, for
-	# example, i386.  Fortunately, i386 is rarely cross-compiled to.
-	# There's no support for /usr/local/ too, without thorough handholding.
-	# It's still an improvement over Crawl 0.8 which had no cross-compiling
-	# to non-win32 at all.
-	#
-	# Needs to be replaced by compile checks.  Guessing the paths is fragile,
-	# while the compiler knows them already.
-	SQLITE_INCLUDE_DIR := /usr/$(ARCH)/include
-endif
-SQLITE_LIB := -lsqlite3
 
 #
 # Set up the TILES variant
@@ -641,14 +624,17 @@ DEFINES_L += -DUSE_LUAJIT
 endif
 
 ifndef BUILD_SQLITE
-  ifeq ($(shell grep -q sqlite3_prepare $(SQLITE_INCLUDE_DIR)/sqlite3.h 2>/dev/null && echo yes),yes)
-    # INCLUDES_L += -isystem $(SQLITE_INCLUDE_DIR)
-    LIBS += $(SQLITE_LIB)
-    ifneq ($(shell grep -q sqlite3_prepare_v2 $(SQLITE_INCLUDE_DIR)/sqlite3.h 2>/dev/null && echo yes),yes)
-      DEFINES_L += -DANCIENT_SQLITE
-    endif
-  else
+  ifdef NO_PKGCONFIG
     BUILD_SQLITE = yes
+  endif
+endif
+ifndef BUILD_SQLITE
+ ifneq ($(shell $(PKGCONFIG) sqlite3 --exists || echo no),)
+   BUILD_SQLITE = yes
+ else
+   INCLUDES_L += $(shell $(PKGCONFIG) sqlite3 --cflags-only-I | sed -e 's/-I/-isystem /')
+   CFLAGS_L += $(shell $(PKGCONFIG) sqlite3 --cflags-only-other)
+   LIBS += $(shell $(PKGCONFIG) sqlite3 --libs)
   endif
 endif
 
@@ -1086,6 +1072,7 @@ ifndef V
         QUIET_HOSTCC      = @echo '   ' HOSTCC $@;
         QUIET_PNGCRUSH    = @echo '   ' $(PNGCRUSH_LABEL) $@;
         QUIET_ADVPNG      = @echo '   ' ADVPNG $@;
+        QUIET_PYTHON      = @echo '   ' PYTHON $@;
         export V
 endif
 endif
@@ -1197,8 +1184,10 @@ SRC_PKG_BASE  := stone_soup
 SRC_VERSION   := $(shell git describe --tags $(MERGE_BASE) 2>/dev/null || cat util/release_ver)
 MAJOR_VERSION = $(shell echo "$(SRC_VERSION)"|$(SED) -r 's/-.*//;s/^([^.]+\.[^.]+).*/\1/')
 RECENT_TAG    := $(shell git describe --abbrev=0 --tags $(MERGE_BASE))
+WINARCH := $(shell $(GXX) -dumpmachine | grep -q x64_64 && echo win64 || echo win32)
 
 export SRC_VERSION
+export WINARCH
 
 # Update .ver file if SRC_VERSION has changed
 .ver: FORCE
@@ -1712,18 +1701,16 @@ mi-enum.h: mon-info.h util/gen-mi-enum
 	$(QUIET_GEN)util/gen-mi-enum
 
 # species-gen.py creates multiple files at once. Ensure Make doesn't run it once
-# per target file. https://stackoverflow.com/q/2973445
+# per target file by adding all the files into a single dependency chain.
+# Ref: https://stackoverflow.com/q/2973445
 species-data.h: dat/species/*.yaml util/species-gen.py util/species-gen/*.txt
-	$(QUIET_GEN)util/species-gen.py dat/species/ util/species-gen/ species-data.h aptitudes.h species-groups.h species-type.h
-
+	$(QUIET_PYTHON)$(PYTHON) util/species-gen.py dat/species/ util/species-gen/ species-data.h aptitudes.h species-groups.h species-type.h
 # no-op
 aptitudes.h: species-data.h
 	$(QUIET_GEN)
-
 # no-op
 species-groups.h: aptitudes.h
 	$(QUIET_GEN)
-
 # no-op
 species-type.h: species-groups.h
 	$(QUIET_GEN)
@@ -1820,7 +1807,7 @@ package-tarball-nodeps: source
 	cd build && tar cfJ ../../../$(SRC_PKG_TAR_NODEPS) --exclude contrib --exclude simplebar.js $(PKG_SRC_DIR)
 
 package-source: package-tarball-deps package-zipball-deps package-tarball-nodeps
-	rm -rf build
+	$(RM) -r build-win
 
 removeold:
 	if [ -f ../../$(SRC_PKG_TAR) ]; then $(RM) ../../$(SRC_PKG_TAR); fi
@@ -1831,13 +1818,13 @@ removeold:
 #
 
 # You need to have NSIS installed.
-package-windows:
+package-windows-installer:
 ifneq (x$(SRC_VERSION),x$(shell cat build-win/version.txt 2>/dev/null))
 	+$(MAKE) build-windows
 endif
-	if $(GXX) -dumpmachine|grep -q x86_64; \
-	  then WINARCH=win64; else WINARCH=win32; fi; \
-	makensis -NOCD -DVERSION=$(SRC_VERSION) -DWINARCH="$$WINARCH" util/crawl.nsi
+	makensis -NOCD -DVERSION=$(SRC_VERSION) -DWINARCH="$(WINARCH)" util/crawl.nsi
+	ln -sf "stone_soup-$(SRC_VERSION)-$(WINARCH)-installer.exe" "stone_soup-latest-$(WINARCH)-installer.exe"
+	$(RM) -r build-win
 
 build-windows:
 ifneq ($(GAME),crawl.exe)
@@ -1852,7 +1839,7 @@ endif
 	echo $(SRC_VERSION) >build-win/version.txt
 
 ZIP_DOCS=../../LICENSE
-package-windows-zips:
+package-windows-tiles:
 ifneq ($(GAME),crawl.exe)
 	@echo "This is only for Windows; please specify CROSSHOST.";false
 endif
@@ -1860,12 +1847,23 @@ endif
 	+$(MAKE) TILES=y DESTDIR=build-win/stone_soup-tiles-$(MAJOR_VERSION) FORCE_SSE=y install
 	cp -p $(ZIP_DOCS) build-win/stone_soup-tiles-$(MAJOR_VERSION)/
 	cd build-win && zip -9r ../stone_soup-$(SRC_VERSION)-tiles-win32.zip *
-	rm -rf build-win
-	+$(MAKE) DESTDIR=build-win/stone_soup-$(MAJOR_VERSION) FORCE_SSE=y install
-	cp -p $(ZIP_DOCS) build-win/stone_soup-$(MAJOR_VERSION)/
-	cd build-win && zip -9r ../stone_soup-$(SRC_VERSION)-win32.zip *
-	rm -rf build-win
-	if which advzip >/dev/null;then advzip -z4 stone_soup-$(SRC_VERSION)*-win32.zip;fi
+	if which advzip >/dev/null;then advzip -z3 stone_soup-$(SRC_VERSION)-tiles-win32.zip;fi
+	ln -sf stone_soup-$(SRC_VERSION)-tiles-win32.zip stone_soup-latest-tiles-win32.zip
+	$(RM) -r build-win
+
+package-windows-console:
+ifneq ($(GAME),crawl.exe)
+	@echo "This is only for Windows; please specify CROSSHOST.";false
+endif
+	+$(MAKE) clean
+	+$(MAKE) DESTDIR=build-win/stone_soup-console-$(MAJOR_VERSION) FORCE_SSE=y install
+	cp -p $(ZIP_DOCS) build-win/stone_soup-console-$(MAJOR_VERSION)/
+	cd build-win && zip -9r ../stone_soup-$(SRC_VERSION)-console-win32.zip *
+	if which advzip >/dev/null;then advzip -z3 stone_soup-$(SRC_VERSION)-console-win32.zip;fi
+	ln -sf stone_soup-$(SRC_VERSION)-console-win32.zip stone_soup-latest-console-win32.zip
+	$(RM) -r build-win
+
+package-windows-zips: package-windows-tiles package-windows-console
 
 #############################################################################
 # Building Mac app bundles

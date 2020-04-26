@@ -612,6 +612,12 @@ namespace arena
         for (int i = 0; i < NUM_STATS; ++i)
             you.base_stats[i] = 20;
 
+        // XXX: now that you.species is valid, do a layout.
+        // This is necessary to ensure that the stat window is positioned.
+#ifdef USE_TILE
+        tiles.resize();
+#endif
+
         show_fight_banner();
     }
 
@@ -740,9 +746,12 @@ namespace arena
             if (mon->type == MONS_TEST_SPAWNER)
                 continue;
 
-            MiscastEffect(*mon, *mon, {miscast_source::wizard},
-                          spschool::random, random_range(1, 3), "arena miscast",
-                          nothing_happens::NEVER);
+            if (!mon->alive())
+                continue;
+
+            miscast_effect(**mon, *mon, {miscast_source::wizard},
+                           spschool::random, random_range(1, 9),
+                           random_range(1, 100), "arena miscast");
         }
     }
 
