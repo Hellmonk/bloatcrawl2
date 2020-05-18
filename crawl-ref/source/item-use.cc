@@ -872,7 +872,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
-      if ((you.species == SP_UNIPODE || you.species == SP_BUNYIP) && slot != EQ_HELMET)
+      if (you.species == SP_UNIPODE || you.species == SP_BUNYIP && slot != EQ_HELMET)
     {
         if (verbose)
             mpr("You can't wear that!");
