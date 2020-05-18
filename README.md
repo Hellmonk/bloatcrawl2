@@ -21,6 +21,7 @@ Play online:
 * ![Bunyip tile](crawl-ref/source/rltiles/player/base/bunyip_m.png) **Bunyips** are strange, black, oily creatures that live in billabongs. They swim well but cannot call on divine powers or wear armour.
 * ![Butterfly tile](crawl-ref/source/rltiles/player/base/butterfly.png) Cute **Butterflies** will stop at nothing to obtain the Orb. Monsters turn neutral when they first see you.
 * **Dab Dwarves** have perfected the ancient art of dabbing. They can dab on multiple creatures at once and may even daze their foes with the power of their dab.
+* **Crystal Dwarves** have reflective, crystalline skin that naturally shields them. They are frailer than other dwarves, but adept at elemental magic.
 * **Ember Elves** have depleted magical reserves, but regenerate magical power quickly. As they develop, their magic becomes more powerful but harder to control.
 * ![Faerie Dragon tile](crawl-ref/source/rltiles/player/base/faerie_dragon.png) **Faerie Dragons** are attuned to magic and their spells cost fewer magic points. Their shimmering scales repel attacks and their wings let them fly.
 * **Flans** are gelatinous and slightly corrosive beings. Their fluid shape lets them fit easily into any body armour, but they cannot wear other armour types.
