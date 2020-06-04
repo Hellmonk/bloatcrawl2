@@ -1368,7 +1368,7 @@ bool evoke_item(int slot)
 
             mpr("The air horn lets out an incredible blast of sound!");
             const int spellpower = 30 + div_rand_round(you.skill(SK_EVOCATIONS,15),2);
-            fire_los_attack_spell(SPELL_SONIC_WAVE, spellpower, &you, nullptr);
+            fire_los_attack_spell(SPELL_SONIC_WAVE, spellpower, &you, false);
             you.sentinel_mark(true);
 
             expend_xp_evoker(item.sub_type);
