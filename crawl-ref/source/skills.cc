@@ -2381,14 +2381,26 @@ static skill_type random_skill()
 
 void bol_xi_aptitude_shuffle()
 {
+    int new_apts[NUM_SKILLS];
     for (int sk=0; sk<NUM_SKILLS; sk++)
-        you.bol_xi_apts[sk] = 0;
+        new_apts[sk] = 0;
     for (int i=0; i<5; i++)
-        you.bol_xi_apts[random_skill()] += random_range(4, 7) * (coinflip() ? 1 : -1);
+        new_apts[random_skill()] += random_range(4, 7) * (coinflip() ? 1 : -1);
     for (int i=0; i<10; i++)
-        you.bol_xi_apts[random_skill()] += random_range(1, 3) * (coinflip() ? 1 : -1);
+        new_apts[random_skill()] += random_range(1, 3) * (coinflip() ? 1 : -1);
     for (int i=0; i<100; i++)
-        you.bol_xi_apts[random_skill()] += coinflip() ? 1 : -1;
-    for (int i=0; i<NUM_SKILLS; i++)
-        you.bol_xi_apts[i] = min(9, max(-9, you.bol_xi_apts[i]));
+        new_apts[random_skill()] += coinflip() ? 1 : -1;
+
+    for (int sk=0; sk<NUM_SKILLS; sk++)
+    {
+        const int old_apt = you.bol_xi_apts[sk];
+        const int new_apt = min(9, max(-9, new_apts[sk]));
+        const float old_factor = apt_to_factor(old_apt);
+        const float new_factor = apt_to_factor(new_apt);
+        const int old_sp = you.skill_points[sk];
+        const int new_sp = old_sp * new_factor / old_factor;
+        dprf("old_apt:%d new_apt:%d old_factor:%f new_factor:%f old_sp:%d new_sp:%d", old_apt, new_apt, old_factor, new_factor, old_sp, new_sp);
+        you.bol_xi_apts[sk] = new_apt;
+        you.skill_points[sk] = new_sp;
+    }
 }
