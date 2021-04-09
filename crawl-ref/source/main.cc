@@ -23,9 +23,7 @@
 #endif
 
 #ifndef TARGET_OS_WINDOWS
-# ifndef __ANDROID__
-#  include <langinfo.h>
-# endif
+# include <langinfo.h>
 #endif
 #ifdef USE_UNIX_SIGNALS
 #include <csignal>
@@ -146,8 +144,8 @@
 #include "viewgeom.h"
 #include "view.h"
 #include "viewmap.h"
-#ifdef TOUCH_UI
-#include "windowmanager.h"
+#ifdef __ANDROID__
+#include "syscalls.h"
 #endif
 #include "wiz-you.h" // FREEZE_TIME_KEY
 #include "wizard.h" // handle_wizard_command() and enter_explore_mode()
@@ -234,13 +232,11 @@ __attribute__((externally_visible))
 #endif
 int main(int argc, char *argv[])
 {
-#ifndef __ANDROID__
-# ifdef DGAMELAUNCH
+#ifdef DGAMELAUNCH
     // avoid commas instead of dots, etc, on CDO
     setlocale(LC_CTYPE, "");
-# else
+#else
     setlocale(LC_ALL, "");
-# endif
 #endif
 #ifdef USE_TILE_WEB
     if (strcasecmp(nl_langinfo(CODESET), "UTF-8"))
@@ -2028,10 +2024,9 @@ void process_command(command_type cmd)
         debug_terp_dlua(clua);
         break;
 
-#ifdef TOUCH_UI
-    case CMD_SHOW_KEYBOARD:
-        ASSERT(wm);
-        wm->show_keyboard();
+#ifdef __ANDROID__
+    case CMD_TOGGLE_KEYBOARD:
+        jni_keyboard_control(true);
         break;
 #endif
 

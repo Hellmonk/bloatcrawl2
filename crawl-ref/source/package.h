@@ -9,7 +9,13 @@
 #include <zlib.h>
 #endif
 
-#if !defined(DGAMELAUNCH) && !defined(__ANDROID__) && !defined(DEBUG_DIAGNOSTICS)
+using std::map;
+using std::pair;
+using std::set;
+using std::string;
+using std::vector;
+
+#if !defined(DGAMELAUNCH) && !defined(DEBUG_DIAGNOSTICS)
 #define DO_FSYNC
 #endif
 

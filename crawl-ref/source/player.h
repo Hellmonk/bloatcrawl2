@@ -436,6 +436,7 @@ public:
 
     bool wield_change;          // redraw weapon
     bool redraw_quiver;         // redraw quiver
+    bool redraw_noise;
 
     bool redraw_title;
     bool redraw_hit_points;

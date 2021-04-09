@@ -1,3 +1,16 @@
 .cquery_cache/
 .DS_Store
 .vscode/
+
+*.sublime-workspace
+*.sublime-project
+
+# Android
+crawl-ref/source/android-project/.gradle/
+crawl-ref/source/android-project/.idea/
+crawl-ref/source/android-project/app/.cxx/
+crawl-ref/source/android-project/app/build/
+crawl-ref/source/android-project/app/build.gradle
+crawl-ref/source/android-project/app/release/
+crawl-ref/source/android-project/app/src/main/assets/
+crawl-ref/source/android-project/build/

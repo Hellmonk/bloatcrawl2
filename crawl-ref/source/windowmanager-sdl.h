@@ -46,7 +46,6 @@ public:
     virtual int raise_custom_event() override;
     virtual int wait_event(wm_event *event, int timeout) override;
     virtual bool next_event_is(wm_event_type type) override;
-    virtual void show_keyboard() override;
 
     // Display functions
     virtual bool init_hidpi() override;

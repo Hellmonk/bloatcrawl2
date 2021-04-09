@@ -695,21 +695,6 @@ bool cast_a_spell(bool check_range, spell_type spell)
 
         while (true)
         {
-#ifdef TOUCH_UI
-            keyin = list_spells(true, false);
-            if (!keyin)
-                keyin = ESCAPE;
-
-            if (!crawl_state.doing_prev_cmd_again)
-                redraw_screen();
-
-            if (isaalpha(keyin) || key_is_escape(keyin))
-                break;
-            else
-                clear_messages();
-
-            keyin = 0;
-#else
             if (keyin == 0)
             {
                 if (you.spell_no == 1)
@@ -772,7 +757,6 @@ bool cast_a_spell(bool check_range, spell_type spell)
             }
             else
                 break;
-#endif
         }
 
         if (key_is_escape(keyin))
