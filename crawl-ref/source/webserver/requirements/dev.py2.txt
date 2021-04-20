@@ -38,7 +38,7 @@ packaging==20.3           # via pytest, tox
 pathlib2==2.3.5           # via importlib-metadata, importlib-resources, pytest, virtualenv
 pip-tools==4.5.1          # via -r requirements.in/dev.txt
 pluggy==0.13.1            # via pytest, tox
-py==1.8.1                 # via pytest, tox
+py==1.10.0                 # via pytest, tox
 pycodestyle==2.5.0        # via flake8, flake8-print
 pyflakes==2.1.1           # via flake8
 pyparsing==2.4.6          # via packaging
