@@ -87,6 +87,7 @@
 
 #ifdef __ANDROID__
 #include <android/log.h>
+#define DGL_VERSIONED_CACHE_DIR
 #endif
 
 #ifndef F_OK // MSVC for example
