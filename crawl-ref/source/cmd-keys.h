@@ -108,6 +108,12 @@
 {'$', CMD_LIST_GOLD},
 {CONTROL('D'), CMD_MACRO_ADD},
 {'~', CMD_MACRO_ADD},
+#ifdef USE_TILE_LOCAL
+{CK_F11, CMD_TOGGLE_TAB_ICONS},
+#endif
+#ifdef __ANDROID__
+{CK_F12, CMD_TOGGLE_KEYBOARD},
+#endif
 #ifdef WIZARD
 {'&', CMD_WIZARD},
 {'+', CMD_EXPLORE_MODE},

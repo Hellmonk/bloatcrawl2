@@ -34,6 +34,7 @@ public:
     int find_tab(string tab_name) const;
 
     void set_small_layout(bool use_small_layout, const coord_def &windowsz);
+    void set_tab_icons_visibility(bool show_tab_icons);
 
     virtual void update() override;
     virtual void clear() override;
@@ -79,6 +80,7 @@ protected:
 
 private:
     int _push_tab(GridRegion *reg, command_type cmd, tileidx_t tile_tab);
+    int _icon_width;
 };
 
 #endif

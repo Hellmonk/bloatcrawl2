@@ -2024,6 +2024,12 @@ void process_command(command_type cmd)
         debug_terp_dlua(clua);
         break;
 
+#ifdef USE_TILE_LOCAL
+    case CMD_TOGGLE_TAB_ICONS:
+        tiles.toggle_tab_icons();
+        break;
+#endif
+
 #ifdef __ANDROID__
     case CMD_TOGGLE_KEYBOARD:
         jni_keyboard_control(true);
