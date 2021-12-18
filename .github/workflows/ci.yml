@@ -358,3 +358,97 @@ jobs:
     - name: Unit Tests (pytest)
       working-directory: crawl-ref/source/webserver
       run: pytest
+
+  build_headers:
+    name: Build headers ${{ matrix.compiler }} ${{ matrix.build_opts }} ${{ matrix.debug }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler:
+          - gcc
+          - clang
+        build_opts:
+          - ""
+          - WEBTILES=1
+          - TILES=1
+        debug:
+          - ""
+          - FULLDEBUG=1
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # all history
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install requirements.txt
+        run: |
+            python -m pip install --upgrade pip
+            pip install -r webserver/requirements/dev.py3.txt # use this until we have a repo-wide requirements.txt
+        working-directory: crawl-ref/source
+      - name: Install dependencies
+        run: ./deps.py --compiler ${{ matrix.compiler }} --build-opts "${{ matrix.build_opts }}" --debug-opts "${{ matrix.debug }}"
+        working-directory: .github/workflows
+      - name: Cache compilation
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: ccache-build-headers-${{ matrix.compiler }}-${{ matrix.build_opts }}-${{ matrix.debug }}-${{ github.sha }}
+          restore-keys: |
+            ccache-build-headers-${{ matrix.compiler }}-${{ matrix.build_opts }}-${{ matrix.debug }}-
+            ccache-build-headers-${{ matrix.compiler }}-${{ matrix.build_opts }}-
+            ccache-build-headers-${{ matrix.compiler }}-
+            ccache-build-headers-
+      - name: Setup ccache
+        uses: alexjurkiewicz/setup-ccache@master
+      - name: "Setup ccache: prepend path"
+        run: "echo /usr/lib/ccache >> $GITHUB_PATH"
+      - name: "Setup ccache: update symlinks"
+        run: "/usr/sbin/update-ccache-symlinks"
+      - name: "Setup ccache: clear stats"
+        run: ccache --zero-stats
+      - run: make -j$(nproc) header-build-tests
+        working-directory: crawl-ref/source
+      - name: Print ccache stats
+        run: ccache -s
+
+  build_android:
+    name: Android
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_opts:
+          - ANDROID=1
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # all history
+          submodules: true
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Install dependencies
+        run: ./deps.py --build-opts "${{ matrix.build_opts }}"
+        working-directory: .github/workflows
+      - name: Cache compilation
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: ccache-android-${{ github.sha }}
+          restore-keys: |
+            ccache-android-
+      - name: Setup ccache
+        uses: alexjurkiewicz/setup-ccache@master
+      - name: "Setup ccache: prepend path"
+        run: "echo /usr/lib/ccache >> $GITHUB_PATH"
+      - name: "Setup ccache: update symlinks"
+        run: "/usr/sbin/update-ccache-symlinks"
+      - name: "Setup ccache: clear stats"
+        run: ccache --zero-stats
+      - run: make -j$(nproc) ${{ matrix.build_opts }} android
+        working-directory: crawl-ref/source
+      - name: Print ccache stats
+        run: ccache -s
+      - name: Run gradle
+        run: gradle :app:assembleDebug
+        working-directory: crawl-ref/source/android-project
