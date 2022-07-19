@@ -450,5 +450,5 @@ jobs:
       - name: Print ccache stats
         run: ccache -s
       - name: Run gradle
-        run: gradle :app:assembleDebug
+        run: gradle :app:assembleBuildTest
         working-directory: crawl-ref/source/android-project
