@@ -430,7 +430,9 @@ int SDLWrapper::init(coord_def *m_windowsz)
         int y = Options.tile_window_height;
         x = (x > 0) ? x : _desktop_width + x;
         y = (y > 0) ? y : _desktop_height + y;
-        if (Options.tile_window_minimum)
+        if (Options.tile_window_ratio > 0)
+            x = min(x, y * Options.tile_window_ratio / 1000);
+        if (Options.tile_window_limit_size)
         {
             m_windowsz->x = max(MIN_SDL_WINDOW_SIZE_X, x);
             m_windowsz->y = max(MIN_SDL_WINDOW_SIZE_Y, y);
@@ -487,7 +489,7 @@ int SDLWrapper::init(coord_def *m_windowsz)
     init_hidpi();
 
     SDL_GL_GetDrawableSize(m_window, &x, &y);
-    if (Options.tile_window_minimum)
+    if (Options.tile_window_limit_size)
     {
         SDL_SetWindowMinimumSize(m_window, MIN_SDL_WINDOW_SIZE_X,
                                  MIN_SDL_WINDOW_SIZE_Y);

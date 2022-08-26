@@ -2017,8 +2017,8 @@ tile_window_height = -90
         will auto-size the window. If set to a negative number (default), it
         will use the screen's resolution, minus the given value.
 
-tile_window_minimum = true
-        Limit the minimum window size. It should only be disabled for testing
+tile_window_limit_size = true
+        Limits the minimum window size. It should only be disabled for testing
         purposes.
 
 game_scale = 1
