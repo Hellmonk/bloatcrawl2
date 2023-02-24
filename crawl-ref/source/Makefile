@@ -1529,7 +1529,9 @@ clean-contrib:
 
 clean-android:
 	$(RM) -r android-project/app/src/main/assets
-	+cd android-project && rm -f local.properties && rm -f app/build.gradle
+	$(RM) -r android-project/app/src/main/res/drawable
+	$(RM) android-project/local.properties
+	$(RM) android-project/app/build.gradle
 
 distclean: clean clean-contrib clean-rltiles
 	$(RM) -r morgue saves
@@ -1878,7 +1880,11 @@ android-project/local.properties: android-project/local.properties.in
 	sed -e "s~@HOME@~${HOME}~" <android-project/local.properties.in >android-project/local.properties
 
 android: greet check-fonts docs install-data .android-cflags android-project/local.properties android-project/app/build.gradle
-ifeq ($(ANDROID),)
+ifneq ($(ANDROID),)
+	mkdir -p android-project/app/src/main/res/drawable
+	$(COPY) dat/tiles/logo.png android-project/app/src/main/res/drawable/logo.png
+	$(COPY) dat/tiles/stone_soup_icon-512x512.png android-project/app/src/main/res/drawable/icon.png
+else
 	@echo Please define ANDROID to use this build.
 	@exit 1
 endif
