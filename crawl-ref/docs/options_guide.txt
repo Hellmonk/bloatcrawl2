@@ -2298,7 +2298,8 @@ dump_order += monlist,kills,notes,skill_gains,action_counts
 --------------
 
 Crawl can automatically log certain events during play. You can read
-these in the dump or morgue files. Below are options for tweaking this behaviour.
+these in the dump or morgue files. Below are options for tweaking this
+behaviour.
 The following events are logged:
         - Gaining or losing a level
         - Entering a dungeon level for the first time
