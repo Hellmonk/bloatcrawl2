@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Dungeon Crawl Stone Soup</string>
+    <string name="app_name">DCSS: Bloatcrawl 2</string>
     <string name="start_game">Start Game</string>
     <string name="edit_rc">Edit Init File</string>
     <string name="morgue">Morgue Files</string>

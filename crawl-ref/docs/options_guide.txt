@@ -2,7 +2,7 @@ Guide to Crawl's options
 ========================
 
 This document explains all of the options in the latest version of
-Dungeon Crawl Stone Soup. If you get stuck or some things don't seem to
+Bloatcrawl 2. If you get stuck or some things don't seem to
 work properly, ask for help in ##crawl on freenode, or on the Crawl
 forums at http://crawl.develz.org/tavern/.
 
@@ -2628,7 +2628,7 @@ use_modifier_prefix_keys = true
         When true, '*' behaves as a CTRL keypress, and '/' as SHIFT.
 
 language = <two-letter language code>
-        Displays some text in the given language. Not all text in Dungeon Crawl
+        Displays some text in the given language. Not all text in Bloatcrawl 2
         has translations in every supported language, but volunteer translators
         have offered translations of particularly wordy text such as god and
         monster descriptions. Text with no known translation will be displayed

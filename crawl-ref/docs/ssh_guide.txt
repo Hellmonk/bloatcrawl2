@@ -2,7 +2,7 @@ Guide to online play
 ====================
 
 The following guide explains, in layman's terms, how to access server
-play for Dungeon Crawl. It is directed at Windows users as we expect
+play for Bloatcrawl 2. It is directed at Windows users as we expect
 Linux and OS/X users to have simple access to ssh.
 Written up by Archibald, with modifications by Butch.
 
@@ -20,7 +20,7 @@ allows you to do:
 
 ----
 
-So you've downloaded the latest version of Crawl Stone Soup and have
+So you've downloaded the latest version of Bloatcrawl 2 and have
 been playing offline (or 'local') and you thoroughly enjoy it. You
 may have noticed from the akrasiac homepage, http://crawl.akrasiac.org/
 or posts in forums that there is a way to enhance your gaming experience

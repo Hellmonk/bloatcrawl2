@@ -540,7 +540,7 @@ static void _show_commandline_options_help()
     puts("  -playable-json   list playable species, jobs, and character combos.");
 
 #if defined(TARGET_OS_WINDOWS) && defined(USE_TILE_LOCAL)
-    text_popup(help, L"Dungeon Crawl command line help");
+    text_popup(help, L"Bloatcrawl 2 command line help");
 #endif
 }
 

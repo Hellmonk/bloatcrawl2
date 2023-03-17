@@ -632,11 +632,11 @@ static void _add_formatted_help_menu(column_composer &cols)
 {
     cols.add_formatted(
         0,
-        "<h>Dungeon Crawl Help\n"
+        "<h>Bloatcrawl 2 Help\n"
         "\n"
         "Press one of the following keys to\n"
         "obtain more information on a certain\n"
-        "aspect of Dungeon Crawl.\n"
+        "aspect of Bloatcrawl 2.\n"
 
         "<w>?</w>: List of commands\n"
         "<w>^</w>: Quickstart Guide\n"
@@ -1181,7 +1181,7 @@ static int _get_help_section(int section, formatted_string &header_out, formatte
 
     string header = headers.count(page) ? ": "+headers[page] : "";
     header_out = formatted_string::parse_string(
-                    "<yellow>Dungeon Crawl Help"+header+"</yellow>");
+                    "<yellow>Bloatcrawl 2 Help"+header+"</yellow>");
     scroll_out = 0;
     switch (section)
     {
