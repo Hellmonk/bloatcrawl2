@@ -520,6 +520,7 @@ public:
 
     VColour     tile_window_col;
 #ifdef USE_TILE_LOCAL
+    int         game_scale;
     // font settings
     string      tile_font_crt_file;
     string      tile_font_msg_file;
@@ -547,6 +548,8 @@ public:
     screen_mode tile_full_screen;
     int         tile_window_width;
     int         tile_window_height;
+    int         tile_window_ratio;
+    bool        tile_window_limit_size;
     maybe_bool  tile_use_small_layout;
 #endif
     int         tile_cell_pixels;

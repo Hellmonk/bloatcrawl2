@@ -2,7 +2,7 @@ Guide to Crawl's options
 ========================
 
 This document explains all of the options in the latest version of
-Dungeon Crawl Stone Soup. If you get stuck or some things don't seem to
+Bloatcrawl 2. If you get stuck or some things don't seem to
 work properly, ask for help in ##crawl on freenode, or on the Crawl
 forums at http://crawl.develz.org/tavern/.
 
@@ -99,14 +99,19 @@ The contents of this text are:
                 tile_explore_horizon_col, tile_door_col, tile_downstairs_col,
                 tile_upstairs_col, tile_branchstairs_col, tile_feature_col,
                 tile_transporter_col, tile_transporter_landing_col,
-                tile_trap_col, tile_water_col, tile_lava_col, tile_excluded_col,
-                tile_excl_centre_col, tile_update_rate, tile_runrest_rate,
-                tile_key_repeat_delay, tile_tooltip_ms, tile_tag_pref,
-                tile_full_screen, tile_window_width, tile_window_height,
-                tile_map_pixels, tile_cell_pixels, tile_force_overlay,
-                tile_single_column_menus, tile_font_crt_file,
-                tile_font_stat_file, tile_font_msg_file, tile_font_tip_file,
-                tile_font_lbl_file, tile_font_crt_family, tile_font_stat_family,
+                tile_feature_col, tile_trap_col, tile_water_col,
+                tile_deep_water_col, tile_lava_col, tile_excluded_col,
+                tile_excl_centre_col, tile_window_col, tile_update_rate,
+                tile_runrest_rate, tile_key_repeat_delay, tile_tooltip_ms,
+                tile_tag_pref, tile_window_width, tile_window_height,
+                tile_window_ratio, tile_window_limit_size, game_scale,
+                tile_map_pixels, tile_viewport_scale, tile_map_scale,
+                tile_cell_pixels, tile_sidebar_pixels, tile_filter_scaling,
+                tile_force_overlay, tile_overlay_col,
+                tile_overlay_alpha_percent, tile_full_screen,
+                tile_use_small_layout, tile_font_crt_file, tile_font_stat_file,
+                tile_font_msg_file, tile_font_tip_file, tile_font_lbl_file,
+                tile_font_crt_family, tile_font_stat_family,
                 tile_font_msg_family, tile_font_lbl_family, tile_font_crt_size,
                 tile_font_stat_size, tile_font_msg_size, tile_font_tip_size,
                 tile_font_lbl_size, tile_font_ft_light, tile_show_minihealthbar,
@@ -1053,8 +1058,6 @@ easy_quit_item_prompts = true
 ability_menu = true
         Always show the full-screen 'a'bility menu. If false, 'a' prompts
         in the message area, and the menu can be seen with '?' or '*'.
-
-        Setting this option to false has no effect in Android tiles builds.
 
 easy_floor_use = true
         If set to true, item interaction menus that allow using items from the
@@ -2015,9 +2018,35 @@ tile_tag_pref = (none| named | enemy | tutorial )
 
 tile_window_width  = -90
 tile_window_height = -90
-        The width and height of the window, in pixels. If set to zero, it
-        will auto-size the window. If set to a negative number (default), it
-        will use the screen's resolution, minus the given value.
+        Options for setting the width and height of the window, in pixels. When
+        positive, these set the window size directly. When set to 0, the window
+        is auto-sized. When set to a negative number, these values will be
+        interpreted as the screen's resolution minus the given value. The width
+        may be overridden by `tile_window_ratio`, below, in which case
+        `tile_window_width` is used as a maximum width. On some window
+        managers, the position of OS user interface elements may enforce
+        smaller values for these. For example, on MacOS the window will not
+        overlap with the dock or menu bar.
+
+tile_window_ratio  = 1618
+        When set to a positive value, tiles will use this value to determine
+        the window width as a ratio of the window height, scaled by 1000. In
+        particular: w = h * tile_window_ratio / 1000.
+        If this value is set, `tile_window_width` is used as a maximum width.
+        The minimum width is determined by UI layout. This value is ignored in
+        full screen mode. Set to a value <= 0 to disable.
+
+tile_window_limit_size = true
+        Limits the minimum window size. It should only be disabled for testing
+        purposes.
+
+game_scale = 1
+        An integer scale value between 1 and 8 that will increase the size of
+        all UI elements. This can be used to simulate high-dpi rendering on
+        high resolution displays that don't directly support high-dpi, or adjust
+        scaling for very large displays. For a 4k display, we recommend a value
+        of 3 or 4, and a 2k display will typically look best with a value of 2.
+        Local tiles only.
 
 tile_map_pixels = 0
         The maximum number of pixels each minimap square should take up. If you
@@ -2066,6 +2095,10 @@ tile_single_column_menus = true
         insufficient space to show all items in a single column. This option
         is only available on local tiles; all menus on console and on WebTiles
         always list items in a single column, as if this option were enabled.
+
+tile_use_small_layout = auto
+        Alternative layout designed for very small screens. It is enabled by
+        default on Android.
 
 tile_font_crt_file  = VeraMono.ttf
 tile_font_stat_file = VeraMono.ttf
@@ -2284,7 +2317,8 @@ dump_order += monlist,kills,notes,skill_gains,action_counts
 --------------
 
 Crawl can automatically log certain events during play. You can read
-these in the dump or morgue files. Below are options for tweaking this behaviour.
+these in the dump or morgue files. Below are options for tweaking this
+behaviour.
 The following events are logged:
         - Gaining or losing a level
         - Entering a dungeon level for the first time
@@ -2613,7 +2647,7 @@ use_modifier_prefix_keys = true
         When true, '*' behaves as a CTRL keypress, and '/' as SHIFT.
 
 language = <two-letter language code>
-        Displays some text in the given language. Not all text in Dungeon Crawl
+        Displays some text in the given language. Not all text in Bloatcrawl 2
         has translations in every supported language, but volunteer translators
         have offered translations of particularly wordy text such as god and
         monster descriptions. Text with no known translation will be displayed

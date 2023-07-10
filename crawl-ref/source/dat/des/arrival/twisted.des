@@ -905,21 +905,9 @@ KPROP: Nu = bloody
 SUBST: N = n, u = uU
 KMASK: uU = no_item_gen
 : local race = you.race()
-: local mons = you.monster()
+: local mons = "human"
 : local skeltype = "skeleton"
 : local yourname = string.gsub(you.name(), " ", "_")
-: -- The corpseless. Before the game starts, you.monster() is "program bug".
-: if (not crawl.game_started()) or race == "Vampire"
-:     or race == "Mummy" or race == "Ghoul"
-:     or race == "Gargoyle" or race == "Vine Stalker"
-:     or race == "Yak" or race == "Shapeshifter"
-:     or race == "Protean"
-: then
-:   mons = "human"
-: end
-: if you.race() == "Formicid" or you.race() == "Octopode" then
-:   skeltype = "corpse"
-: end
 :
 : dgn.delayed_decay(_G, 'u', mons .. " name:" .. yourname .. " corpse")
 : dgn.delayed_decay(_G, 'U', mons .. " name:" .. yourname .. " " .. skeltype )

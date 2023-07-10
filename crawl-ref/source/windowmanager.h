@@ -168,7 +168,6 @@ public:
     virtual int raise_custom_event() = 0;
     virtual int wait_event(wm_event *event, int timeout) = 0;
     virtual bool next_event_is(wm_event_type type) = 0;
-    virtual void show_keyboard() = 0;
 
     // Display functions
     virtual bool init_hidpi() = 0;

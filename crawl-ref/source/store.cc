@@ -1762,7 +1762,7 @@ static bool _cmp(string a, string b)
 
 void dump_prop_accesses()
 {
-    FILE *f = fopen("prop_accesses", "w");
+    FILE *f = fopen_u("prop_accesses", "w");
     ASSERT(f);
 
     vector<string> props;

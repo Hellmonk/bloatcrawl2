@@ -108,6 +108,10 @@
 {'$', CMD_LIST_GOLD},
 {CONTROL('D'), CMD_MACRO_ADD},
 {'~', CMD_MACRO_ADD},
+#ifdef __ANDROID__
+{CK_F11, CMD_TOGGLE_TAB_ICONS},
+{CK_F12, CMD_TOGGLE_KEYBOARD},
+#endif
 #ifdef WIZARD
 {'&', CMD_WIZARD},
 {'+', CMD_EXPLORE_MODE},
@@ -374,11 +378,7 @@
 {CONTROL('Q'), CMD_DOLL_QUIT},
 #endif
 
-#ifdef TOUCH_UI
-// zoom functions
-{CK_NUMPAD_PLUS, CMD_ZOOM_IN},
-{CK_NUMPAD_MINUS, CMD_ZOOM_OUT},
-#elif defined(USE_TILE_LOCAL)
+#if defined(USE_TILE_LOCAL)
 // no good webtiles keys available for the main view case, and browser zoom
 // already more or less accomplishes this.
 {'=' - SDLK_a + 1, CMD_ZOOM_IN},  // Believe it or not, this is how we map SDL
