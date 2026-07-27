@@ -1,6 +1,6 @@
 
 Note: If you are experiencing significant slowdown and lags with the Tiles
-version of Dungeon Crawl Stone Soup, scroll down to the end of this file.
+version of Bloatcrawl 2, scroll down to the end of this file.
 
 
 Tiles specific commands

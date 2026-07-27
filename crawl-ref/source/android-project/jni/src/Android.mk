@@ -55,6 +55,7 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
     $(CRAWL_PATH)/dbg-objstat.cc \
     $(CRAWL_PATH)/dbg-scan.cc \
     $(CRAWL_PATH)/dbg-util.cc \
+    $(CRAWL_PATH)/death-curse.cc \
     $(CRAWL_PATH)/decks.cc \
     $(CRAWL_PATH)/delay.cc \
     $(CRAWL_PATH)/describe.cc \
@@ -112,6 +113,7 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
     $(CRAWL_PATH)/jobs.cc \
     $(CRAWL_PATH)/json.cc \
     $(CRAWL_PATH)/kills.cc \
+    $(CRAWL_PATH)/known-items.cc \
     $(CRAWL_PATH)/l-colour.cc \
     $(CRAWL_PATH)/l-crawl.cc \
     $(CRAWL_PATH)/l-debug.cc \
@@ -143,6 +145,7 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
     $(CRAWL_PATH)/lang-fake.cc \
     $(CRAWL_PATH)/lev-pand.cc \
     $(CRAWL_PATH)/libutil.cc \
+    $(CRAWL_PATH)/loading-screen.cc \
     $(CRAWL_PATH)/lookup-help.cc \
     $(CRAWL_PATH)/los.cc \
     $(CRAWL_PATH)/los-def.cc \
@@ -182,10 +185,12 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
     $(CRAWL_PATH)/mon-transit.cc \
     $(CRAWL_PATH)/mon-util.cc \
     $(CRAWL_PATH)/monster.cc \
+    $(CRAWL_PATH)/movement.cc \
     $(CRAWL_PATH)/mutation.cc \
     $(CRAWL_PATH)/nearby-danger.cc \
     $(CRAWL_PATH)/newgame.cc \
     $(CRAWL_PATH)/ng-init.cc \
+    $(CRAWL_PATH)/ng-init-branches.cc \
     $(CRAWL_PATH)/ng-input.cc \
     $(CRAWL_PATH)/ng-restr.cc \
     $(CRAWL_PATH)/ng-setup.cc \
@@ -193,6 +198,7 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
     $(CRAWL_PATH)/notes.cc \
     $(CRAWL_PATH)/orb.cc \
     $(CRAWL_PATH)/ouch.cc \
+    $(CRAWL_PATH)/outer-menu.cc \
     $(CRAWL_PATH)/output.cc \
     $(CRAWL_PATH)/package.cc \
     $(CRAWL_PATH)/pattern.cc \
@@ -214,8 +220,9 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
     $(CRAWL_PATH)/random-var.cc \
     $(CRAWL_PATH)/ranged-attack.cc \
     $(CRAWL_PATH)/ray.cc \
-    $(CRAWL_PATH)/rot.cc \
     $(CRAWL_PATH)/religion.cc \
+    $(CRAWL_PATH)/rot.cc \
+    $(CRAWL_PATH)/scroller.cc \
     $(CRAWL_PATH)/shopping.cc \
     $(CRAWL_PATH)/shout.cc \
     $(CRAWL_PATH)/show.cc \
@@ -298,18 +305,16 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
     $(CRAWL_PATH)/tilereg-inv.cc \
     $(CRAWL_PATH)/tilereg-map.cc \
     $(CRAWL_PATH)/tilereg-mem.cc \
-    $(CRAWL_PATH)/tilereg-menu.cc \
     $(CRAWL_PATH)/tilereg-mon.cc \
     $(CRAWL_PATH)/tilereg-msg.cc \
-    $(CRAWL_PATH)/tilereg-popup.cc \
     $(CRAWL_PATH)/tilereg-skl.cc \
     $(CRAWL_PATH)/tilereg-spl.cc \
     $(CRAWL_PATH)/tilereg-stat.cc \
     $(CRAWL_PATH)/tilereg-tab.cc \
     $(CRAWL_PATH)/tilereg-text.cc \
-    $(CRAWL_PATH)/tilereg-title.cc \
     $(CRAWL_PATH)/tilesdl.cc \
     $(CRAWL_PATH)/tiletex.cc \
+    $(CRAWL_PATH)/ui.cc \
     $(CRAWL_PATH)/windowmanager-sdl.cc \
     $(CRAWL_PATH)/glwrapper-ogl.cc \
     $(CRAWL_PATH)/fontwrapper-ft.cc \

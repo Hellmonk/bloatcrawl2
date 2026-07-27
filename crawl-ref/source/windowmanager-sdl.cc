@@ -11,8 +11,6 @@
 # include <SDL.h>
 # include <SDL_image.h>
 # include <android/log.h>
-# include <GLES/gl.h>
-# include <signal.h>
 # include <SDL_mixer.h>
 #else
 # ifdef TARGET_COMPILER_VC
@@ -252,13 +250,6 @@ static int _translate_keysym(SDL_Keysym &keysym)
         if (numpad_offset) // keep tab a tab
             return CK_TAB_TILE + numpad_offset;
         return SDLK_TAB;
-#ifdef TOUCH_UI
-    // used for zoom in/out
-    case SDLK_KP_PLUS:
-        return CK_NUMPAD_PLUS;
-    case SDLK_KP_MINUS:
-        return CK_NUMPAD_MINUS;
-#endif
     default:
         break;
     }
@@ -282,8 +273,8 @@ static void _translate_event(const SDL_MouseMotionEvent &sdl_event,
     tile_event.held   = wm_mouse_event::NONE;
     tile_event.event  = wm_mouse_event::MOVE;
     tile_event.button = wm_mouse_event::NONE;
-    tile_event.px     = sdl_event.x;
-    tile_event.py     = sdl_event.y;
+    tile_event.px     = display_density.apply_game_scale(sdl_event.x);
+    tile_event.py     = display_density.apply_game_scale(sdl_event.y);
     tile_event.held   = wm->get_mouse_state(nullptr, nullptr);
     tile_event.mod    = wm->get_mod_state();
 
@@ -312,8 +303,8 @@ static void _translate_event(const SDL_MouseButtonEvent &sdl_event,
         tile_event.button = wm_mouse_event::NONE;
         break;
     }
-    tile_event.px = sdl_event.x;
-    tile_event.py = sdl_event.y;
+    tile_event.px = display_density.apply_game_scale(sdl_event.x);
+    tile_event.py = display_density.apply_game_scale(sdl_event.y);
     tile_event.held = wm->get_mouse_state(nullptr, nullptr);
     tile_event.mod = wm->get_mod_state();
 }
@@ -325,8 +316,8 @@ static void _translate_wheel_event(const SDL_MouseWheelEvent &sdl_event,
     tile_event.event = wm_mouse_event::WHEEL;
     tile_event.button = (sdl_event.y < 0) ? wm_mouse_event::SCROLL_DOWN
                                           : wm_mouse_event::SCROLL_UP;
-    tile_event.px = sdl_event.x;
-    tile_event.py = sdl_event.y;
+    tile_event.px = display_density.apply_game_scale(sdl_event.x);
+    tile_event.py = display_density.apply_game_scale(sdl_event.y);
 }
 
 SDLWrapper::SDLWrapper():
@@ -349,26 +340,23 @@ SDLWrapper::~SDLWrapper()
 
 int SDLWrapper::init(coord_def *m_windowsz)
 {
-#ifdef __ANDROID__
-    // Do SDL initialization
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER
-                 | SDL_INIT_NOPARACHUTE) != 0)
-#else
     // Do SDL initialization
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
-#endif
     {
         printf("Failed to initialise SDL: %s\n", SDL_GetError());
         return false;
     }
 
+    int cur_display;
+#ifdef __ANDROID__
+    cur_display = 0;
+#else
     // find the current display, based on the mouse position
     // TODO: probably want to allow configuring this?
     int mouse_x, mouse_y;
     SDL_GetGlobalMouseState(&mouse_x, &mouse_y);
 
     int displays = SDL_GetNumVideoDisplays();
-    int cur_display;
     for (cur_display = 0; cur_display < displays; cur_display++)
     {
         SDL_Rect bounds;
@@ -381,6 +369,7 @@ int SDLWrapper::init(coord_def *m_windowsz)
     }
     if (cur_display >= displays)
         cur_display = 0; // can this happen?
+#endif
 
     SDL_DisplayMode display_mode;
     SDL_GetDesktopDisplayMode(cur_display, &display_mode);
@@ -389,9 +378,13 @@ int SDLWrapper::init(coord_def *m_windowsz)
     _desktop_height = display_mode.h;
 
 #ifdef __ANDROID__
+    SDL_StartTextInput();
+    Options.game_scale = min(_desktop_width, _desktop_height)/1080+1;
     // Request OpenGL ES 1.0 context
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_SetHint(SDL_HINT_ANDROID_SEPARATE_MOUSE_AND_TOUCH, "1");
+    SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "1");
 #endif
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -410,12 +403,7 @@ int SDLWrapper::init(coord_def *m_windowsz)
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
 
 #ifdef USE_GLES
-#ifdef __ANDROID__
-    unsigned int flags = SDL_WINDOW_OPENGL
-                         | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
-#else
     unsigned int flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
-#endif
 #else
     unsigned int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
                          | SDL_WINDOW_ALLOW_HIGHDPI;
@@ -442,15 +430,18 @@ int SDLWrapper::init(coord_def *m_windowsz)
         int y = Options.tile_window_height;
         x = (x > 0) ? x : _desktop_width + x;
         y = (y > 0) ? y : _desktop_height + y;
-#ifdef TOUCH_UI
-        // allow *much* smaller windows than default, primarily for testing
-        // touch_ui features in an x86 build
-        m_windowsz->x = x;
-        m_windowsz->y = y;
-#else
-        m_windowsz->x = max(MIN_SDL_WINDOW_SIZE_X, x);
-        m_windowsz->y = max(MIN_SDL_WINDOW_SIZE_Y, y);
-#endif
+        if (Options.tile_window_ratio > 0)
+            x = min(x, y * Options.tile_window_ratio / 1000);
+        if (Options.tile_window_limit_size)
+        {
+            m_windowsz->x = max(MIN_SDL_WINDOW_SIZE_X, x);
+            m_windowsz->y = max(MIN_SDL_WINDOW_SIZE_Y, y);
+        }
+        else
+        {
+            m_windowsz->x = x;
+            m_windowsz->y = y;
+        }
 
 #ifdef TARGET_OS_WINDOWS
         set_window_placement(m_windowsz);
@@ -493,21 +484,22 @@ int SDLWrapper::init(coord_def *m_windowsz)
 
     int x, y;
     SDL_GetWindowSize(m_window, &x, &y);
-    m_windowsz->x = x;
-    m_windowsz->y = y;
+    m_windowsz->x = display_density.apply_game_scale(x);
+    m_windowsz->y = display_density.apply_game_scale(y);
     init_hidpi();
-#ifdef __ANDROID__
-# ifndef TOUCH_UI
-    SDL_StartTextInput();
-# endif
-    __android_log_print(ANDROID_LOG_INFO, "Crawl", "Window manager initialised");
-#endif
 
     SDL_GL_GetDrawableSize(m_window, &x, &y);
-    SDL_SetWindowMinimumSize(m_window, MIN_SDL_WINDOW_SIZE_X,
-                             MIN_SDL_WINDOW_SIZE_Y);
+    if (Options.tile_window_limit_size)
+    {
+        SDL_SetWindowMinimumSize(m_window, MIN_SDL_WINDOW_SIZE_X,
+                                 MIN_SDL_WINDOW_SIZE_Y);
+    }
 
+#ifndef __ANDROID__
     SDL_EnableScreenSaver();
+#else
+    SDL_DisableScreenSaver();
+#endif
 
     return true;
 }
@@ -516,14 +508,14 @@ int SDLWrapper::screen_width() const
 {
     int w, dummy;
     SDL_GetWindowSize(m_window, &w, &dummy);
-    return w;
+    return display_density.apply_game_scale(w);
 }
 
 int SDLWrapper::screen_height() const
 {
     int dummy, h;
     SDL_GetWindowSize(m_window, &dummy, &h);
-    return h;
+    return display_density.apply_game_scale(h);
 }
 
 int SDLWrapper::desktop_width() const
@@ -624,7 +616,7 @@ bool SDLWrapper::init_hidpi()
     coord_def drawablesz;
     SDL_GetWindowSize(m_window, &(windowsz.x), &(windowsz.y));
     SDL_GL_GetDrawableSize(m_window, &(drawablesz.x), &(drawablesz.y));
-    return display_density.update(drawablesz.x, windowsz.x);
+    return display_density.update(drawablesz.x, windowsz.x, Options.game_scale);
 }
 
 void SDLWrapper::resize(coord_def &m_windowsz)
@@ -721,6 +713,10 @@ void SDLWrapper::set_mouse_cursor(mouse_cursor_type type)
 unsigned short SDLWrapper::get_mouse_state(int *x, int *y) const
 {
     Uint32 state = SDL_GetMouseState(x, y);
+    if (x)
+        *x = display_density.apply_game_scale(*x);
+    if (y)
+        *y = display_density.apply_game_scale(*y);
     unsigned short ret = 0;
     if (state & SDL_BUTTON(SDL_BUTTON_LEFT))
         ret |= wm_mouse_event::LEFT;
@@ -1027,11 +1023,6 @@ bool SDLWrapper::next_event_is(wm_event_type type)
     return count != 0;
 }
 
-void SDLWrapper::show_keyboard()
-{
-    SDL_StartTextInput(); // XXX: Intended for Android; harmless elsewhere?
-}
-
 bool SDLWrapper::load_texture(GenericTexture *tex, const char *filename,
                               MipMapOptions mip_opt, unsigned int &orig_width,
                               unsigned int &orig_height, tex_proc_func proc,
@@ -1244,13 +1235,7 @@ SDL_Surface *SDLWrapper::load_image(const char *file) const
 
 void SDLWrapper::glDebug(const char* msg)
 {
-#ifdef __ANDROID__
-    int e = glGetError();
-    if (e > 0)
-       __android_log_print(ANDROID_LOG_INFO, "Crawl", "ERROR %x: %s", e, msg);
-#else
     UNUSED(msg);
-#endif
 }
 #endif // USE_SDL
 #endif // USE_TILE_LOCAL

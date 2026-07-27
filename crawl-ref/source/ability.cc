@@ -1252,9 +1252,34 @@ bool activate_ability()
     }
 
     int selected = -1;
-#ifndef TOUCH_UI
-    if (Options.ability_menu)
-#endif
+
+    string luachoice;
+
+    if (!clua.callfn("c_choose_ability", ">s", &luachoice))
+    {
+        if (!clua.error.empty())
+            mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
+    }
+    else if (!luachoice.empty())
+    {
+        bool valid = false;
+        // Sanity check
+        for (unsigned int i = 0; i < talents.size(); ++i)
+        {
+            if (talents[i].hotkey == luachoice[0])
+            {
+                selected = static_cast<int>(i);
+                valid = true;
+                break;
+            }
+        }
+
+        // Lua gave us garbage, defer to the user
+        if (!valid)
+            selected = -1;
+    }
+
+    if (Options.ability_menu && selected == -1)
     {
         selected = choose_ability_menu(talents);
         if (selected == -1)
@@ -1264,7 +1289,6 @@ bool activate_ability()
             return false;
         }
     }
-#ifndef TOUCH_UI
     else
     {
         while (selected < 0)
@@ -1313,7 +1337,6 @@ bool activate_ability()
             }
         }
     }
-#endif
     return activate_talent(talents[selected]);
 }
 

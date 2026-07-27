@@ -12,9 +12,6 @@
 #include "hints.h"
 #include "libutil.h"
 #include "macro.h"
-#ifdef TOUCH_UI
-#include "menu.h"
-#endif
 #include "message.h"
 #include "monster.h"
 #include "notes.h"
@@ -25,10 +22,7 @@
 #include "stat-type.h"
 #include "state.h"
 #include "stringutil.h"
-#ifdef TOUCH_UI
-#include "rltiles/tiledef-gui.h"
-#include "tilepick.h"
-#endif
+#include "tag-version.h"
 #include "transform.h"
 
 int player::stat(stat_type s, bool nonneg) const
@@ -101,6 +95,8 @@ static void _handle_stat_change(stat_type stat);
  */
 bool attribute_increase()
 {
+    const bool need_caps = Options.easy_confirm != easy_confirm_type::all;
+
     if (you.species == SP_ANCIENT_GNOLL)
         return true;
 
@@ -109,24 +105,6 @@ bool attribute_increase()
                                                   you.species == SP_DEMIGOD ?
                                                   " dramatic" : "n");
     crawl_state.stat_gain_prompt = true;
-#ifdef TOUCH_UI
-    learned_something_new(HINT_CHOOSE_STAT);
-    Menu pop(MF_SINGLESELECT | MF_ANYPRINTABLE);
-    MenuEntry * const status = new MenuEntry("", MEL_SUBTITLE);
-    MenuEntry * const s_me = new MenuEntry("Strength", MEL_ITEM, 1, 'S');
-    s_me->add_tile(tile_def(TILEG_FIGHTING_ON, TEX_GUI));
-    MenuEntry * const i_me = new MenuEntry("Intelligence", MEL_ITEM, 1, 'I');
-    i_me->add_tile(tile_def(TILEG_SPELLCASTING_ON, TEX_GUI));
-    MenuEntry * const d_me = new MenuEntry("Dexterity", MEL_ITEM, 1, 'D');
-    d_me->add_tile(tile_def(TILEG_DODGING_ON, TEX_GUI));
-
-    pop.set_title(new MenuEntry("Increase Attributes", MEL_TITLE));
-    pop.add_entry(new MenuEntry(stat_gain_message + " Increase:", MEL_TITLE));
-    pop.add_entry(status);
-    pop.add_entry(s_me);
-    pop.add_entry(i_me);
-    pop.add_entry(d_me);
-#else
     mprf(MSGCH_INTRINSIC_GAIN, "%s", stat_gain_message.c_str());
     learned_something_new(HINT_CHOOSE_STAT);
     if (innate_stat(STAT_STR) != you.strength()
@@ -138,8 +116,9 @@ bool attribute_increase()
              innate_stat(STAT_INT),
              innate_stat(STAT_DEX));
     }
-    mprf(MSGCH_PROMPT, "Increase (S)trength, (I)ntelligence, or (D)exterity? ");
-#endif
+    mprf(MSGCH_PROMPT, need_caps
+        ? "Increase (S)trength, (I)ntelligence, or (D)exterity? "
+        : "Increase (s)trength, (i)ntelligence, or (d)exterity? ");
     mouse_control mc(MOUSE_MODE_PROMPT);
 
     const int statgain = you.species == SP_DEMIGOD ? 2 : 1;
@@ -159,15 +138,16 @@ bool attribute_increase()
         }
         else
         {
-#ifdef TOUCH_UI
-            pop.show();
-            keyin = pop.getkey();
-#else
             while ((keyin = getchm()) == CK_REDRAW)
+            {
                 redraw_screen();
-#endif
+                update_screen();
+            }
         }
         tried_lua = true;
+
+        if (!need_caps)
+            keyin = toupper_safe(keyin);
 
         switch (keyin)
         {
@@ -197,16 +177,8 @@ bool attribute_increase()
         case 's':
         case 'i':
         case 'd':
-#ifdef TOUCH_UI
-            status->text = "Uppercase letters only, please.";
-#else
             mprf(MSGCH_PROMPT, "Uppercase letters only, please.");
-#endif
             break;
-#ifdef TOUCH_UI
-        default:
-            status->text = "Please choose an option below"; // too naggy?
-#endif
         }
     }
 }
@@ -230,44 +202,6 @@ bool pick_vaporous_resistance()
 
     const string res_gain_message =
         make_stringf("Your experience leads to an increase in your resistances!");
-#ifdef TOUCH_UI
-    Menu pop(MF_SINGLESELECT | MF_ANYPRINTABLE);
-    MenuEntry * const status = new MenuEntry("", MEL_SUBTITLE);
-    if (can_increase_fire)
-    {
-        MenuEntry * const fire_me = new MenuEntry("Fire", MEL_ITEM, 1, 'F');
-        fire_me->add_tile(tile_def(TILEG_FIRE_MAGIC_ON, TEX_GUI));
-    }
-    if (can_increase_cold)
-    {
-        MenuEntry * const cold_me = new MenuEntry("Cold", MEL_ITEM, 1, 'C');
-        cold_me->add_tile(tile_def(TILEG_ICE_MAGIC_ON, TEX_GUI));
-    }
-    if (can_increase_neg)
-    {
-        MenuEntry * const neg_me = new MenuEntry("Negative Energy", MEL_ITEM, 1, 'N');
-        neg_me->add_tile(tile_def(TILEG_NECROMANCY_ON, TEX_GUI));
-    }
-    if (can_increase_elec)
-    {
-        MenuEntry * const elec_me = new MenuEntry("Electricity", MEL_ITEM, 1, 'E');
-        elec_me->add_tile(tile_def(TILEG_AIR_MAGIC_ON, TEX_GUI));
-    }
-    if (can_increase_pois)
-    {
-        MenuEntry * const pois_me = new MenuEntry("Poison", MEL_ITEM, 1, 'E');
-        pois_me->add_tile(tile_def(TILEG_POISON_MAGIC_ON, TEX_GUI));
-    }
-
-    pop.set_title(new MenuEntry("Increase Resistance", MEL_TITLE));
-    pop.add_entry(new MenuEntry(stat_gain_message + " Increase:", MEL_TITLE));
-    pop.add_entry(status);
-    pop.add_entry(fire_me);
-    pop.add_entry(cold_me);
-    pop.add_entry(neg_me);
-    pop.add_entry(elec_me);
-    pop.add_entry(pois_me);
-#else
     mprf(MSGCH_INTRINSIC_GAIN, "%s", res_gain_message.c_str());
 
     vector<string> items;
@@ -283,19 +217,13 @@ bool pick_vaporous_resistance()
         items.push_back("(P)oison");
     mprf(MSGCH_PROMPT, "Increase %s resistance? ",
         comma_separated_line(items.begin(), items.end(), " or ").c_str());
-#endif
     mouse_control mc(MOUSE_MODE_PROMPT);
 
     int keyin;
     while (true)
     {
-#ifdef TOUCH_UI
-        pop.show();
-        keyin = pop.getkey();
-#else
         while ((keyin = getchm()) == CK_REDRAW)
             redraw_screen();
-#endif
 
         switch (keyin)
         {

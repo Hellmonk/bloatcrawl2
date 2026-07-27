@@ -3338,15 +3338,7 @@ TILE:    c = wall_hall
 FTILE:   .{uvt+ = floor_marble
 COLOUR:  .c = white
 : local race = you.race()
-: local ally = you.monster()
-: -- The corpseless. Before the game starts, you.monster() is "program bug".
-: if (not crawl.game_started()) or race == "Vampire"
-:     or race == "Mummy" or race == "Ghoul" or race == "Octopode"
-:     or race == "Gargoyle" or race == "Vine Stalker"
-:     or race == "Yak" or race == "Formicid" then
-:   ally = util.random_from({"dwarf", "human"})
-: end
-:
+: local ally = util.random_from({"dwarf", "human"})
 : local axis = util.random_from({"goblin", "gnoll", "kobold", "orc"})
 :
 : dgn.delayed_decay(_G, 'u', ally .. " skeleton")

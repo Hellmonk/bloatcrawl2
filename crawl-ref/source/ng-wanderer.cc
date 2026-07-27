@@ -162,12 +162,15 @@ static skill_type _wanderer_role_skill_select(stat_type selected_role,
 
     if (selected_skill == NUM_SKILLS)
     {
-        ASSERT(you.species == SP_BUTTERFLY || you.species == SP_FELID || you.species == SP_ONI);
+        ASSERT(you.species == SP_BUTTERFLY || you.species == SP_FELID ||
+               you.species == SP_ONI || you.species == SP_SILENT_SPECTRE);
 
         if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
             selected_skill = SK_UNARMED_COMBAT;
         else if (you.species == SP_ONI)
             selected_skill = SK_SPELLCASTING;
+        else if (you.species == SP_SILENT_SPECTRE)
+            selected_skill = SK_ARMOUR;
     }
 
     return selected_skill;

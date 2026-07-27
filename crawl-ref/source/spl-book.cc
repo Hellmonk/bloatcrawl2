@@ -621,9 +621,6 @@ private:
         switch (keyin)
         {
         case '!':
-#ifdef TOUCH_UI
-        case CK_TOUCH_DUMMY:
-#endif
             switch (current_action)
             {
                 case action::cast:

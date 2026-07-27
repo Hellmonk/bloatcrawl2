@@ -889,7 +889,8 @@ Character
   permanently reducing their MP. Their old recharge ability has been removed.
 * Loud noises no longer break mesmerization or fear.
 * Various 'badform' (e.g. wispform) special cases have been removed.
-* Several abilities that triggered exhaustion now have their own cooldown timers.
+* Several abilities that triggered exhaustion now have their own cooldown
+  timers.
 * Removed:
   - High elves.
   - Mottled draconians.
@@ -956,8 +957,8 @@ Items
   - Sword of Jihad: renamed to Zealot's Sword.
   - Sceptre of Torment only torments on-hit, rather than randomly.
   - The Captain's Cutlass no longer chops off hydra heads.
-  - The Ring of Shaolin is renamed to the Ring of Phasing, and the bow of Krishna
-    "Sharnga" is renamed to the longbow "Zephyr".
+  - The Ring of Shaolin is renamed to the Ring of Phasing, and the bow of
+    Krishna "Sharnga" is renamed to the longbow "Zephyr".
 * Potions of cure mutation, beneficial mutation, and mutation have been merged.
 * All types of food take one turn to eat.
 * All types of manuals are pre-identified.
@@ -1012,10 +1013,10 @@ Modding/contribution support
 * A number of guides from contributor Cerol on how to change key components
   of the game (first debuted in r/dcss and r/roguelikes) have been added to
   the documentation. These can be found at:
-    - https://github.com/crawl/crawl/blob/master/crawl-ref/docs/develop/background_creation.txt
-    - https://github.com/crawl/crawl/blob/master/crawl-ref/docs/develop/god_creation.txt
-    - https://github.com/crawl/crawl/blob/master/crawl-ref/docs/develop/mutation_creation.txt
-    - https://github.com/crawl/crawl/blob/master/crawl-ref/docs/develop/species_creation.txt
+    - crawl-ref/docs/develop/background_creation.txt
+    - crawl-ref/docs/develop/god_creation.txt
+    - crawl-ref/docs/develop/mutation_creation.txt
+    - crawl-ref/docs/develop/species_creation.txt
 
 Stone Soup 0.19.5 (20170228)
 --------------------------------------------
@@ -2487,7 +2488,8 @@ Items
 * Sustain abilities effects no longer stack.
 * Amulets of resist corrosion now give only 50% corrosion resistance, from 90%.
 * Potions of resistance now grant corrosion resistance.
-* Staves of air now activate extra melee damage as often as other elemental staves.
+* Staves of air now activate extra melee damage as often as other elemental
+  staves.
 * Flying creatures no longer have a 2/3rds chance of dodging thrown nets.
 * Weapons and armour which aren't visibly enchanted no longer have enchantments
   higher than +0.

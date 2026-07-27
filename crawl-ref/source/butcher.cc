@@ -28,11 +28,6 @@
 #include "stepdown.h"
 #include "stringutil.h"
 
-#ifdef TOUCH_UI
-#include "invent.h"
-#include "menu.h"
-#endif
-
 /**
  * Start butchering a corpse.
  *
@@ -76,13 +71,6 @@ void finish_butchering(item_def& corpse)
 
     StashTrack.update_stash(you.pos()); // Stash-track the generated items.
 }
-
-#ifdef TOUCH_UI
-static string _butcher_menu_title(const Menu *menu, const string &oldt)
-{
-    return oldt;
-}
-#endif
 
 static int _corpse_quality(const item_def &item)
 {
@@ -189,19 +177,6 @@ void butchery(item_def* specific_corpse)
     // Now pick what you want to butcher. This is only a problem
     // if there are several corpses on the square.
     bool butchered_any = false;
-#ifdef TOUCH_UI
-    vector<const item_def*> meat;
-    for (const corpse_quality &entry : corpse_qualities)
-        meat.push_back(entry.first);
-
-    vector<SelItem> selected =
-        select_items(meat, "Choose a corpse to butcher",
-                     false, menu_type::any, _butcher_menu_title);
-    redraw_screen();
-    for (SelItem sel : selected)
-        if (_start_butchering(const_cast<item_def &>(*sel.item)))
-            butchered_any = true;
-#else
     item_def* to_eat = nullptr;
     bool butcher_all    = false;
     bool all_done = false;
@@ -273,7 +248,6 @@ void butchery(item_def* specific_corpse)
     // No point in displaying this if the player pressed 'a' above.
     if (!to_eat && !butcher_all && !all_done)
         mprf("There isn't anything else to butcher here.");
-#endif
 
     //XXX: this assumes that we're not being called from a delay ourselves.
     // It's not a problem in the case of macros, though, because
